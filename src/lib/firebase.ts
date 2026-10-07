@@ -13,10 +13,36 @@ import {
   User 
 } from 'firebase/auth';
 import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
-import firebaseConfig from '../../firebase-applet-config.json';
+// Firebase config: prefer env vars (set in Vercel dashboard / CI secrets).
+// In production VITE_FIREBASE_* must be configured; without them Firebase will not
+// initialise and the app runs in degraded mode (workspace features disabled).
+// The local firebase-applet-config.json is kept on disk for local dev only and is
+// gitignored so it won't be deployed.
+let firebaseConfig;  // declared here so TS knows the name
+try {
+  // @ts-ignore
+  if (import.meta.env.VITE_FIREBASE_API_KEY) {
+    firebaseConfig = {
+      // @ts-ignore
+      apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+      // @ts-ignore
+      authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+      // @ts-ignore
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+      // @ts-ignore
+      storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+      // @ts-ignore
+      messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+      // @ts-ignore
+      appId: import.meta.env.VITE_FIREBASE_APP_ID,
+      // @ts-ignore
+      measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+    };
+  }
+} catch {}
 
-// Initialize Firebase App
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig || {});
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 

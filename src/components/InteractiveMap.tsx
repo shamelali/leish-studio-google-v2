@@ -34,7 +34,7 @@ const COORDINATE_MAP: Record<string, { lat: number; lng: number }> = {
 export default function InteractiveMap({ locations, selectedId, onSelect, filterType = 'all' }: InteractiveMapProps) {
   const [activeSalon, setActiveSalon] = useState<Salon | null>(null);
 
-  const apiKey = (import.meta as any).env?.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyDQs8wDqWfdsYxDVP4pNp1rJuPRp2Vt6pQ';
+  const apiKey = (import.meta as any).env.VITE_GOOGLE_MAPS_API_KEY;
 
   const filtered = locations.filter(loc => {
     if (filterType === 'studio') return loc.type !== 'mua';
