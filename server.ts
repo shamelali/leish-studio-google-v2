@@ -1,6 +1,4 @@
 import express from 'express';
-import path from 'path';
-import { createServer as createViteServer } from 'vite';
 import { store } from './server/data-store.ts';
 import { GoogleGenAI, Type, GenerateVideosOperation } from '@google/genai';
 import type { Booking, Review, Salon, Service, User } from './src/types.ts';
@@ -20,9 +18,14 @@ const ai = new GoogleGenAI({
   }
 });
 
-async function startServer() {
+function createApp() {
   const app = express();
-  const PORT = 3000;
+
+  // Behind the Vercel proxy, trust the first X-Forwarded-For hop so
+  // req.ip (and express-rate-limit) see the real client address.
+  if (process.env.VERCEL) {
+    app.set('trust proxy', 1);
+  }
 
   // Security headers
   app.use(helmet({
@@ -134,7 +137,7 @@ async function startServer() {
     try {
       const parsed = registerSchema.safeParse(req.body);
       if (!parsed.success) {
-        return res.status(400).json({ error: parsed.error.errors[0].message });
+        return res.status(400).json({ error: parsed.error.issues[0].message });
       }
 
       const { name, email, password, role, phone, salonId, bio } = parsed.data;
@@ -150,7 +153,7 @@ async function startServer() {
         : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200';
       
       const newUser = store.createUser({
-        id: `user-RM{Date.now()}-RM{Math.random().toString(36).slice(2, 8)}`,
+        id: `user-${Date.now()}-${Math.random()}.toString(36).slice(2, 8)}`,
         name: name.trim(),
         email: normalizedEmail,
         password,
@@ -179,7 +182,7 @@ async function startServer() {
     try {
       const parsed = loginSchema.safeParse(req.body);
       if (!parsed.success) {
-        return res.status(400).json({ error: parsed.error.errors[0].message });
+        return res.status(400).json({ error: parsed.error.issues[0].message });
       }
 
       const { email, password } = parsed.data;
@@ -199,7 +202,7 @@ async function startServer() {
       res.json({
         user: sanitizeUser(user),
         token,
-        message: `Welcome back, RM{user.name}!`
+        message: `Welcome back, ${user.name}!`
       });
     } catch (error: any) {
       res.status(500).json({ error: error.message || 'Sign in failed' });
@@ -220,7 +223,7 @@ async function startServer() {
     try {
       const parsed = updateProfileSchema.safeParse(req.body);
       if (!parsed.success) {
-        return res.status(400).json({ error: parsed.error.errors[0].message });
+        return res.status(400).json({ error: parsed.error.issues[0].message });
       }
 
       const { id, name, phone, bio, avatar, salonId } = parsed.data;
@@ -305,7 +308,7 @@ async function startServer() {
         return res.status(404).json({ error: 'Salon not found' });
       }
       const newService: Service = {
-        id: `serv-RM{req.params.id}-RM{Date.now()}`,
+        id: `serv-${req.params.id}-${Date.now()}`,
         name: req.body.name,
         price: Number(req.body.price),
         duration: Number(req.body.duration),
@@ -360,7 +363,7 @@ async function startServer() {
     try {
       const parsed = bookingSchema.safeParse(req.body);
       if (!parsed.success) {
-        return res.status(400).json({ error: parsed.error.errors[0].message });
+        return res.status(400).json({ error: parsed.error.issues[0].message });
       }
 
       const {
@@ -395,7 +398,7 @@ async function startServer() {
       }
 
       const booking: Booking = {
-        id: `book-RM{Date.now()}-RM{Math.random().toString(36).slice(2, 8)}`,
+        id: `book-${Date.now()}-${Math.random()}.toString(36).slice(2, 8)}`,
         salonId,
         salonName: salon.name,
         salonAddress: salon.address,
@@ -431,7 +434,7 @@ async function startServer() {
     try {
       const parsed = updateBookingStatusSchema.safeParse(req.body);
       if (!parsed.success) {
-        return res.status(400).json({ error: parsed.error.errors[0].message });
+        return res.status(400).json({ error: parsed.error.issues[0].message });
       }
       const updated = store.updateBookingStatus(req.params.id, parsed.data.status);
       res.json(updated);
@@ -455,11 +458,11 @@ async function startServer() {
     try {
       const parsed = reviewSchema.safeParse(req.body);
       if (!parsed.success) {
-        return res.status(400).json({ error: parsed.error.errors[0].message });
+        return res.status(400).json({ error: parsed.error.issues[0].message });
       }
       const { salonId, clientName, rating, text } = parsed.data;
       const review: Review = {
-        id: `rev-RM{Date.now()}-RM{Math.random().toString(36).slice(2, 8)}`,
+        id: `rev-${Date.now()}-${Math.random()}.toString(36).slice(2, 8)}`,
         salonId,
         clientName,
         rating,
@@ -482,7 +485,7 @@ async function startServer() {
       if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'MY_GEMINI_API_KEY') {
         // Mock response if Gemini Key is not set up, so it never fails the user
         return res.json({
-          recommendationText: `Based on your goal of "RM{goals}" and your skin profile "RM{skinHairType}", our makeup ateliers recommend custom complexion sculpting and long-wear artistry. (AI Note: Connect your Gemini API Key in the Secrets panel to activate full intelligence!)`,
+          recommendationText: `Based on your goal of "${goals}" and your skin profile "${skinHairType}", our makeup ateliers recommend custom complexion sculpting and long-wear artistry. (AI Note: Connect your Gemini API Key in the Secrets panel to activate full intelligence!)`,
           suggestedServices: [
             {
               serviceName: 'Royal Bridal Glam & Touch-Up Kit',
@@ -506,22 +509,22 @@ async function startServer() {
 
       // Construct dynamic salons context for Gemini to read
       const salonsContext = salons.map(s => {
-        return `- Makeup Studio: RM{s.name} (ID: RM{s.id}, specialty: RM{s.category}, location: RM{s.location})
-  Tagline: RM{s.tagline}
-  Services: RM{s.services.map(sv => `RM{sv.name} (RMRM{sv.price}, RM{sv.duration} mins - RM{sv.description})`).join('; ')}`;
+        return `- Makeup Studio: ${s.name} (ID: ${s.id}, specialty: ${s.category}, location: ${s.location})
+  Tagline: ${s.tagline}
+  Services: ${s.services.map(sv => `${sv.name} (${sv.price}, ${sv.duration} mins - ${sv.description})`).join('; ')}`;
       }).join('\n\n');
 
       const prompt = `You are the Lead Luxury Makeup Stylist & Artistry Consultant for "Leish!", a high-end marketplace for premier makeup studios.
 Your goal is to suggest exact makeup services and studios listed on our platform that best match the client's beauty profile.
 
 Client Makeup Profile:
-- Skin Type & Undertone: RM{skinHairType}
-- Desired Makeup Style / Goals: RM{goals}
-- Occasion: RM{occasion}
-- Preferred Category (if any): RM{preferredCategory || 'Any Makeup Category'}
+- Skin Type & Undertone: ${skinHairType}
+- Desired Makeup Style / Goals: ${goals}
+- Occasion: ${occasion}
+- Preferred Category (if any): ${preferredCategory || 'Any Makeup Category'}
 
 Here are the makeup studios and services available on Leish!:
-RM{salonsContext}
+${salonsContext}
 
 Please analyze their profile and generate a tailored recommendation response.
 Your response MUST be in valid JSON conforming to the schema:
@@ -614,11 +617,11 @@ Provide EXACT service names and studio IDs matching the ones provided above. Do 
         });
       }
 
-      const reviewsText = reviews.map(r => `[Rating: RM{r.rating}/5, Client: RM{r.clientName}] Review: "RM{r.text}"`).join('\n');
+      const reviewsText = reviews.map(r => `[Rating: ${r.rating}/5, Client: ${r.clientName}] Review: "${r.text}"`).join('\n');
 
-      const prompt = `You are a luxury beauty concierge. Analyze the customer reviews for "RM{salon.name}" and compile an elegant, concise 3-part summary.
+      const prompt = `You are a luxury beauty concierge. Analyze the customer reviews for "${salon.name}" and compile an elegant, concise 3-part summary.
 Reviews to analyze:
-RM{reviewsText}
+${reviewsText}
 
 Generate a JSON object conforming exactly to this schema:
 {
@@ -716,7 +719,7 @@ Keep each field extremely concise, professional, and sophisticated. No emojis.`;
 
       // Fallback curated lookbook spec if Gemini is unavailable
       const fallbackLookbook = {
-        id: `look-RM{Date.now()}`,
+        id: `look-${Date.now()}`,
         lookName: selectedAesthetic === 'bridal' 
           ? 'Royal Gilded Silk Bridal' 
           : selectedAesthetic === 'editorial' 
@@ -725,11 +728,11 @@ Keep each field extremely concise, professional, and sophisticated. No emojis.`;
         category: selectedAesthetic,
         vibeDescription: 'Elegantly sculpted complexion featuring radiant light-reflective underpainting, champagne shimmer lids, and a velvety ombre lip designed for 18-hour tearproof wear.',
         colorPalette: [
-          { hex: '#EAC7C0', name: 'Champagne Rose' },
-          { hex: '#A86B5A', name: 'Spiced Terracotta' },
-          { hex: '#633B31', name: 'Espresso Velvet' },
-          { hex: '#F9EAE1', name: 'Opal Glaze' },
-          { hex: '#D4A373', name: 'Golden Apricot' }
+          { hex: '#E6E5E4', name: 'Champagne Rose' },
+          { hex: '#90836D', name: 'Spiced Terracotta' },
+          { hex: '#554B3A', name: 'Espresso Velvet' },
+          { hex: '#ECEBE9', name: 'Opal Glaze' },
+          { hex: '#ABA497', name: 'Golden Apricot' }
         ],
         complexion: {
           finish: 'Velvet Satin Glow',
@@ -766,19 +769,19 @@ Keep each field extremely concise, professional, and sophisticated. No emojis.`;
 Search for current 2026 bridal, runway, and red-carpet makeup trends. Then generate a bespoke luxury Makeup Lookbook Specification.
 
 Parameters:
-- Desired Style: RM{userPrompt || aesthetic || 'High luxury wedding makeup'}
-- Aesthetic Category: RM{selectedAesthetic}
-- Occasion: RM{occasion || 'Black Tie Evening'}
-- Skin Undertone: RM{skinUndertone || 'Neutral Warm'}
-- Preferred Lighting: RM{lighting || 'Natural Daylight & Flash Photography'}
+- Desired Style: ${userPrompt || aesthetic || 'High luxury wedding makeup'}
+- Aesthetic Category: ${selectedAesthetic}
+- Occasion: ${occasion || 'Black Tie Evening'}
+- Skin Undertone: ${skinUndertone || 'Neutral Warm'}
+- Preferred Lighting: ${lighting || 'Natural Daylight & Flash Photography'}
 
 Available Marketplace Studios:
-RM{salons.map(s => `- RM{s.name} (ID: RM{s.id}, Category: RM{s.category}, Top Service: RM{s.services[0]?.name || 'Bridal Artistry'})`).join('\n')}
+${salons.map(s => `- ${s.name} (ID: ${s.id}, Category: ${s.category}, Top Service: ${s.services[0]?.name || 'Bridal Artistry'})`).join('\n')}
 
 Synthesize the latest 2026 fashion week / viral beauty trends and output ONLY valid JSON matching this schema:
 {
   "lookName": "Creative luxury look title (e.g. 'Gilded Velvet Champagne Bridal')",
-  "category": "RM{selectedAesthetic}",
+  "category": "${selectedAesthetic}",
   "vibeDescription": "Poetic, editorial, and vivid 2-sentence description of the artistry look.",
   "colorPalette": [
     { "hex": "#HEXCODE", "name": "Color Name" },
@@ -806,7 +809,7 @@ Synthesize the latest 2026 fashion week / viral beauty trends and output ONLY va
     "Feature 2 (e.g. Zero-Flashback HD Micro-Silica)",
     "Feature 3 (e.g. Heat-activated fixing mist)"
   ],
-  "lightingBestFor": "RM{lighting || 'Natural Daylight & Flash Photography'}",
+  "lightingBestFor": "${lighting || 'Natural Daylight & Flash Photography'}",
   "groundedTrendContext": "1-2 sentences on how this look aligns with 2026 runway/red-carpet trends observed on Milan/Paris runways or celebrity red carpets.",
   "recommendedSalonId": "salon-1",
   "recommendedServiceName": "Service Name matching the studio"
@@ -836,7 +839,7 @@ Ensure colorPalette has 5 distinct harmonious hexadecimal values. Return pure JS
           }
           
           const parsed = JSON.parse(cleanText);
-          parsed.id = `look-RM{Date.now()}`;
+          parsed.id = `look-${Date.now()}`;
           parsed.heroImage = heroImage;
           return res.json(parsed);
         }
@@ -890,18 +893,18 @@ Ensure colorPalette has 5 distinct harmonious hexadecimal values. Return pure JS
         return res.json(defaultAudit);
       }
 
-      const reviewsFormatted = reviews.map(r => `[Rating: RM{r.rating}/5, Client: RM{r.clientName}]: "RM{r.text}"`).join('\n');
+      const reviewsFormatted = reviews.map(r => `[Rating: ${r.rating}/5, Client: ${r.clientName}]: "${r.text}"`).join('\n');
 
       const auditPrompt = `You are an elite Luxury Beauty Quality Auditor & Salon Operations Consultant.
-Analyze the following customer reviews for "RM{salon.name}".
+Analyze the following customer reviews for "${salon.name}".
 Evaluate artistry precision, client hospitality, cleanliness, punctuality, and make-up durability.
 
 Customer Reviews:
-RM{reviewsFormatted}
+${reviewsFormatted}
 
 Generate a structured quality audit conforming to this JSON schema:
 {
-  "salonName": "RM{salon.name}",
+  "salonName": "${salon.name}",
   "overallScore": 96, (Number from 80 to 100)
   "sentimentDistribution": {
     "positive": 92, (Percentage number)
@@ -970,14 +973,14 @@ Return pure JSON.`;
 
       const salons = store.getSalons();
       const directorySummary = salons.map(s => 
-        `• RM{s.name} (RM{s.type === 'mua' ? 'Independent MUA' : 'Atelier Studio'}, Rating: RM{s.rating}★, Location: RM{s.location}, Category: RM{s.category}, Top: RM{s.services[0]?.name} RMRM{s.services[0]?.price})`
+        `• ${s.name} (${s.type === 'mua' ? 'Independent MUA' : 'Atelier Studio'}, Rating: ${s.rating}★, Location: ${s.location}, Category: ${s.category}, Top: ${s.services[0]?.name} RM${s.services[0]?.price})`
       ).join('\n');
 
       const systemInstruction = `You are the Lead Master Beauty & Makeup Concierge for Leish! Aesthetic Marketplace.
 You provide authoritative advice on luxury bridal, red-carpet, soft glam, and HD airbrush makeup artistry.
 You can recommend independent MUAs and boutique ateliers listed on our platform.
 Here is the current Leish! directory:
-RM{directorySummary}
+${directorySummary}
 
 Tone: Sophisticated, welcoming, expert, couture aesthetic.
 Always answer questions directly. When recommending studios or MUAs, cite their exact names and specialties.`;
@@ -994,7 +997,7 @@ Always answer questions directly. When recommending studios or MUAs, cite their 
       if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'MY_GEMINI_API_KEY') {
         const lastUserMessage = messages[messages.length - 1]?.parts?.[0]?.text || '';
         return res.json({
-          reply: `Welcome to Leish! Regarding "RM{lastUserMessage.slice(0, 40)}": for high-definition event artistry, we recommend booking our verified Independent MUAs like Jean-Marc Laurent for red carpet underpainting or Maison Leish Atelier for bridal suites. (Note: Running in concierge preview mode).`,
+          reply: `Welcome to Leish! Regarding "${lastUserMessage.slice(0, 40)}": for high-definition event artistry, we recommend booking our verified Independent MUAs like Jean-Marc Laurent for red carpet underpainting or Maison Leish Atelier for bridal suites. (Note: Running in concierge preview mode).`,
           groundingCitations: []
         });
       }
@@ -1083,7 +1086,7 @@ Always answer questions directly. When recommending studios or MUAs, cite their 
           }
         });
       }
-      parts.push({ text: `Haute couture luxury beauty editorial photograph: RM{prompt}. Professional studio lighting, poreless glass skin finish, bespoke eye design, high fashion magazine quality.` });
+      parts.push({ text: `Haute couture luxury beauty editorial photograph: ${prompt}. Professional studio lighting, poreless glass skin finish, bespoke eye design, high fashion magazine quality.` });
 
       try {
         const response = await ai.models.generateContent({
@@ -1100,7 +1103,7 @@ Always answer questions directly. When recommending studios or MUAs, cite their 
         if (response.candidates?.[0]?.content?.parts) {
           for (const part of response.candidates[0].content.parts) {
             if (part.inlineData?.data) {
-              foundImageUrl = `data:RM{part.inlineData.mimeType || 'image/png'};base64,RM{part.inlineData.data}`;
+              foundImageUrl = `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
               break;
             }
           }
@@ -1124,7 +1127,7 @@ Always answer questions directly. When recommending studios or MUAs, cite their 
             for (const part of fallbackRes.candidates[0].content.parts) {
               if (part.inlineData?.data) {
                 return res.json({
-                  imageUrl: `data:RM{part.inlineData.mimeType || 'image/png'};base64,RM{part.inlineData.data}`,
+                  imageUrl: `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`,
                   prompt
                 });
               }
@@ -1170,7 +1173,7 @@ Always answer questions directly. When recommending studios or MUAs, cite their 
       try {
         const operation = await ai.models.generateVideos({
           model: 'veo-3.1-fast-generate-preview',
-          prompt: `Cinematic 4K luxury beauty video: RM{prompt}. Smooth camera pan, flattering studio rim lighting, immaculate makeup details, runway movement.`,
+          prompt: `Cinematic 4K luxury beauty video: ${prompt}. Smooth camera pan, flattering studio rim lighting, immaculate makeup details, runway movement.`,
           config: {
             numberOfVideos: 1,
             resolution: '720p',
@@ -1188,7 +1191,7 @@ Always answer questions directly. When recommending studios or MUAs, cite their 
         // Try fallback to veo-3.1-lite-generate-preview
         const opLite = await ai.models.generateVideos({
           model: 'veo-3.1-lite-generate-preview',
-          prompt: `Cinematic beauty runway video: RM{prompt}`,
+          prompt: `Cinematic beauty runway video: ${prompt}`,
           config: {
             numberOfVideos: 1,
             resolution: '720p',
@@ -1282,24 +1285,13 @@ Always answer questions directly. When recommending studios or MUAs, cite their 
     }
   });
 
-  // Vite development middleware vs production static server
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
-  }
-
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Leish! Full-stack server running on http://0.0.0.0:RM{PORT}`);
-  });
+  return app;
 }
 
-startServer();
+const app = createApp();
+
+// When run directly (local dev/prod via `tsx dev.ts`), the dev bootstrap in
+// dev.ts mounts Vite/static middleware and listens. On Vercel, the platform
+// serves built assets from outputDirectory and invokes the default export
+// (the Express app) for every other request — original paths preserved.
+export default app;

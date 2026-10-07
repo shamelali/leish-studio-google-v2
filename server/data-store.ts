@@ -7,7 +7,10 @@ export interface StoredUser extends User {
   password: string;
 }
 
-const STORE_PATH = path.join(process.cwd(), 'db_store.json');
+// On Vercel the root filesystem is read-only; /tmp is the only writable path.
+const STORE_PATH = process.env.VERCEL
+  ? path.join('/tmp', 'db_store.json')
+  : path.join(process.cwd(), 'db_store.json');
 
 const hashPassword = (password: string): string => bcrypt.hashSync(password, 10);
 
@@ -770,7 +773,7 @@ class DataStore {
           this.reviews = data.reviews || [];
           this.users = (data.users && data.users.length > 0) ? data.users : INITIAL_USERS;
         }
-        console.log(`[DataStore] Loaded RM{this.salons.length} makeup studios, RM{this.bookings.length} bookings, RM{this.reviews.length} reviews, RM{this.users.length} users.`);
+        console.log(`[DataStore] Loaded ${this.salons.length} makeup studios, ${this.bookings.length} bookings, ${this.reviews.length} reviews, ${this.users.length} users.`);
       } else {
         this.salons = INITIAL_SALONS;
         this.reviews = INITIAL_REVIEWS;
