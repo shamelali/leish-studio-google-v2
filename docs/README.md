@@ -13,4 +13,4 @@ Product & technical documentation for **Leish! Aesthetic Marketplace**, generate
 
 **Reading order:** PRD → TRD → App Flow for product/tech; Design Brief → Background Scheme for visual; Implementation Plan last (it references everything).
 
-**Critical finding at time of writing:** the core booking funnel is broken (server date regex), authenticated writes omit the JWT header (silent 401s), and production data is ephemeral (JSON file in `/tmp` on Vercel). Phase 0 of the implementation plan fixes these first.
+**Status at time of writing:** Phase 0 is complete — the broken booking funnel (date regex, silent 401s, malformed IDs, fence stripping) is fixed and covered by a 17-test regression suite, plus two defects found during E2E (plaintext-password store, booking date off-by-one). Remaining Phase 0 item: the production hotfix deploy (0.10). See [06-implementation-plan.md](./06-implementation-plan.md#phase-0-status-2026-10-08).

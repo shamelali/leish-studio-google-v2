@@ -10,9 +10,10 @@
  * Runs against an isolated temp store (LEISH_DB_PATH) so real dev data
  * in db_store.json is never touched.
  */
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import request from 'supertest';
 import fs from 'fs';
+import bcrypt from 'bcrypt';
 
 const TEST_DB = '/tmp/opencode/leish-test-db.json';
 
@@ -196,5 +197,47 @@ describe('auth round-trip', () => {
       .send({ email: 'director@atelierleish.com', password: 'wrong-password' });
 
     expect(res.status).toBe(401);
+  });
+});
+
+describe('legacy plaintext password migration', () => {
+  it('re-hashes plaintext rows found in a pre-bcrypt store', async () => {
+    const legacyDb = '/tmp/opencode/leish-legacy-db.json';
+    fs.rmSync(legacyDb, { force: true });
+
+    // Build a store that mimics the real db_store.json: valid makeup catalog,
+    // but users written BEFORE bcrypt was introduced (plaintext passwords).
+    const base = JSON.parse(fs.readFileSync(TEST_DB, 'utf-8'));
+    base.users = [{
+      id: 'user-legacy-1',
+      name: 'Legacy User',
+      email: 'legacy@leish.test',
+      password: 'password123', // plaintext — the actual defect
+      role: 'client',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    }];
+    fs.writeFileSync(legacyDb, JSON.stringify(base, null, 2));
+
+    vi.resetModules();
+    const prevPath = process.env.LEISH_DB_PATH;
+    process.env.LEISH_DB_PATH = legacyDb;
+    try {
+      const { store } = await import('./server/data-store.ts');
+      const user = store.getUserByEmail('legacy@leish.test');
+
+      expect(user).toBeTruthy();
+      // must now be a bcrypt hash, and must verify against the original secret
+      expect(user!.password).toMatch(/^\$2[aby]\$\d{2}\$/);
+      expect(user!.password).not.toBe('password123');
+      expect(bcrypt.compareSync('password123', user!.password)).toBe(true);
+
+      // persisted, so the fix survives a restart
+      const reloaded = JSON.parse(fs.readFileSync(legacyDb, 'utf-8'));
+      expect(reloaded.users[0].password).toMatch(/^\$2[aby]\$\d{2}\$/);
+    } finally {
+      process.env.LEISH_DB_PATH = prevPath;
+      vi.resetModules();
+      fs.rmSync(legacyDb, { force: true });
+    }
   });
 });

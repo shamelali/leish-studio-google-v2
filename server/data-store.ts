@@ -753,6 +753,24 @@ class DataStore {
 
   constructor() {
     this.load();
+    this.normalizePasswords();
+  }
+
+  /**
+   * Stores persisted before bcrypt was introduced hold PLAINTEXT passwords.
+   * bcrypt.compareSync() always rejects those, so every login 401s and the
+   * data file silently stays broken. Re-hash legacy values once on load.
+   */
+  private normalizePasswords(): void {
+    const looksHashed = (p: string) => /^\$2[aby]\$\d{2}\$/.test(p || '');
+    const legacy = this.users.filter(u => !looksHashed(u.password));
+    if (legacy.length === 0) return;
+
+    for (const user of legacy) {
+      user.password = hashPassword(user.password);
+    }
+    this.save();
+    console.log(`[DataStore] Re-hashed ${legacy.length} legacy plaintext password(s).`);
   }
 
   private load() {

@@ -263,19 +263,23 @@ Enforce in middleware (`requireOwnership('salon')`) rather than in each handler.
 
 These are functional bugs present in the current tree; the Implementation Plan phases them.
 
-### 9.1 🔴 Booking creation always fails
+> **Status (2026-10-08):** §9.1–§9.4 **FIXED** in commit `412036d` and verified by
+> `server.test.ts` (17 tests) plus a browser E2E of both core journeys. §9.10 and §9.11
+> were **discovered during that E2E** and are fixed in the working tree (pending commit).
+
+### 9.1 🔴 Booking creation always fails — ✅ FIXED
 `server.ts` ~line 102: `date: z.string().regex(/^\d{4}-\d{2}-\d{2}RM/)` — should be `/^\d{4}-\d{2}-\d{2}$/`. The client sends `toISOString().split('T')[0]`, so every request is a 400. `BookingModal` swallows the error (`catch { console.error }`) → **the user sees nothing happen.**
 *Fix: correct the regex, surface the error in the modal, add an API-level integration test.*
 
-### 9.2 🔴 Markdown-fence stripping corrupted
+### 9.2 🔴 Markdown-fence stripping corrupted — ✅ FIXED (extracted as `stripJsonFences()`, test-covered)
 `server.ts` ~836/838: `.replace(/\s*```RM/, '')` should strip trailing fences (`` /```$/ ``). Fenced JSON from Gemini throws during parse and silently degrades the Lookbook to the hardcoded fallback.
 
-### 9.3 🔴 Malformed ID template literals
+### 9.3 🔴 Malformed ID template literals — ✅ FIXED (verified: `book-1791395804519-8it8ng`)
 `server.ts` ~156/401/465: `` `user-${Date.now()}-${Math.random()}.toString(36).slice(2, 8)}` `` — the `.toString(36).slice(2, 8)}` is literal text, producing IDs like `book-1760…-0.84….toString(36).slice(2, 8)}`.
 *Fix: `` `${Date.now()}-${Math.random().toString(36).slice(2, 8)}` ``.*
 > The same `}`-for`.` corruption pattern across 9.1/9.2/9.3 indicates one bad global replace — audit the whole file for the signature.
 
-### 9.4 🔴 Missing `Authorization` on authenticated writes → silent 401
+### 9.4 🔴 Missing `Authorization` on authenticated writes → silent 401 — ✅ FIXED (all routed through `lib/api.ts`; PATCH verified at 200 with `authorization` header)
 - `ClientPortal.tsx:75` — cancel booking
 - `ProviderDashboard.tsx:123/142/172/188` — status, add/delete service, update salon
 - `ProfileModal.tsx:70` — profile update
@@ -298,6 +302,15 @@ UI mixes `RM` and `$`; travel returns miles; `index.html` Schema.org declares `U
 
 ### 9.9 🟡 No tests, no CI, no ESLint
 `npm run lint` is `tsc --noEmit` only. `package.json` name is still the template `react-example`.
+*Partial progress: `npm test` (vitest + supertest) now runs `server.test.ts` — 17 tests covering the booking funnel, auth round-trip, fence stripping and the legacy password migration.*
+
+### 9.10 🔴 Persisted store held PLAINTEXT passwords → every login 401'd — ✅ FIXED
+`db_store.json` predates the bcrypt commit: seed writes `hashPassword('password123')`, but the persisted rows contained the literal `password123`. `bcrypt.compareSync(pw, 'password123')` always fails, so **demo sign-in and all logins were broken against the real store** (reproduced as `401 Invalid email or password.`).
+*Fix: `DataStore.normalizePasswords()` re-hashes any value not matching `/^\$2[aby]\$\d{2}\$/` on load and persists once. Test: "legacy plaintext password migration".*
+
+### 9.11 🔴 Booking date off-by-one (timezone) — booked the wrong day — ✅ FIXED
+`getAvailableDates()` built the value with `toISOString().split('T')[0]` (UTC) while the label used `toLocaleDateString` (local). For any local time before the UTC offset — e.g. 00:00–08:00 in GMT+8 — the label read **WED 21 Oct** but the stored date was **2026-10-20**. Verified in the browser E2E: user picks Wednesday, receipt shows Tuesday.
+*Fix: format `YYYY-MM-DD` from local `getFullYear()/getMonth()/getDate()` components.*
 
 ---
 

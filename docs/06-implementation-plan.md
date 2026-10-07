@@ -44,6 +44,29 @@ The product is feature-rich but **its core funnel is broken in three independent
 
 **Exit criteria:** core funnel works end-to-end in production; zero silent failures on user-facing writes.
 
+### Phase 0 status (2026-10-08)
+
+| # | Item | Status |
+|---|---|---|
+| 0.1 | Booking date regex | ✅ fixed (commit `412036d`) |
+| 0.2 | Visible booking errors (`submitError` banner + `getValues` crash fix) | ✅ fixed (`412036d`) |
+| 0.3 | Markdown-fence stripping → `stripJsonFences()` | ✅ fixed + test-covered |
+| 0.4 | ID template literals (3 sites) | ✅ fixed — verified live: `book-1791395804519-8it8ng` |
+| 0.5 | Corruption audit across repo | ✅ exactly 7 sites, all in `server.ts`, all fixed |
+| 0.6 | `Authorization` on authenticated writes | ✅ all 6 call sites via `lib/api.ts`; PATCH verified 200 with `authorization` header |
+| 0.7 | Per-call error/success feedback | ✅ wired to existing `error` banners in ClientPortal / ProviderDashboard |
+| 0.8 | Regression suite | ✅ `server.test.ts` — 17 tests green (`npm test`), isolated via `LEISH_DB_PATH` |
+| 0.9 | Manual E2E, both journeys | ✅ desktop viewport — see findings below |
+| 0.10 | Hotfix deploy + smoke | ⏳ pending (Vercel routing work landed in `5a10e45`) |
+
+**Two additional defects found during E2E and fixed (not in the original audit):**
+- **§9.10 plaintext passwords** — the persisted `db_store.json` predates bcrypt, so *every* login 401'd against the real store. Fixed with `DataStore.normalizePasswords()` (re-hash on load) + migration test. **Requires a server restart to take effect on existing stores.**
+- **§9.11 booking date off-by-one** — UTC vs. local mismatch stored the previous day's date for bookings made 00:00–08:00 GMT+8. Fixed with local date-part formatting.
+
+**Journey results:** ① guest browse → detail → 3-step booking → `POST /api/bookings` **201**, confirmation with well-formed receipt, no error banner. ② provider demo login **200** → Salon Portal → Accept → `PATCH …/status` **200** with JWT → status `CONFIRMED` in UI.
+
+**E2E environment note:** automated browser runs need a *visible* tab — with the document `visibilityState: 'hidden'`, `requestAnimationFrame` never fires, so `AnimatePresence mode="wait"` never completes its exit handshake and multi-step flows stall on step 1 (an environment artifact, not an app defect). For CI, run Playwright headed or with `prefers-reduced-motion` + a transition-free config.
+
 ---
 
 ## Phase 1 — Make It Trustworthy  (P0/P1 · ~12 days)

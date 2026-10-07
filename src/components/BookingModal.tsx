@@ -139,8 +139,12 @@ export default function BookingModal({
       const isSunday = dayOfWeek === 'Sunday';
       const isClosed = salon.workingHours[dayOfWeek as keyof typeof salon.workingHours] === 'Closed';
       if (!isSunday && !isClosed) {
+        // Build YYYY-MM-DD from LOCAL date parts. toISOString() would shift the
+        // day backwards for any local time before the UTC offset (e.g. bookings
+        // made 00:00–08:00 in GMT+8 stored the previous day's date).
+        const pad = (n: number) => String(n).padStart(2, '0');
         dates.push({
-          formatted: nextDate.toISOString().split('T')[0],
+          formatted: `${nextDate.getFullYear()}-${pad(nextDate.getMonth() + 1)}-${pad(nextDate.getDate())}`,
           displayDay: nextDate.toLocaleDateString('en-US', { weekday: 'short' }),
           displayNum: nextDate.getDate(),
           displayMonth: nextDate.toLocaleDateString('en-US', { month: 'short' }),
