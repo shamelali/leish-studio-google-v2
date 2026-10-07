@@ -556,7 +556,9 @@ export default function App() {
                           locations={salons}
                           selectedId={selectedSalon?.id}
                           onSelect={(selected) => setSelectedSalon(selected)}
-                          filterType={listingTypeFilter === 'muas' ? 'mua' : listingTypeFilter === 'studios' ? 'studio' : 'all'}
+                          // The block only renders for 'all' | 'map' (see guard above),
+                          // so every marker type is shown in both views.
+                          filterType="all"
                         />
                       </div>
                     )}
