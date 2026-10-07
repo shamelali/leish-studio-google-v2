@@ -57,7 +57,12 @@ The product is feature-rich but **its core funnel is broken in three independent
 | 0.7 | Per-call error/success feedback | ✅ wired to existing `error` banners in ClientPortal / ProviderDashboard |
 | 0.8 | Regression suite | ✅ `server.test.ts` — 17 tests green (`npm test`), isolated via `LEISH_DB_PATH` |
 | 0.9 | Manual E2E, both journeys | ✅ desktop viewport — see findings below |
-| 0.10 | Hotfix deploy + smoke | ⏳ pending (Vercel routing work landed in `5a10e45`) |
+| 0.10 | Hotfix deploy + smoke | ✅ deployed `leish-google-qst5z7p2t` → **https://leish.dutaintegra.my** (commit `c22f17c`) |
+
+**Production smoke (2026-10-08):** `GET /` 200 · `GET /api/salons` 200 · login 200 + JWT ·
+`POST /api/bookings` with `YYYY-MM-DD` → **201** (id `book-1791397522763-j4ul3l`) · malformed date → 400 ·
+`PATCH …/status` unauthenticated → **401** · same PATCH with JWT → **200 `confirmed`**.
+Phase 0 is **complete**; proceed to Phase 1.
 
 **Two additional defects found during E2E and fixed (not in the original audit):**
 - **§9.10 plaintext passwords** — the persisted `db_store.json` predates bcrypt, so *every* login 401'd against the real store. Fixed with `DataStore.normalizePasswords()` (re-hash on load) + migration test. **Requires a server restart to take effect on existing stores.**

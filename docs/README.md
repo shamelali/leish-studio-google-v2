@@ -13,4 +13,4 @@ Product & technical documentation for **Leish! Aesthetic Marketplace**, generate
 
 **Reading order:** PRD → TRD → App Flow for product/tech; Design Brief → Background Scheme for visual; Implementation Plan last (it references everything).
 
-**Status at time of writing:** Phase 0 is complete — the broken booking funnel (date regex, silent 401s, malformed IDs, fence stripping) is fixed and covered by a 17-test regression suite, plus two defects found during E2E (plaintext-password store, booking date off-by-one). Remaining Phase 0 item: the production hotfix deploy (0.10). See [06-implementation-plan.md](./06-implementation-plan.md#phase-0-status-2026-10-08).
+**Status at time of writing:** Phase 0 is **complete and deployed to production** — the broken booking funnel (date regex, silent 401s, malformed IDs, fence stripping) is fixed and covered by a 17-test regression suite, plus two defects found during E2E (plaintext-password store, booking date off-by-one), and both core journeys passed a live smoke test on https://leish.dutaintegra.my. Next: Phase 1. See [06-implementation-plan.md](./06-implementation-plan.md#phase-0-status-2026-10-08).
