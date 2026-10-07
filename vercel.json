@@ -1,5 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "express",
-  "buildCommand": "npm run build && rm -rf public && mkdir -p public && cp -R dist/. public/"
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/api/(.+)/(.+)",
+      "destination": "/api/[...path]?...path=$1/$2"
+    }
+  ]
 }
