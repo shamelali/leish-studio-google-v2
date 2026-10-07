@@ -1,6 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "express",
-  "buildCommand": "npm run build && mkdir -p public && cp -R dist/. public/",
-  "outputDirectory": "public"
+  "buildCommand": "npm run build && rm -rf public && mkdir -p public && cp -R dist/. public/"
 }
