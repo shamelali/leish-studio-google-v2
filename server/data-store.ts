@@ -8,7 +8,10 @@ export interface StoredUser extends User {
 }
 
 // On Vercel the root filesystem is read-only; /tmp is the only writable path.
-const STORE_PATH = process.env.VERCEL
+// LEISH_DB_PATH lets tests point at an isolated store without touching real data.
+const STORE_PATH = process.env.LEISH_DB_PATH
+  ? path.resolve(process.env.LEISH_DB_PATH)
+  : process.env.VERCEL
   ? path.join('/tmp', 'db_store.json')
   : path.join(process.cwd(), 'db_store.json');
 

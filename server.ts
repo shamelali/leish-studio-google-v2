@@ -18,6 +18,20 @@ const ai = new GoogleGenAI({
   }
 });
 
+/**
+ * Strips markdown code fences (```json or ```) that models sometimes wrap
+ * around JSON payloads. Exported so the regression suite can pin the behaviour.
+ */
+export function stripJsonFences(text: string): string {
+  let cleanText = text.trim();
+  if (cleanText.startsWith('```json')) {
+    cleanText = cleanText.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+  } else if (cleanText.startsWith('```')) {
+    cleanText = cleanText.replace(/^```\s*/, '').replace(/\s*```$/, '');
+  }
+  return cleanText;
+}
+
 function createApp() {
   const app = express();
 
@@ -99,7 +113,7 @@ function createApp() {
     salonId: z.string().min(1),
     serviceId: z.string().min(1),
     staffId: z.string().min(1),
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}RM/, 'Date must be YYYY-MM-DD'),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD'),
     time: z.string().min(1),
     clientName: z.string().min(1).max(100),
     clientEmail: z.string().email(),
@@ -153,7 +167,7 @@ function createApp() {
         : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200';
       
       const newUser = store.createUser({
-        id: `user-${Date.now()}-${Math.random()}.toString(36).slice(2, 8)}`,
+        id: `user-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         name: name.trim(),
         email: normalizedEmail,
         password,
@@ -398,7 +412,7 @@ function createApp() {
       }
 
       const booking: Booking = {
-        id: `book-${Date.now()}-${Math.random()}.toString(36).slice(2, 8)}`,
+        id: `book-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         salonId,
         salonName: salon.name,
         salonAddress: salon.address,
@@ -462,7 +476,7 @@ function createApp() {
       }
       const { salonId, clientName, rating, text } = parsed.data;
       const review: Review = {
-        id: `rev-${Date.now()}-${Math.random()}.toString(36).slice(2, 8)}`,
+        id: `rev-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         salonId,
         clientName,
         rating,
@@ -831,12 +845,7 @@ Ensure colorPalette has 5 distinct harmonious hexadecimal values. Return pure JS
         const response: any = await Promise.race([aiPromise, timeoutPromise]);
 
         if (response && response.text) {
-          let cleanText = response.text.trim();
-          if (cleanText.startsWith('```json')) {
-            cleanText = cleanText.replace(/^```json\s*/, '').replace(/\s*```RM/, '');
-          } else if (cleanText.startsWith('```')) {
-            cleanText = cleanText.replace(/^```\s*/, '').replace(/\s*```RM/, '');
-          }
+          const cleanText = stripJsonFences(response.text);
           
           const parsed = JSON.parse(cleanText);
           parsed.id = `look-${Date.now()}`;

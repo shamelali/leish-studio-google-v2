@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Store, TrendingUp, Star, DollarSign, Calendar, Settings, Plus, Trash2, Edit3, Save, Check, Loader2, AlertCircle } from 'lucide-react';
 import { Salon, Service, Booking, WorkingHours, User } from '../types';
+import { bookingsApi, salonsApi } from '../lib/api';
 
 interface ProviderDashboardProps {
   salons: Salon[];
@@ -120,16 +121,12 @@ export default function ProviderDashboard({
 
   const handleUpdateBookingStatus = async (bookingId: string, status: Booking['status']) => {
     try {
-      const res = await fetch(`/api/bookings/${bookingId}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
-      });
-      if (res.ok) {
-        fetchSalonAndBookings();
-      }
-    } catch (err) {
+      setError(null);
+      await bookingsApi.updateStatus(bookingId, status);
+      fetchSalonAndBookings();
+    } catch (err: any) {
       console.error('Failed to update booking status', err);
+      setError(err.message || 'We could not update this appointment. Please try again.');
     }
   };
 
@@ -139,27 +136,23 @@ export default function ProviderDashboard({
 
     setAddingService(true);
     try {
-      const res = await fetch(`/api/salons/${selectedSalonId}/services`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newServiceName,
-          price: Number(newServicePrice),
-          duration: Number(newServiceDuration),
-          description: newServiceDescription,
-          category: newServiceCategory
-        })
+      setError(null);
+      await salonsApi.addService(selectedSalonId, {
+        name: newServiceName,
+        price: Number(newServicePrice),
+        duration: Number(newServiceDuration),
+        description: newServiceDescription,
+        category: newServiceCategory
       });
 
-      if (res.ok) {
-        setNewServiceName('');
-        setNewServicePrice('');
-        setNewServiceDescription('');
-        fetchSalonAndBookings();
-        onSalonUpdated();
-      }
-    } catch (err) {
+      setNewServiceName('');
+      setNewServicePrice('');
+      setNewServiceDescription('');
+      fetchSalonAndBookings();
+      onSalonUpdated();
+    } catch (err: any) {
       console.error('Failed to add service', err);
+      setError(err.message || 'We could not add that service. Please try again.');
     } finally {
       setAddingService(false);
     }
@@ -169,15 +162,13 @@ export default function ProviderDashboard({
     if (!window.confirm('Are you sure you want to remove this service from your salon menu?')) return;
 
     try {
-      const res = await fetch(`/api/salons/${selectedSalonId}/services/${serviceId}`, {
-        method: 'DELETE'
-      });
-      if (res.ok) {
-        fetchSalonAndBookings();
-        onSalonUpdated();
-      }
-    } catch (err) {
+      setError(null);
+      await salonsApi.deleteService(selectedSalonId, serviceId);
+      fetchSalonAndBookings();
+      onSalonUpdated();
+    } catch (err: any) {
       console.error('Failed to delete service', err);
+      setError(err.message || 'We could not remove that service. Please try again.');
     }
   };
 
@@ -185,24 +176,20 @@ export default function ProviderDashboard({
     e.preventDefault();
     setSavingProfile(true);
     try {
-      const res = await fetch(`/api/salons/${selectedSalonId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tagline: editTagline,
-          description: editDescription,
-          address: editAddress,
-          workingHours: editHours
-        })
+      setError(null);
+      await salonsApi.update(selectedSalonId, {
+        tagline: editTagline,
+        description: editDescription,
+        address: editAddress,
+        workingHours: editHours
       });
 
-      if (res.ok) {
-        setIsEditingProfile(false);
-        fetchSalonAndBookings();
-        onSalonUpdated();
-      }
-    } catch (err) {
+      setIsEditingProfile(false);
+      fetchSalonAndBookings();
+      onSalonUpdated();
+    } catch (err: any) {
       console.error('Failed to save profile changes', err);
+      setError(err.message || 'We could not save your profile changes. Please try again.');
     } finally {
       setSavingProfile(false);
     }

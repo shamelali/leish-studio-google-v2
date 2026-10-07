@@ -20,6 +20,7 @@ import {
   Edit2
 } from 'lucide-react';
 import { User, Salon } from '../types';
+import { authApi } from '../lib/api';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -67,19 +68,12 @@ export default function ProfileModal({
     setSaveSuccess(false);
 
     try {
-      const res = await fetch('/api/auth/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: currentUser.id,
-          name,
-          phone,
-          bio
-        })
+      const data = await authApi.updateProfile({
+        id: currentUser.id,
+        name,
+        phone,
+        bio
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to update profile');
 
       onUpdateUser(data.user);
       setSaveSuccess(true);

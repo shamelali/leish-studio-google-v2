@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Calendar, MapPin, Clock, DollarSign, XCircle, Star, MessageSquarePlus, CheckCircle, AlertCircle, Loader2, Sparkles } from 'lucide-react';
 import { Booking, Review, User } from '../types';
+import { bookingsApi, reviewsApi } from '../lib/api';
 
 interface ClientPortalProps {
   currentUser: User | null;
@@ -70,18 +71,14 @@ export default function ClientPortal({
 
   const handleCancelBooking = async (id: string) => {
     if (!window.confirm('Are you sure you want to cancel this beauty booking?')) return;
-    
+
     try {
-      const res = await fetch(`/api/bookings/${id}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'cancelled' })
-      });
-      if (res.ok) {
-        fetchBookings();
-      }
-    } catch (err) {
+      setError(null);
+      await bookingsApi.updateStatus(id, 'cancelled');
+      fetchBookings();
+    } catch (err: any) {
       console.error('Failed to cancel appointment', err);
+      setError(err.message || 'We could not cancel this appointment. Please try again.');
     }
   };
 
@@ -98,27 +95,23 @@ export default function ClientPortal({
 
     setSubmittingReview(true);
     try {
-      const res = await fetch('/api/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          salonId: selectedBookingForReview.salonId,
-          clientName: selectedBookingForReview.clientName,
-          rating: reviewRating,
-          text: reviewText
-        })
+      setError(null);
+      await reviewsApi.create({
+        salonId: selectedBookingForReview.salonId,
+        clientName: selectedBookingForReview.clientName,
+        rating: reviewRating,
+        text: reviewText
       });
 
-      if (res.ok) {
-        setReviewSuccess(true);
-        // Mark the booking as completed/reviewed locally so they don't review twice in same session if desired
-        setTimeout(() => {
-          setSelectedBookingForReview(null);
-          setReviewSuccess(false);
-        }, 2000);
-      }
-    } catch (err) {
+      setReviewSuccess(true);
+      // Mark the booking as completed/reviewed locally so they don't review twice in same session if desired
+      setTimeout(() => {
+        setSelectedBookingForReview(null);
+        setReviewSuccess(false);
+      }, 2000);
+    } catch (err: any) {
       console.error('Review submission failed', err);
+      setError(err.message || 'We could not save your review. Please try again.');
     } finally {
       setSubmittingReview(false);
     }

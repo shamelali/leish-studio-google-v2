@@ -73,8 +73,9 @@ export default function BookingModal({
     mileageFee: number;
   } | null>(null);
   const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<BookingFormData>({
+  const { register, handleSubmit, getValues, formState: { errors }, reset } = useForm<BookingFormData>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
       clientName: currentUser?.name || '',
@@ -168,6 +169,7 @@ export default function BookingModal({
   const onSubmit = async (data: BookingFormData) => {
     if (isLocationEvent && !eventVenue.trim()) return;
 
+    setSubmitError(null);
     try {
       const bookingData = {
         salonId: salon.id,
@@ -196,6 +198,10 @@ export default function BookingModal({
       onBookingSuccess(result);
     } catch (err: any) {
       console.error(err);
+      setSubmitError(
+        err?.message ||
+          "We couldn't save that booking. Please check the details and try again."
+      );
     }
   };
 
@@ -563,6 +569,16 @@ export default function BookingModal({
                       />
                     </div>
                   </div>
+
+                  {submitError && (
+                    <div
+                      role="alert"
+                      className="flex items-start space-x-2 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-xs text-red-300"
+                    >
+                      <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+                      <span>{submitError}</span>
+                    </div>
+                  )}
 
                   <div className="flex space-x-3 pt-2">
                     <button
