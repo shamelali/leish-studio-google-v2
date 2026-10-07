@@ -648,7 +648,6 @@ export default function App() {
               <ClientPortal
                 currentUser={currentUser}
                 userEmail={userEmail}
-                setUserEmail={setUserEmail}
                 onOpenAuth={handleOpenAuth}
               />
             </motion.div>

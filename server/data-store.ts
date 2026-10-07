@@ -848,6 +848,10 @@ class DataStore {
     return this.bookings;
   }
 
+  public getBooking(id: string): Booking | undefined {
+    return this.bookings.find(b => b.id === id);
+  }
+
   public createBooking(booking: Booking): Booking {
     this.bookings.unshift(booking);
     this.save();

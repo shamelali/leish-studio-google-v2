@@ -136,10 +136,10 @@ describe('PATCH /api/bookings/:id/status (auth)', () => {
     expect(res.body.status).toBe('confirmed');
   });
 
-  it('persists the transition for later reads', async () => {
-    const res = await request(app).get(
-      `/api/bookings?salonId=salon-1`
-    );
+  it('persists the transition for later reads (authenticated, scoped)', async () => {
+    const res = await request(app)
+      .get('/api/bookings')
+      .set('Authorization', `Bearer ${providerToken}`);
     expect(res.status).toBe(200);
     const found = res.body.find((b: any) => b.id === bookingId);
     expect(found).toBeTruthy();
@@ -239,5 +239,300 @@ describe('legacy plaintext password migration', () => {
       vi.resetModules();
       fs.rmSync(legacyDb, { force: true });
     }
+  });
+});
+
+/**
+ * Phase 1 — TR-7 authorization matrix.
+ *
+ * canUpdateSalon / canModifyBooking / canReview enforced in middleware:
+ *   provider → only their own salon's listings, services and bookings
+ *   client   → only bookings made with their own email; cancel-only status
+ *   review   → only with a completed booking at that studio; name from account
+ * Reads are authenticated: unauthenticated enumeration must 401.
+ */
+describe('TR-7 authorization matrix (Phase 1)', () => {
+  let clientToken = '';         // shamelali@gmail.com — client
+  let otherProviderToken = '';  // rosewood@beauty.com  — provider of salon-2
+  let nosalonProviderToken = '';
+  let clientBookingId = '';     // shamelali @ salon-1 (to cancel)
+  let reviewBookingId = '';     // shamelali @ salon-1 (to complete, then review)
+  let otherSalonBookingId = ''; // guest  @ salon-2 (cross-tenant probe)
+  let addedServiceId = '';
+
+  const login = async (email: string) => {
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ email, password: 'password123' });
+    expect(res.status).toBe(200);
+    return res.body.token;
+  };
+
+  beforeAll(async () => {
+    clientToken = await login('shamelali@gmail.com');
+    otherProviderToken = await login('rosewood@beauty.com');
+
+    const book = (overrides: any) =>
+      request(app).post('/api/bookings').send({ ...validBooking(), ...overrides });
+
+    const other = await book({
+      clientEmail: 'crosstenant@leish.test',
+      clientName: 'Cross Tenant',
+      salonId: 'salon-2', serviceId: 'serv-2-1', staffId: 'staff-2-1',
+    });
+    expect(other.status).toBe(201);
+    otherSalonBookingId = other.body.id;
+
+    const mine = await book({ clientEmail: 'shamelali@gmail.com', clientName: 'Shamel Ali' });
+    expect(mine.status).toBe(201);
+    clientBookingId = mine.body.id;
+
+    const review = await book({ clientEmail: 'shamelali@gmail.com', clientName: 'Shamel Ali' });
+    expect(review.status).toBe(201);
+    reviewBookingId = review.body.id;
+  });
+
+  describe('booking reads are authenticated and scoped', () => {
+    it('401s unauthenticated enumeration', async () => {
+      const res = await request(app).get('/api/bookings');
+      expect(res.status).toBe(401);
+    });
+
+    it('scopes a client to their own email (query params ignored)', async () => {
+      const res = await request(app)
+        .get('/api/bookings?email=crosstenant@leish.test')
+        .set('Authorization', `Bearer ${clientToken}`);
+      expect(res.status).toBe(200);
+      expect(res.body.length).toBeGreaterThan(0);
+      for (const b of res.body) {
+        expect(b.clientEmail.toLowerCase()).toBe('shamelali@gmail.com');
+      }
+      const ids = res.body.map((b: any) => b.id);
+      expect(ids).toContain(clientBookingId);
+      expect(ids).not.toContain(otherSalonBookingId);
+    });
+
+    it('scopes a provider to their own salon', async () => {
+      const res = await request(app)
+        .get('/api/bookings?salonId=salon-2')
+        .set('Authorization', `Bearer ${providerToken}`);
+      expect(res.status).toBe(200);
+      expect(res.body.length).toBeGreaterThan(0);
+      for (const b of res.body) expect(b.salonId).toBe('salon-1');
+      const ids = res.body.map((b: any) => b.id);
+      expect(ids).not.toContain(otherSalonBookingId);
+    });
+
+    it('shows the foreign studio only to its own provider', async () => {
+      const res = await request(app)
+        .get('/api/bookings')
+        .set('Authorization', `Bearer ${otherProviderToken}`);
+      expect(res.status).toBe(200);
+      const ids = res.body.map((b: any) => b.id);
+      expect(ids).toContain(otherSalonBookingId);
+      expect(ids).not.toContain(clientBookingId);
+    });
+
+    it('403s a provider account with no linked salon', async () => {
+      const reg = await request(app).post('/api/auth/register').send({
+        name: 'Unlinked Provider',
+        email: `nosalon-${Date.now()}@leish.test`,
+        password: 'Sup3rSecret!',
+        role: 'provider',
+      });
+      expect(reg.status).toBe(201);
+      nosalonProviderToken = reg.body.token;
+
+      const res = await request(app)
+        .get('/api/bookings')
+        .set('Authorization', `Bearer ${nosalonProviderToken}`);
+      expect(res.status).toBe(403);
+    });
+  });
+
+  describe('salon writes are owner-only', () => {
+    it('401s unauthenticated updates', async () => {
+      const res = await request(app)
+        .put('/api/salons/salon-1')
+        .send({ tagline: 'nope' });
+      expect(res.status).toBe(401);
+    });
+
+    it('403s a client editing a salon', async () => {
+      const res = await request(app)
+        .put('/api/salons/salon-1')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({ tagline: 'client takeover' });
+      expect(res.status).toBe(403);
+    });
+
+    it('403s a foreign provider (cross-tenant)', async () => {
+      const res = await request(app)
+        .put('/api/salons/salon-1')
+        .set('Authorization', `Bearer ${otherProviderToken}`)
+        .send({ tagline: 'tenant takeover' });
+      expect(res.status).toBe(403);
+    });
+
+    it('lets the owner update but strips mass-assigned fields', async () => {
+      const res = await request(app)
+        .put('/api/salons/salon-1')
+        .set('Authorization', `Bearer ${providerToken}`)
+        .send({ tagline: 'Owner updated this', rating: 9.9, reviewCount: 999, id: 'salon-hack' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.tagline).toBe('Owner updated this');
+      expect(res.body.id).toBe('salon-1');
+      expect(res.body.rating).toBeLessThan(6);   // rating is not client-writable
+      expect(res.body.reviewCount).toBeLessThan(999);
+    });
+
+    it('403s a client adding services', async () => {
+      const res = await request(app)
+        .post('/api/salons/salon-1/services')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({ name: 'Sneaky Service', price: 1, duration: 5 });
+      expect(res.status).toBe(403);
+    });
+
+    it('400s an invalid service payload from the owner', async () => {
+      const res = await request(app)
+        .post('/api/salons/salon-1/services')
+        .set('Authorization', `Bearer ${providerToken}`)
+        .send({ name: '', price: 'NaN', duration: 0 });
+      expect(res.status).toBe(400);
+    });
+
+    it('lets the owner add a service', async () => {
+      const res = await request(app)
+        .post('/api/salons/salon-1/services')
+        .set('Authorization', `Bearer ${providerToken}`)
+        .send({ name: 'Authz Matrix Blend', price: 145, duration: 60 });
+
+      expect(res.status).toBe(201);
+      const svc = res.body.services.find((s: any) => s.name === 'Authz Matrix Blend');
+      expect(svc).toBeTruthy();
+      expect(svc.price).toBe(145);
+      addedServiceId = svc.id;
+    });
+
+    it('403s a client deleting services, 404s an unknown service', async () => {
+      const forbidden = await request(app)
+        .delete(`/api/salons/salon-1/services/${addedServiceId}`)
+        .set('Authorization', `Bearer ${clientToken}`);
+      expect(forbidden.status).toBe(403);
+
+      const unknown = await request(app)
+        .delete('/api/salons/salon-1/services/serv-does-not-exist')
+        .set('Authorization', `Bearer ${providerToken}`);
+      expect(unknown.status).toBe(404);
+
+      const removed = await request(app)
+        .delete(`/api/salons/salon-1/services/${addedServiceId}`)
+        .set('Authorization', `Bearer ${providerToken}`);
+      expect(removed.status).toBe(200);
+      expect(removed.body.services.some((s: any) => s.id === addedServiceId)).toBe(false);
+    });
+  });
+
+  describe('booking status transitions', () => {
+    it('404s an unknown booking id', async () => {
+      const res = await request(app)
+        .patch('/api/bookings/book-none/status')
+        .set('Authorization', `Bearer ${providerToken}`)
+        .send({ status: 'confirmed' });
+      expect(res.status).toBe(404);
+    });
+
+    it('403s a foreign provider touching another studio\'s booking', async () => {
+      const res = await request(app)
+        .patch(`/api/bookings/${reviewBookingId}/status`)
+        .set('Authorization', `Bearer ${otherProviderToken}`)
+        .send({ status: 'confirmed' });
+      expect(res.status).toBe(403);
+    });
+
+    it('lets the owning client cancel their own booking', async () => {
+      const res = await request(app)
+        .patch(`/api/bookings/${clientBookingId}/status`)
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({ status: 'cancelled' });
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe('cancelled');
+    });
+
+    it('blocks a client confirming (or otherwise moving) their booking', async () => {
+      const res = await request(app)
+        .patch(`/api/bookings/${reviewBookingId}/status`)
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({ status: 'confirmed' });
+      expect(res.status).toBe(403);
+      expect(String(res.body.error)).toMatch(/cancel/i);
+    });
+
+    it('lets the owning provider complete a booking (review setup)', async () => {
+      const res = await request(app)
+        .patch(`/api/bookings/${reviewBookingId}/status`)
+        .set('Authorization', `Bearer ${providerToken}`)
+        .send({ status: 'completed' });
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe('completed');
+    });
+  });
+
+  describe('review gating (canReview)', () => {
+    const reviewBody = (overrides: any = {}) => ({
+      salonId: 'salon-1',
+      clientName: 'ZZZ Spoofed Name',
+      rating: 5,
+      text: 'Authz matrix review test.',
+      ...overrides,
+    });
+
+    it('401s unauthenticated reviews', async () => {
+      const res = await request(app).post('/api/reviews').send(reviewBody());
+      expect(res.status).toBe(401);
+    });
+
+    it('403s a client with no completed booking there', async () => {
+      const reg = await request(app).post('/api/auth/register').send({
+        name: 'Never Booked',
+        email: `nobook-${Date.now()}@leish.test`,
+        password: 'Sup3rSecret!',
+        role: 'client',
+      });
+      expect(reg.status).toBe(201);
+
+      const res = await request(app)
+        .post('/api/reviews')
+        .set('Authorization', `Bearer ${reg.body.token}`)
+        .send(reviewBody());
+      expect(res.status).toBe(403);
+      expect(String(res.body.error)).toMatch(/completed booking/i);
+    });
+
+    it('403s a completed-booking client reviewing a different studio', async () => {
+      const res = await request(app)
+        .post('/api/reviews')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send(reviewBody({ salonId: 'salon-2' }));
+      expect(res.status).toBe(403);
+    });
+
+    it('accepts a verified review and takes the name from the account', async () => {
+      const res = await request(app)
+        .post('/api/reviews')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send(reviewBody());
+      expect(res.status).toBe(201);
+      expect(res.body.clientName).toBe('Shamel Ali'); // never the spoofed body
+      expect(res.body.rating).toBe(5);
+    });
+  });
+
+  it('removed GET /api/auth/demo-accounts (it listed every user\'s PII)', async () => {
+    const res = await request(app).get('/api/auth/demo-accounts');
+    expect(res.status).toBe(404);
+    expect(Array.isArray(res.body)).toBe(false);
   });
 });

@@ -5,32 +5,24 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Calendar, MapPin, Clock, DollarSign, XCircle, Star, MessageSquarePlus, CheckCircle, AlertCircle, Loader2, Sparkles } from 'lucide-react';
+import { Calendar, MapPin, Clock, DollarSign, XCircle, Star, MessageSquarePlus, CheckCircle, AlertCircle, Loader2, Sparkles } from 'lucide-react';
 import { Booking, Review, User } from '../types';
 import { bookingsApi, reviewsApi } from '../lib/api';
 
 interface ClientPortalProps {
   currentUser: User | null;
   userEmail: string;
-  setUserEmail: (email: string) => void;
   onOpenAuth: (mode: 'signin' | 'signup') => void;
 }
 
 export default function ClientPortal({ 
   currentUser,
   userEmail, 
-  setUserEmail,
   onOpenAuth 
 }: ClientPortalProps) {
-  const [emailInput, setEmailInput] = useState(userEmail);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Sync email input if userEmail changes
-  useEffect(() => {
-    setEmailInput(userEmail);
-  }, [userEmail]);
 
   // Review states
   const [selectedBookingForReview, setSelectedBookingForReview] = useState<Booking | null>(null);
@@ -39,20 +31,24 @@ export default function ClientPortal({
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewSuccess, setReviewSuccess] = useState(false);
 
-  // Fetch bookings on mount or when email updates
+  // Bookings are scoped server-side to the signed-in account (TR-7), so the
+  // feed only loads when there is an authenticated user. Guests get a
+  // sign-in prompt instead of the old email-lookup form.
   useEffect(() => {
-    if (userEmail) {
+    if (currentUser) {
       fetchBookings();
+    } else {
+      setBookings([]);
+      setError(null);
     }
-  }, [userEmail]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser?.email]);
 
   const fetchBookings = async () => {
     setLoadingBookings(true);
     setError(null);
     try {
-      const res = await fetch(`/api/bookings?email=${encodeURIComponent(userEmail)}`);
-      if (!res.ok) throw new Error('Failed to retrieve bookings.');
-      const data = await res.json();
+      const data = (await bookingsApi.getAll()) as Booking[];
       // Sort bookings: newest first
       data.sort((a: Booking, b: Booking) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       setBookings(data);
@@ -61,12 +57,6 @@ export default function ClientPortal({
     } finally {
       setLoadingBookings(false);
     }
-  };
-
-  const handleEmailSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!emailInput) return;
-    setUserEmail(emailInput);
   };
 
   const handleCancelBooking = async (id: string) => {
@@ -205,29 +195,6 @@ export default function ClientPortal({
             </div>
           </div>
 
-          <div className="mt-5 pt-4 border-t border-[#221E16]">
-            <p className="text-[11px] font-mono text-[#918570] mb-2 uppercase tracking-wider">
-              Or Lookup Guest Reservation By Email:
-            </p>
-            <form onSubmit={handleEmailSubmit} className="flex flex-col sm:flex-row gap-2.5">
-              <div className="relative flex-1">
-                <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#746853]" />
-                <input
-                  type="email"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  placeholder="e.g. client@example.com"
-                  className="w-full rounded-xl border border-accent-soft bg-[#15120D] pl-10 pr-4 py-2 text-xs text-[#E6E5E4] placeholder-[#746853] focus:border-accent-strong focus:outline-none"
-                />
-              </div>
-              <button
-                type="submit"
-                className="rounded-xl border border-[#3F3729] bg-[#1F1B14] px-4 py-2 text-xs font-medium text-[#E6E5E4] hover:border-[#574D3C] transition-colors shrink-0"
-              >
-                Find My Bookings
-              </button>
-            </form>
-          </div>
         </div>
       )}
 
@@ -242,7 +209,25 @@ export default function ClientPortal({
           <div className="flex justify-center py-16">
             <Loader2 className="h-8 w-8 animate-spin text-accent-text" />
           </div>
+        ) : !currentUser ? (
+          <div className="text-center py-16 border border-[#221E16] rounded-2xl bg-[#14110C] space-y-3">
+            <Calendar className="h-8 w-8 text-[#746853] mx-auto" />
+            <div className="space-y-1">
+              <p className="font-serif text-sm font-semibold text-[#E6E5E4]">Sign in to see your appointments</p>
+              <p className="text-xs text-[#ADA69A] max-w-xs mx-auto">
+                Bookings are tied to your Leish! account. Sign in or create one to view, cancel, or review your sessions.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onOpenAuth('signin')}
+              className="rounded-xl bg-[#574D3C] px-4 py-2.5 text-xs font-semibold text-white shadow-md shadow-[#574D3C]/20 hover:brightness-110 transition-all cursor-pointer"
+            >
+              Sign In
+            </button>
+          </div>
         ) : error ? (
+
           <div className="text-center py-12 border border-[#574D3C]/20 bg-[#574D3C]/5 rounded-xl text-xs text-[#E6E5E4] space-y-2">
             <AlertCircle className="h-6 w-6 text-accent-text mx-auto" />
             <p>{error}</p>

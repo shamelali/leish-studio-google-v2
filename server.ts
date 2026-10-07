@@ -41,24 +41,56 @@ function createApp() {
     app.set('trust proxy', 1);
   }
 
-  // Security headers
+  // Security headers. CSP is enforced in production only — dev needs Vite's
+  // HMR/inline client. Directives allow Google Fonts, Google Maps (loaded by
+  // @vis.gl/react-google-maps), Firebase/Google sign-in popups and CDN imagery.
   app.use(helmet({
-    contentSecurityPolicy: process.env.NODE_ENV !== 'production' ? false : undefined,
+    contentSecurityPolicy: process.env.NODE_ENV === 'production' ? {
+      directives: {
+        defaultSrc: ["'self'"],
+        baseUri: ["'self'"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'self'"],
+        formAction: ["'self'"],
+        scriptSrc: ["'self'", 'https://maps.googleapis.com', 'https://maps.gstatic.com', 'https://www.gstatic.com'],
+        scriptSrcAttr: ["'none'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'", 'https://*.googleapis.com', 'https://*.googleusercontent.com', 'https://*.gstatic.com', 'https://*.google.com'],
+        frameSrc: ["'self'", 'https://accounts.google.com', 'https://*.googleapis.com'],
+        workerSrc: ["'self'", 'blob:'],
+        upgradeInsecureRequests: [],
+      },
+    } : false,
   }));
 
-  // Rate limiting
+  // Rate limiting — separate buckets so an AI burst cannot starve login (TR-8).
+  // LEISH_DISABLE_RATE_LIMIT=1 skips all buckets; the test suite sets it so the
+  // authz matrix can log in repeatedly. See server.ratelimit.test.ts for the
+  // bucket behaviour itself.
+  const rateLimitOff = process.env.LEISH_DISABLE_RATE_LIMIT === '1';
   const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 20, // limit each IP to 20 requests per windowMs for auth routes
+    skip: () => rateLimitOff,
     message: { error: 'Too many attempts, please try again later.' }
   });
-  const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
+  const aiLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 15,
+    skip: () => rateLimitOff,
+    message: { error: 'AI requests are rate-limited right now. Please try again shortly.' }
+  });
+  const readLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 120,
+    skip: (req) => rateLimitOff || req.path.startsWith('/auth') || req.path.startsWith('/gemini'),
     message: { error: 'Too many requests, please try again later.' }
   });
   app.use('/api/auth/', authLimiter);
-  app.use('/api/', apiLimiter);
+  app.use('/api/gemini/', aiLimiter);
+  app.use('/api/', readLimiter);
 
   // JSON body size limit
   app.use(express.json({ limit: '100kb' }));
@@ -69,8 +101,17 @@ function createApp() {
     return safeUser as User;
   };
 
-  // JWT configuration
-  const JWT_SECRET = process.env.JWT_SECRET || 'leish-dev-secret-change-in-production';
+  // JWT configuration — TR-9: production must never boot on a default secret.
+  const JWT_SECRET = (() => {
+    const secret = process.env.JWT_SECRET;
+    if (secret && secret.trim()) return secret.trim();
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        '[leish] JWT_SECRET is not set. Refusing to boot in production with a default signing secret (TR-9).'
+      );
+    }
+    return 'leish-dev-secret-change-in-production';
+  })();
   const JWT_EXPIRES_IN = '7d';
 
   // Auth middleware
@@ -91,6 +132,63 @@ function createApp() {
     } catch {
       return res.status(401).json({ error: 'Invalid or expired token.' });
     }
+  };
+
+  // --- AUTHORIZATION (TR-7) — enforced in middleware, not per-handler ---
+  const canUpdateSalon = (user: User, salonId: string): boolean =>
+    user.role === 'admin' || (user.role === 'provider' && user.salonId === salonId);
+
+  const canModifyBooking = (user: User, booking: Booking): boolean =>
+    user.role === 'admin' ||
+    booking.clientEmail.toLowerCase() === user.email.toLowerCase() ||
+    (user.role === 'provider' && !!user.salonId && booking.salonId === user.salonId);
+
+  const canReview = (user: User, salonId: string): boolean =>
+    store.getBookings().some(b =>
+      b.salonId === salonId &&
+      b.clientEmail.toLowerCase() === user.email.toLowerCase() &&
+      b.status === 'completed'
+    );
+
+  /** Requires authenticateToken first. 403 unless the caller manages :id. */
+  const requireSalonOwner = (req: any, res: any, next: any) => {
+    if (!canUpdateSalon(req.user, req.params.id)) {
+      return res.status(403).json({ error: 'You do not have permission to manage this salon.' });
+    }
+    next();
+  };
+
+  /** Requires authenticateToken first. Loads the booking onto req.booking and
+   *  403s unless the caller may modify it (provider owns salon / client owns booking). */
+  const requireBookingAccess = (req: any, res: any, next: any) => {
+    const booking = store.getBooking(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+    if (!canModifyBooking(req.user, booking)) {
+      return res.status(403).json({ error: 'You do not have permission to change this booking.' });
+    }
+    req.booking = booking;
+    next();
+  };
+
+  // Fields a provider may write on their own salon. rating/reviewCount/id are
+  // deliberately excluded so listings cannot self-award ratings (mass-assignment).
+  const SALON_EDITABLE_FIELDS = [
+    'name', 'tagline', 'description', 'location', 'address', 'category',
+    'workingHours', 'services', 'staff', 'image', 'gallery', 'featured',
+    'artistTitle', 'yearsExperience', 'kitBrands', 'travelRadius',
+    'instagramHandle', 'startingPrice',
+  ] as const;
+
+  const pickSalonUpdates = (body: any): Partial<Salon> => {
+    const updates: Record<string, unknown> = {};
+    for (const key of SALON_EDITABLE_FIELDS) {
+      if (body && Object.prototype.hasOwnProperty.call(body, key)) {
+        updates[key] = body[key];
+      }
+    }
+    return updates as Partial<Salon>;
   };
 
   // Validation schemas
@@ -264,23 +362,6 @@ function createApp() {
     }
   });
 
-  // API Route: Get available demo accounts for instant switching
-  app.get('/api/auth/demo-accounts', (req, res) => {
-    try {
-      const users = store.getUsers().map(u => ({
-        id: u.id,
-        name: u.name,
-        email: u.email,
-        role: u.role,
-        salonId: u.salonId,
-        avatar: u.avatar
-      }));
-      res.json(users);
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
   // API Route: Get all salons
   app.get('/api/salons', (req, res) => {
     try {
@@ -304,29 +385,36 @@ function createApp() {
     }
   });
 
-  // API Route: Update salon
-  app.put('/api/salons/:id', authenticateToken, (req: any, res) => {
+  // API Route: Update salon (owner-only, field allowlist)
+  app.put('/api/salons/:id', authenticateToken, requireSalonOwner, (req: any, res) => {
     try {
-      const updated = store.updateSalon(req.params.id, req.body);
+      const updated = store.updateSalon(req.params.id, pickSalonUpdates(req.body));
       res.json(updated);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   });
 
-  // API Route: Add service to salon
-  app.post('/api/salons/:id/services', authenticateToken, (req: any, res) => {
+  // API Route: Add service to salon (owner-only)
+  app.post('/api/salons/:id/services', authenticateToken, requireSalonOwner, (req: any, res) => {
     try {
       const salon = store.getSalon(req.params.id);
       if (!salon) {
         return res.status(404).json({ error: 'Salon not found' });
       }
+      const price = Number(req.body.price);
+      const duration = Number(req.body.duration);
+      if (!req.body.name || !String(req.body.name).trim() ||
+          !Number.isFinite(price) || price < 0 ||
+          !Number.isFinite(duration) || duration <= 0) {
+        return res.status(400).json({ error: 'Service needs a name, a non-negative price and a positive duration.' });
+      }
       const newService: Service = {
         id: `serv-${req.params.id}-${Date.now()}`,
-        name: req.body.name,
-        price: Number(req.body.price),
-        duration: Number(req.body.duration),
-        description: req.body.description,
+        name: String(req.body.name).trim().slice(0, 120),
+        price,
+        duration,
+        description: req.body.description ? String(req.body.description).slice(0, 500) : '',
         category: req.body.category || salon.category
       };
       const updatedServices = [...salon.services, newService];
@@ -337,12 +425,15 @@ function createApp() {
     }
   });
 
-  // API Route: Delete service from salon
-  app.delete('/api/salons/:id/services/:serviceId', authenticateToken, (req: any, res) => {
+  // API Route: Delete service from salon (owner-only)
+  app.delete('/api/salons/:id/services/:serviceId', authenticateToken, requireSalonOwner, (req: any, res) => {
     try {
       const salon = store.getSalon(req.params.id);
       if (!salon) {
         return res.status(404).json({ error: 'Salon not found' });
+      }
+      if (!salon.services.some(s => s.id === req.params.serviceId)) {
+        return res.status(404).json({ error: 'Service not found' });
       }
       const updatedServices = salon.services.filter(s => s.id !== req.params.serviceId);
       const updated = store.updateSalon(req.params.id, { services: updatedServices });
@@ -352,20 +443,33 @@ function createApp() {
     }
   });
 
-  // API Route: Get bookings
-  app.get('/api/bookings', (req, res) => {
+  // API Route: Get bookings — authenticated and scoped by identity (1.2):
+  //   client    → only bookings made with their own email
+  //   provider  → only bookings for the salon they manage
+  //   admin     → may filter freely
+  app.get('/api/bookings', authenticateToken, (req: any, res) => {
     try {
       let bookings = store.getBookings();
-      const email = req.query.email as string;
-      const salonId = req.query.salonId as string;
-      
-      if (email) {
-        bookings = bookings.filter(b => b.clientEmail.toLowerCase() === email.toLowerCase());
+
+      if (req.user.role === 'admin') {
+        const email = req.query.email as string | undefined;
+        const salonId = req.query.salonId as string | undefined;
+        if (email) {
+          bookings = bookings.filter(b => b.clientEmail.toLowerCase() === email.toLowerCase());
+        }
+        if (salonId) {
+          bookings = bookings.filter(b => b.salonId === salonId);
+        }
+      } else if (req.user.role === 'provider') {
+        if (!req.user.salonId) {
+          return res.status(403).json({ error: 'No salon is linked to this account.' });
+        }
+        bookings = bookings.filter(b => b.salonId === req.user.salonId);
+      } else {
+        const email = req.user.email.toLowerCase();
+        bookings = bookings.filter(b => b.clientEmail.toLowerCase() === email);
       }
-      if (salonId) {
-        bookings = bookings.filter(b => b.salonId === salonId);
-      }
-      
+
       res.json(bookings);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -443,12 +547,18 @@ function createApp() {
     }
   });
 
-  // API Route: Update booking status
-  app.patch('/api/bookings/:id/status', authenticateToken, (req: any, res) => {
+  // API Route: Update booking status — TR-7:
+  //   provider/admin may move a booking through any status;
+  //   the client who owns the booking may only cancel it.
+  app.patch('/api/bookings/:id/status', authenticateToken, requireBookingAccess, (req: any, res) => {
     try {
       const parsed = updateBookingStatusSchema.safeParse(req.body);
       if (!parsed.success) {
         return res.status(400).json({ error: parsed.error.issues[0].message });
+      }
+      const isProvider = req.user.role === 'provider' || req.user.role === 'admin';
+      if (!isProvider && parsed.data.status !== 'cancelled') {
+        return res.status(403).json({ error: 'You can only cancel your own bookings.' });
       }
       const updated = store.updateBookingStatus(req.params.id, parsed.data.status);
       res.json(updated);
@@ -467,18 +577,28 @@ function createApp() {
     }
   });
 
-  // API Route: Post review
-  app.post('/api/reviews', (req, res) => {
+  // API Route: Post review — requires auth AND a completed booking at that
+  // salon with the caller's own email (TR-7 canReview). clientName is taken
+  // from the account, never from the body, so reviews cannot be spoofed.
+  app.post('/api/reviews', authenticateToken, (req: any, res) => {
     try {
       const parsed = reviewSchema.safeParse(req.body);
       if (!parsed.success) {
         return res.status(400).json({ error: parsed.error.issues[0].message });
       }
-      const { salonId, clientName, rating, text } = parsed.data;
+      const { salonId, rating, text } = parsed.data;
+      if (!store.getSalon(salonId)) {
+        return res.status(404).json({ error: 'Salon not found' });
+      }
+      if (!canReview(req.user, salonId)) {
+        return res.status(403).json({
+          error: 'You can review a studio once you have a completed booking there.'
+        });
+      }
       const review: Review = {
         id: `rev-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         salonId,
-        clientName,
+        clientName: req.user.name,
         rating,
         text,
         date: new Date().toISOString().split('T')[0]

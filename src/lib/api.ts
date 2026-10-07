@@ -29,7 +29,6 @@ export const authApi = {
   getMe: () => fetchWithError('/auth/me'),
   updateProfile: (data: { id: string; name?: string; phone?: string; bio?: string; avatar?: string; salonId?: string }) =>
     fetchWithError('/auth/profile', { method: 'PUT', body: JSON.stringify(data) }),
-  getDemoAccounts: () => fetchWithError('/auth/demo-accounts'),
 };
 
 // Salons API

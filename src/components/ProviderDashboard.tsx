@@ -66,7 +66,7 @@ export default function ProviderDashboard({
         fetchQualityAudit();
       }
     }
-  }, [selectedSalonId, dashTab]);
+  }, [selectedSalonId, dashTab, currentUser?.email]);
 
   const fetchQualityAudit = async () => {
     if (!selectedSalonId) return;
@@ -105,13 +105,16 @@ export default function ProviderDashboard({
       setEditHours(latestSalon.workingHours);
       setNewServiceCategory(latestSalon.category);
 
-      // Fetch bookings for this salon
-      const bookingsRes = await fetch(`/api/bookings?salonId=${selectedSalonId}`);
-      if (!bookingsRes.ok) throw new Error('Failed to load bookings');
-      const salonBookings = await bookingsRes.json();
-      // Sort bookings: newest first
-      salonBookings.sort((a: Booking, b: Booking) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      setBookings(salonBookings);
+      // Appointments are only visible to the signed-in partner who manages
+      // this salon — the API scopes them by identity (TR-7).
+      if (currentUser?.role === 'provider' && currentUser.salonId === selectedSalonId) {
+        const salonBookings = (await bookingsApi.getAll()) as Booking[];
+        // Sort bookings: newest first
+        salonBookings.sort((a: Booking, b: Booking) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setBookings(salonBookings);
+      } else {
+        setBookings([]);
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to fetch dashboard data');
     } finally {
@@ -391,7 +394,9 @@ export default function ProviderDashboard({
               <div className="space-y-4">
                 {bookings.length === 0 ? (
                   <div className="text-center py-16 border border-[#221E16] rounded-xl bg-[#14110C] text-[#ADA69A] text-xs">
-                    No bookings registered for this salon yet.
+                    {currentUser?.role === 'provider' && currentUser.salonId === selectedSalonId
+                      ? 'No bookings registered for this salon yet.'
+                      : 'Appointments are visible to the partner account that manages this studio. Sign in with the studio account to see them.'}
                   </div>
                 ) : (
                   <div className="space-y-3">
