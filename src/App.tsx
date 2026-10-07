@@ -198,17 +198,15 @@ export default function App() {
   const filteredStudios = filteredSalons.filter(s => s.type !== 'mua');
 
   if (isLoading) return <LoadingSpinner size="lg" message="Synchronizing artists and studios..." />;
-  if (error) return <div className="min-h-screen bg-[#0D0B0A] flex items-center justify-center text-red-400">Error loading salons</div>;
+  if (error) return <div className="min-h-screen bg-[#0F0D0A] flex items-center justify-center text-red-400">Error loading salons</div>;
 
   return (
-    <div className="min-h-screen bg-[#0D0B0A] text-[#FAF8F5] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#0F0D0A] text-[#E6E5E4] flex flex-col font-sans">
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        currentUser={currentUser}
         onOpenAuth={handleOpenAuth}
         onOpenProfile={() => setProfileModalOpen(true)}
-        onSignOut={handleSignOut}
       />
 
       <main className="flex-grow">
@@ -223,38 +221,38 @@ export default function App() {
             >
               {!selectedSalon ? (
                 <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-12">
-                  <div className="relative rounded-3xl overflow-hidden border border-[#2B231F] min-h-[460px] flex flex-col justify-end p-6 sm:p-12 shadow-2xl">
+                  <div className="relative rounded-3xl overflow-hidden border border-[#221E16] min-h-[460px] flex flex-col justify-end p-6 sm:p-12 shadow-2xl">
                     <img
                       src={currentHeroImage}
                       alt="Leish! Haute Couture Makeup Artistry"
                       className="absolute inset-0 h-full w-full object-cover object-center filter brightness-[0.38] scale-105 transition-all duration-700"
                     />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0D0B0A] via-[#0D0B0A]/60 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#0D0B0A]/95 via-[#0D0B0A]/50 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F0D0A] via-[#0F0D0A]/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#0F0D0A]/95 via-[#0F0D0A]/50 to-transparent" />
 
-                    <div className="absolute top-10 right-10 w-96 h-96 rounded-full bg-[#9A1A18]/15 blur-3xl pointer-events-none" />
+                    <div className="absolute top-10 right-10 w-96 h-96 rounded-full bg-[#574D3C]/15 blur-3xl pointer-events-none" />
 
                     <div className="absolute top-6 right-6 z-20">
                       <button
                         type="button"
                         onClick={() => setHeroPickerOpen(!heroPickerOpen)}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 text-[#FAF8F5] text-xs font-mono backdrop-blur-md transition-all shadow-xl hover:border-[#9A1A18] cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/70 hover:bg-black/90 border border-white/20 text-[#E6E5E4] text-xs font-mono backdrop-blur-md transition-all shadow-xl hover:border-[#574D3C] cursor-pointer"
                       >
-                        <ImageIcon className="h-3.5 w-3.5 text-[#E9D2C4]" />
+                        <ImageIcon className="h-3.5 w-3.5 text-[#E6E5E4]" />
                         <span>Curate Hero Image</span>
                       </button>
 
                       {heroPickerOpen && (
-                        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl border border-[#382F2A] bg-[#14100E]/95 backdrop-blur-xl p-4 shadow-2xl space-y-3 z-30">
-                          <div className="flex items-center justify-between border-b border-[#2B231F] pb-2">
-                            <span className="text-xs font-mono font-bold text-[#E9D2C4] uppercase">
+                        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl border border-[#3E3628] bg-[#0F0D0A]/95 backdrop-blur-xl p-4 shadow-2xl space-y-3 z-30">
+                          <div className="flex items-center justify-between border-b border-[#221E16] pb-2">
+                            <span className="text-xs font-mono font-bold text-[#E6E5E4] uppercase">
                               Select Editorial Hero Photo
                             </span>
                             <button
                               type="button"
                               onClick={() => setHeroPickerOpen(false)}
-                              className="text-xs text-[#736A63] hover:text-white"
+                              className="text-xs text-[#968B78] hover:text-white"
                             >
                               ✕
                             </button>
@@ -274,8 +272,8 @@ export default function App() {
                                   }}
                                   className={`w-full flex items-center gap-3 p-2 rounded-xl border text-left transition-all cursor-pointer ${
                                     isSelected
-                                      ? 'bg-[#9A1A18]/20 border-[#9A1A18]'
-                                      : 'bg-[#1C1613] border-[#2B231F] hover:border-[#382F2A]'
+                                      ? 'bg-[#574D3C]/20 border-[#574D3C]'
+                                      : 'bg-[#221E16] border-[#221E16] hover:border-[#3E3628]'
                                   }`}
                                 >
                                   <img
@@ -285,12 +283,12 @@ export default function App() {
                                   />
                                   <div className="min-w-0 flex-1">
                                     <div className="flex items-center justify-between">
-                                      <span className="text-xs font-bold text-[#FAF8F5] truncate block">
+                                      <span className="text-xs font-bold text-[#E6E5E4] truncate block">
                                         {img.title}
                                       </span>
                                       {isSelected && <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0 ml-1" />}
                                     </div>
-                                    <span className="text-[10px] text-[#A89F91] line-clamp-1 block">
+                                    <span className="text-[10px] text-[#ADA69A] line-clamp-1 block">
                                       {img.desc}
                                     </span>
                                   </div>
@@ -299,15 +297,15 @@ export default function App() {
                             })}
                           </div>
 
-                          <div className="pt-2 border-t border-[#2B231F] space-y-2">
-                            <span className="text-[10px] font-mono text-[#A89F91] block">Or enter custom image URL:</span>
+                          <div className="pt-2 border-t border-[#221E16] space-y-2">
+                            <span className="text-[10px] font-mono text-[#ADA69A] block">Or enter custom image URL:</span>
                             <div className="flex gap-2">
                               <input
                                 type="url"
                                 value={customHeroUrl}
                                 onChange={(e) => setCustomHeroUrl(e.target.value)}
                                 placeholder="https://..."
-                                className="flex-1 rounded-lg border border-[#2B231F] bg-[#1C1613] px-2.5 py-1.5 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                                className="flex-1 rounded-lg border border-accent-soft bg-[#221E16] px-2.5 py-1.5 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                               />
                               <button
                                 type="button"
@@ -318,7 +316,7 @@ export default function App() {
                                     setHeroPickerOpen(false);
                                   }
                                 }}
-                                className="px-3 py-1.5 rounded-lg bg-[#9A1A18] text-white text-xs font-bold cursor-pointer"
+                                className="px-3 py-1.5 rounded-lg bg-[#574D3C] text-white text-xs font-bold cursor-pointer"
                               >
                                 Apply
                               </button>
@@ -329,31 +327,31 @@ export default function App() {
                     </div>
 
                     <div className="relative z-10 max-w-3xl space-y-6">
-                      <div className="inline-flex items-center space-x-2 rounded-full border border-[#9A1A18]/60 bg-black/60 backdrop-blur-md px-4 py-1.5 text-xs text-[#FAF8F5] font-mono shadow-md">
-                        <Sparkles className="h-3.5 w-3.5 text-[#E9D2C4]" />
+                      <div className="inline-flex items-center space-x-2 rounded-full border border-[#574D3C]/60 bg-black/60 backdrop-blur-md px-4 py-1.5 text-xs text-[#E6E5E4] font-mono shadow-md">
+                        <Sparkles className="h-3.5 w-3.5 text-[#E6E5E4]" />
                         <span>Curated Haute Makeup Studios & Independent MUAs</span>
                       </div>
 
                       <div className="space-y-3">
-                        <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#FAF8F5] leading-tight">
+                        <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#E6E5E4] leading-tight">
                           Couture Makeup & <br />
-                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FAF8F5] via-[#E9D2C4] to-[#FAF8F5]">
+                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E6E5E4] via-[#E6E5E4] to-[#E6E5E4]">
                             Red Carpet Artistry
                           </span>
                         </h1>
 
-                        <p className="text-sm sm:text-base text-[#D4CDC7] max-w-xl leading-relaxed">
+                        <p className="text-sm sm:text-base text-[#D2D0CC] max-w-xl leading-relaxed">
                           Leish! separates and connects you directly with both verified Independent Makeup Artists (MUAs) with mobile glam kits and premier physical boutique ateliers.
                         </p>
                       </div>
 
-                      <div className="flex flex-wrap gap-2 text-[11px] font-mono text-[#E9D2C4]">
+                      <div className="flex flex-wrap gap-2 text-[11px] font-mono text-[#E6E5E4]">
                         <span className="px-3 py-1 rounded-full bg-black/50 border border-white/10 backdrop-blur-sm flex items-center gap-1.5">
-                          <UserIconAlt className="h-3 w-3 text-[#9A1A18]" />
+                          <UserIconAlt className="h-3 w-3 text-accent-text" />
                           <span>4 Verified Celebrity MUAs</span>
                         </span>
                         <span className="px-3 py-1 rounded-full bg-black/50 border border-white/10 backdrop-blur-sm flex items-center gap-1.5">
-                          <Building2 className="h-3 w-3 text-[#9A1A18]" />
+                          <Building2 className="h-3 w-3 text-accent-text" />
                           <span>6 Flagship Beauty Ateliers</span>
                         </span>
                         <span className="px-3 py-1 rounded-full bg-black/50 border border-white/10 backdrop-blur-sm flex items-center gap-1.5">
@@ -362,15 +360,16 @@ export default function App() {
                         </span>
                       </div>
 
-                      <div className="rounded-2xl border border-[#382F2A] bg-[#14100E]/95 backdrop-blur-md p-3.5 shadow-xl space-y-3 max-w-2xl">
+                      <div className="rounded-2xl border border-[#3E3628] bg-[#0F0D0A]/95 backdrop-blur-md p-3.5 shadow-xl space-y-3 max-w-2xl">
                         <div className="relative">
-                          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#736A63]" />
+                          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#968B78]" />
                           <input
+                            id="hero-search"
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search MUA artists by name, studios, bridal cut-creases, soft glam..."
-                            className="w-full rounded-xl border border-[#2B231F] bg-[#1C1613] pl-11 pr-4 py-3 text-xs sm:text-sm text-[#FAF8F5] placeholder-[#736A63] focus:border-[#9A1A18] focus:outline-none"
+                            className="w-full rounded-xl border border-accent-soft bg-[#221E16] pl-11 pr-4 py-3 text-xs sm:text-sm text-[#E6E5E4] placeholder-[#968B78] focus:border-accent-strong focus:outline-none"
                           />
                         </div>
 
@@ -381,8 +380,8 @@ export default function App() {
                               onClick={() => setSelectedCategory(cat.id)}
                               className={`rounded-full px-3.5 py-1 text-xs font-semibold tracking-wide border transition-all duration-300 shrink-0 cursor-pointer ${
                                 selectedCategory === cat.id
-                                  ? 'bg-[#9A1A18] border-[#9A1A18] text-[#FAF8F5]'
-                                  : 'bg-[#1E1714] border-[#2D231E] text-[#C5BDB6] hover:border-[#382F2A] hover:text-[#FAF8F5]'
+                                  ? 'bg-[#574D3C] border-[#574D3C] text-[#E6E5E4]'
+                                  : 'bg-[#1C1811] border-[#2B251B] text-[#ADA69A] hover:border-[#3E3628] hover:text-[#E6E5E4]'
                               }`}
                             >
                               {cat.label}
@@ -393,24 +392,24 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#261E1A] pb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#241F17] pb-4">
                     <div className="space-y-1">
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-[#9A1A18] block font-bold">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-accent-text block font-bold">
                         Aesthetic Directory
                       </span>
-                      <h2 className="font-serif text-2xl font-bold text-[#FAF8F5]">
+                      <h2 className="font-serif text-2xl font-bold text-[#E6E5E4]">
                         Explore by Category
                       </h2>
                     </div>
 
-                    <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#14100E] border border-[#2B231F] overflow-x-auto scrollbar-none">
+                    <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#0F0D0A] border border-[#221E16] overflow-x-auto scrollbar-none">
                       <button
                         type="button"
                         onClick={() => setListingTypeFilter('all')}
                         className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer whitespace-nowrap ${
                           listingTypeFilter === 'all'
-                            ? 'bg-[#9A1A18] text-white shadow-sm font-bold'
-                            : 'text-[#A89F91] hover:text-white'
+                            ? 'bg-[#574D3C] text-white shadow-sm font-bold'
+                            : 'text-[#ADA69A] hover:text-white'
                         }`}
                       >
                         All Listings ({filteredSalons.length})
@@ -421,8 +420,8 @@ export default function App() {
                         onClick={() => setListingTypeFilter('muas')}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer whitespace-nowrap ${
                           listingTypeFilter === 'muas'
-                            ? 'bg-[#9A1A18] text-white shadow-sm font-bold'
-                            : 'text-[#A89F91] hover:text-white'
+                            ? 'bg-[#574D3C] text-white shadow-sm font-bold'
+                            : 'text-[#ADA69A] hover:text-white'
                         }`}
                       >
                         <UserIconAlt className="h-3.5 w-3.5" />
@@ -434,8 +433,8 @@ export default function App() {
                         onClick={() => setListingTypeFilter('studios')}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer whitespace-nowrap ${
                           listingTypeFilter === 'studios'
-                            ? 'bg-[#9A1A18] text-white shadow-sm font-bold'
-                            : 'text-[#A89F91] hover:text-white'
+                            ? 'bg-[#574D3C] text-white shadow-sm font-bold'
+                            : 'text-[#ADA69A] hover:text-white'
                         }`}
                       >
                         <Building2 className="h-3.5 w-3.5" />
@@ -447,8 +446,8 @@ export default function App() {
                         onClick={() => setListingTypeFilter('map')}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer whitespace-nowrap ${
                           listingTypeFilter === 'map'
-                            ? 'bg-[#9A1A18] text-white shadow-sm font-bold'
-                            : 'text-[#A89F91] hover:text-white'
+                            ? 'bg-[#574D3C] text-white shadow-sm font-bold'
+                            : 'text-[#ADA69A] hover:text-white'
                         }`}
                       >
                         <MapIcon className="h-3.5 w-3.5" />
@@ -460,26 +459,26 @@ export default function App() {
                   <div className="space-y-16">
                     {(listingTypeFilter === 'all' || listingTypeFilter === 'muas') && (
                       <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-[#261E1A] pb-3">
+                        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-[#241F17] pb-3">
                           <div className="space-y-1">
-                            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#E9D2C4]">
+                            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#E6E5E4]">
                               <ShieldCheck className="h-4 w-4 text-emerald-400" />
                               <span>Verified Freelance & Celebrity Artists</span>
                             </div>
-                            <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#FAF8F5]">
+                            <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#E6E5E4]">
                               Independent Makeup Artists (MUAs)
                             </h3>
-                            <p className="text-xs text-[#A89F91]">
+                            <p className="text-xs text-[#ADA69A]">
                               Elite pro artists with customized pro kits, mobile on-location dispatch, and direct personal booking.
                             </p>
                           </div>
-                          <span className="font-mono text-xs text-[#736A63] shrink-0">
+                          <span className="font-mono text-xs text-[#968B78] shrink-0">
                             {filteredMUAs.length} Available Artists
                           </span>
                         </div>
 
                         {filteredMUAs.length === 0 ? (
-                          <div className="text-center py-12 border border-[#2B231F] rounded-2xl bg-[#14100E] text-[#A89F91] text-xs">
+                          <div className="text-center py-12 border border-[#221E16] rounded-2xl bg-[#0F0D0A] text-[#ADA69A] text-xs">
                             No independent MUAs match your current category or keyword filter.
                           </div>
                         ) : (
@@ -503,26 +502,26 @@ export default function App() {
 
                     {(listingTypeFilter === 'all' || listingTypeFilter === 'studios') && (
                       <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-[#261E1A] pb-3">
+                        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-[#241F17] pb-3">
                           <div className="space-y-1">
-                            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#E9D2C4]">
-                              <Building2 className="h-4 w-4 text-[#9A1A18]" />
+                            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#E6E5E4]">
+                              <Building2 className="h-4 w-4 text-accent-text" />
                               <span>Flagship Boutiques & Academies</span>
                             </div>
-                            <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#FAF8F5]">
+                            <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#E6E5E4]">
                               Luxury Makeup Studios & Ateliers
                             </h3>
-                            <p className="text-xs text-[#A89F91]">
+                            <p className="text-xs text-[#ADA69A]">
                               Multi-chair bridal salons, private master suites, and certified hands-on masterclass studios.
                             </p>
                           </div>
-                          <span className="font-mono text-xs text-[#736A63] shrink-0">
+                          <span className="font-mono text-xs text-[#968B78] shrink-0">
                             {filteredStudios.length} Premier Ateliers
                           </span>
                         </div>
 
                         {filteredStudios.length === 0 ? (
-                          <div className="text-center py-12 border border-[#2B231F] rounded-2xl bg-[#14100E] text-[#A89F91] text-xs">
+                          <div className="text-center py-12 border border-[#221E16] rounded-2xl bg-[#0F0D0A] text-[#ADA69A] text-xs">
                             No makeup studios match your current category or keyword filter.
                           </div>
                         ) : (
@@ -540,14 +539,14 @@ export default function App() {
                     )}
 
                     {(listingTypeFilter === 'all' || listingTypeFilter === 'map') && (
-                      <div className="space-y-4 pt-4 border-t border-[#261E1A]">
+                      <div className="space-y-4 pt-4 border-t border-[#241F17]">
                         <div className="flex items-center justify-between">
                           <div>
-                            <h3 className="font-serif text-xl font-bold text-[#FAF8F5] flex items-center gap-2">
-                              <MapIcon className="h-5 w-5 text-[#9A1A18]" />
+                            <h3 className="font-serif text-xl font-bold text-[#E6E5E4] flex items-center gap-2">
+                              <MapIcon className="h-5 w-5 text-accent-text" />
                               <span>Klang Valley Atelier & MUA Locator</span>
                             </h3>
-                            <p className="text-xs text-[#A89F91] mt-0.5">
+                            <p className="text-xs text-[#ADA69A] mt-0.5">
                               Powered by Google Maps Platform. View studio storefronts, bridal suite addresses, and MUA dispatch centers.
                             </p>
                           </div>
@@ -563,20 +562,20 @@ export default function App() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-[#221F1D] pt-12 text-center text-xs text-[#C5BDB6] font-serif italic">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-[#221E16] pt-12 text-center text-xs text-[#ADA69A] font-serif italic">
                     <div className="space-y-1">
-                      <Shield className="h-5 w-5 text-[#9A1A18] mx-auto mb-1" />
-                      <p className="font-sans font-bold text-xs not-italic text-[#FAF8F5]">Dual-Vetted Talent</p>
+                      <Shield className="h-5 w-5 text-accent-text mx-auto mb-1" />
+                      <p className="font-sans font-bold text-xs not-italic text-[#E6E5E4]">Dual-Vetted Talent</p>
                       <p>Every independent MUA and studio director is verified for sanitation and artistry standards.</p>
                     </div>
-                    <div className="space-y-1 border-t border-[#221F1D] sm:border-t-0 sm:border-x sm:border-[#221F1D] py-4 sm:py-0">
+                    <div className="space-y-1 border-t border-[#221E16] sm:border-t-0 sm:border-x sm:border-[#221E16] py-4 sm:py-0">
                       <Star className="h-5 w-5 text-amber-400 mx-auto mb-1 fill-amber-400" />
-                      <p className="font-sans font-bold text-xs not-italic text-[#FAF8F5]">Real Unbiased Reviews</p>
+                      <p className="font-sans font-bold text-xs not-italic text-[#E6E5E4]">Real Unbiased Reviews</p>
                       <p>Verifiable, client-submitted testimonials analyzed by AI quality audits.</p>
                     </div>
                     <div className="space-y-1">
-                      <Calendar className="h-5 w-5 text-[#9A1A18] mx-auto mb-1" />
-                      <p className="font-sans font-bold text-xs not-italic text-[#FAF8F5]">Direct & Studio Bookings</p>
+                      <Calendar className="h-5 w-5 text-accent-text mx-auto mb-1" />
+                      <p className="font-sans font-bold text-xs not-italic text-[#E6E5E4]">Direct & Studio Bookings</p>
                       <p>Schedule on-location glam squads or reserve private chairs instantly.</p>
                     </div>
                   </div>
@@ -722,12 +721,12 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <footer className="border-t border-[#221F1D] bg-[#0A0908] py-8 text-center mt-20">
+      <footer className="border-t border-[#221E16] bg-[#080705] py-8 text-center mt-20">
         <div className="max-w-4xl mx-auto px-4 flex flex-col items-center justify-center space-y-1.5 text-center">
-          <p className="text-xs font-mono tracking-wide text-[#A89F91]">
+          <p className="text-xs font-mono tracking-wide text-[#ADA69A]">
             2026 Leish! Aesthetic Marketplace. All rights reserved.
           </p>
-          <p className="text-[11px] font-mono text-[#786D65]">
+          <p className="text-[11px] font-mono text-[#7D705B]">
             (Managed by Duta Integra Solutions)
           </p>
         </div>

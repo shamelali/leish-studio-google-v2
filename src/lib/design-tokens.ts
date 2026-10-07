@@ -1,118 +1,68 @@
 /**
- * Leish! Design Tokens
- * Three-layer architecture: Primitive → Semantic → Component
+ * Leish! Design Tokens — Champagne Elegance DARK Palette
+ * Warm gold on deep espresso — dark theme
  */
 
-// Primitive Tokens (raw values)
 export const primitives = {
-  // Colors
   color: {
-    // Brand
     brand: {
-      50: '#FDF2F0',
-      100: '#FCE4E0',
-      200: '#F9C9C1',
-      300: '#F4A396',
-      400: '#ED7A66',
-      500: '#9A1A18', // Primary brand red
-      600: '#8B1715',
-      700: '#7A1412',
-      800: '#691110',
-      900: '#580E0D',
+      50: '#FDFBF5', 100: '#FAF5E6', 200: '#F3E9CC', 300: '#EADCA8',
+      400: '#DFCC84', 500: '#C9A961', 600: '#B08F45', 700: '#8F7234',
+      800: '#6E5726', 900: '#4E3D1A',
     },
-    // Neutrals
     neutral: {
-      50: '#FAF8F5',
-      100: '#F5F0EB',
-      200: '#E9D2C4',
-      300: '#D4CDC7',
-      400: '#A89F91',
-      500: '#736A63',
-      600: '#554E48',
-      700: '#382F2A',
-      800: '#2B231F',
-      900: '#1C1613',
-      950: '#0D0B0A',
+      50: '#FDFCF9', 100: '#EFE9DE', 200: '#DFD5C5', 300: '#C4B8A4',
+      400: '#A3947D', 500: '#7D6F5A', 600: '#5A4F3E', 700: '#3B3226',
+      800: '#332B20', 900: '#261F17', 950: '#1A150F',
     },
-    // Accent
     accent: {
-      gold: '#D4A373',
-      champagne: '#EAC7C0',
+      gold: '#C9A961', goldLight: '#DFCC84', goldDark: '#8F7234',
+      champagne: '#F3E9CC', blush: '#F5E6DE', cream: '#FDFCF9',
       emerald: '#10B981',
     },
   },
-  // Spacing
   space: {
-    0: '0',
-    1: '0.25rem',
-    2: '0.5rem',
-    3: '0.75rem',
-    4: '1rem',
-    5: '1.25rem',
-    6: '1.5rem',
-    8: '2rem',
-    10: '2.5rem',
-    12: '3rem',
-    16: '4rem',
-    20: '5rem',
-    24: '6rem',
+    0: '0', 1: '0.25rem', 2: '0.5rem', 3: '0.75rem', 4: '1rem',
+    5: '1.25rem', 6: '1.5rem', 8: '2rem', 10: '2.5rem', 12: '3rem',
+    16: '4rem', 20: '5rem', 24: '6rem',
   },
-  // Typography
   font: {
-    sans: 'Inter, system-ui, -apple-system, sans-serif',
-    serif: 'Playfair Display, Georgia, serif',
+    sans: 'Raleway, Inter, system-ui, -apple-system, sans-serif',
+    serif: 'Lora, Playfair Display, Georgia, serif',
     mono: 'JetBrains Mono, monospace',
   },
-  // Border radius
   radius: {
-    sm: '0.25rem',
-    md: '0.5rem',
-    lg: '0.75rem',
-    xl: '1rem',
-    '2xl': '1.5rem',
-    '3xl': '2rem',
-    full: '9999px',
-  },
-  // Shadows
-  shadow: {
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-    '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    sm: '0.25rem', md: '0.5rem', lg: '0.75rem', xl: '1rem',
+    '2xl': '1.5rem', '3xl': '2rem', full: '9999px',
   },
 } as const;
 
-// Semantic Tokens (purpose aliases)
 export const semantic = {
   color: {
-    // Backgrounds
     bg: {
       primary: primitives.color.neutral[950],
       secondary: primitives.color.neutral[900],
       tertiary: primitives.color.neutral[800],
       elevated: primitives.color.neutral[800],
     },
-    // Text
     text: {
       primary: primitives.color.neutral[50],
-      secondary: primitives.color.neutral[300],
-      tertiary: primitives.color.neutral[400],
+      secondary: primitives.color.neutral[100],
+      tertiary: primitives.color.neutral[200],
       inverse: primitives.color.neutral[950],
     },
-    // Brand
     brand: {
       primary: primitives.color.brand[500],
-      hover: primitives.color.brand[600],
-      active: primitives.color.brand[700],
+      hover: primitives.color.brand[400],
+      active: primitives.color.brand[600],
     },
-    // Accent
     accent: {
       gold: primitives.color.accent.gold,
+      goldLight: primitives.color.accent.goldLight,
       champagne: primitives.color.accent.champagne,
+      blush: primitives.color.accent.blush,
       success: primitives.color.accent.emerald,
     },
-    // Borders
     border: {
       default: primitives.color.neutral[700],
       hover: primitives.color.neutral[600],
@@ -120,49 +70,18 @@ export const semantic = {
     },
   },
   space: {
-    component: {
-      xs: primitives.space[1],
-      sm: primitives.space[2],
-      md: primitives.space[4],
-      lg: primitives.space[6],
-      xl: primitives.space[8],
-    },
-    layout: {
-      sm: primitives.space[4],
-      md: primitives.space[8],
-      lg: primitives.space[12],
-      xl: primitives.space[16],
-    },
+    component: { xs: primitives.space[1], sm: primitives.space[2], md: primitives.space[4], lg: primitives.space[6], xl: primitives.space[8] },
+    layout: { sm: primitives.space[4], md: primitives.space[8], lg: primitives.space[12], xl: primitives.space[16] },
   },
 } as const;
 
-// Component Tokens
 export const component = {
   button: {
-    primary: {
-      bg: semantic.color.brand.primary,
-      text: semantic.color.text.primary,
-      hover: semantic.color.brand.hover,
-      active: semantic.color.brand.active,
-    },
-    secondary: {
-      bg: semantic.color.bg.tertiary,
-      text: semantic.color.text.primary,
-      hover: primitives.color.neutral[700],
-    },
+    primary: { bg: semantic.color.brand.primary, text: semantic.color.text.inverse, hover: semantic.color.brand.hover, active: semantic.color.brand.active },
+    secondary: { bg: semantic.color.bg.tertiary, text: semantic.color.text.primary, hover: primitives.color.neutral[700] },
   },
-  card: {
-    bg: semantic.color.bg.secondary,
-    border: semantic.color.border.default,
-    hover: semantic.color.border.hover,
-  },
-  input: {
-    bg: semantic.color.bg.tertiary,
-    border: semantic.color.border.default,
-    focus: semantic.color.border.focus,
-    text: semantic.color.text.primary,
-    placeholder: semantic.color.text.tertiary,
-  },
+  card: { bg: semantic.color.bg.secondary, border: semantic.color.border.default, hover: semantic.color.border.hover },
+  input: { bg: semantic.color.bg.tertiary, border: semantic.color.border.default, focus: semantic.color.border.focus, text: semantic.color.text.primary, placeholder: semantic.color.text.tertiary },
 } as const;
 
 export type PrimitiveTokens = typeof primitives;

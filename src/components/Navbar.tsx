@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   Sparkles,
   Calendar,
   User as UserIcon,
-  LayoutDashboard,
   Search,
   LogIn,
   UserPlus,
@@ -19,15 +20,148 @@ import {
   Menu,
   X,
   Palette,
-  HardDrive
+  HardDrive,
+  MoreHorizontal,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useStore } from '../lib/store';
 
+type NavTab = 'explore' | 'lookbook' | 'ai-stylist' | 'workspace' | 'client' | 'provider';
+
+interface NavItem {
+  id: NavTab;
+  label: string;
+  icon: LucideIcon;
+}
+
 interface NavbarProps {
-  activeTab: 'explore' | 'lookbook' | 'ai-stylist' | 'workspace' | 'client' | 'provider';
-  setActiveTab: (tab: 'explore' | 'lookbook' | 'ai-stylist' | 'workspace' | 'client' | 'provider') => void;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
   onOpenAuth: (mode: 'signin' | 'signup') => void;
   onOpenProfile: () => void;
+}
+
+/** Public discovery surface — always visible in the top bar. */
+const PRIMARY_ITEMS: NavItem[] = [
+  { id: 'explore', label: 'Discover', icon: Search },
+  { id: 'lookbook', label: 'AI Lookbook', icon: Palette },
+  { id: 'ai-stylist', label: 'AI Advisor', icon: Sparkles },
+];
+
+/** Personal destinations — live in the account / "More" menus, not the top bar. */
+const TOOL_ITEMS: NavItem[] = [
+  { id: 'workspace', label: 'Workspace', icon: HardDrive },
+  { id: 'client', label: 'My Bookings', icon: Calendar },
+];
+
+const SALON_ITEM: NavItem = { id: 'provider', label: 'Salon Portal', icon: Scissors };
+
+const FOCUS_RING =
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-offset-2 focus-visible:ring-offset-canvas';
+
+function springTransition(reduce: boolean | null) {
+  return reduce
+    ? { duration: 0 }
+    : ({ type: 'spring', stiffness: 380, damping: 34 } as const);
+}
+
+/** Shared row for dropdown menus (account + "More"). */
+function MenuRow({
+  icon: Icon,
+  label,
+  active,
+  danger,
+  onClick,
+}: {
+  key?: string;
+  icon: LucideIcon;
+  label: string;
+  active?: boolean;
+  danger?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-current={active ? 'page' : undefined}
+      className={`relative flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-xs transition-colors ${FOCUS_RING} ${
+        danger
+          ? 'text-red-400 hover:bg-red-950/30'
+          : active
+            ? 'bg-accent/25 text-fg'
+            : 'text-fg-muted hover:bg-surface hover:text-fg'
+      }`}
+    >
+      <Icon
+        aria-hidden="true"
+        className={`h-3.5 w-3.5 shrink-0 ${danger ? '' : active ? 'text-fg' : 'text-fg-dim'}`}
+      />
+      <span className="truncate">{label}</span>
+      {active && !danger && (
+        <span aria-hidden="true" className="ml-auto h-1.5 w-1.5 rounded-full bg-fg" />
+      )}
+    </button>
+  );
+}
+
+/** Row for the mobile disclosure panel. */
+function MobileRow({
+  icon: Icon,
+  label,
+  active,
+  onClick,
+}: {
+  key?: string;
+  icon: LucideIcon;
+  label: string;
+  active?: boolean;
+  onClick: () => void;
+}) {
+  const reduce = useReducedMotion();
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-current={active ? 'page' : undefined}
+      className={`relative flex w-full items-center gap-2.5 rounded-xl px-3 py-3 text-left text-sm font-medium transition-colors ${FOCUS_RING} ${
+        active ? 'text-fg' : 'text-fg-muted hover:bg-surface hover:text-fg'
+      }`}
+    >
+      {active && (
+        <motion.span
+          aria-hidden="true"
+          layoutId="mobile-nav-active"
+          className="absolute inset-0 rounded-xl bg-accent"
+          transition={springTransition(reduce)}
+        />
+      )}
+      <Icon aria-hidden="true" className="relative h-4 w-4 shrink-0" />
+      <span className="relative">{label}</span>
+    </button>
+  );
+}
+
+function MobileGroup({
+  labelId,
+  label,
+  children,
+}: {
+  labelId: string;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div role="group" aria-labelledby={labelId} className="space-y-1">
+      <span
+        id={labelId}
+        className="block px-3 pb-1 font-mono text-[10px] uppercase tracking-widest text-fg-dim"
+      >
+        {label}
+      </span>
+      {children}
+    </div>
+  );
 }
 
 export default function Navbar({
@@ -36,368 +170,492 @@ export default function Navbar({
   onOpenAuth,
   onOpenProfile,
 }: NavbarProps) {
-  const { currentUser, logout } = useStore();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { currentUser, logout, setSelectedSalon } = useStore();
+  const reduce = useReducedMotion();
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  const headerRef = useRef<HTMLElement>(null);
+  const accountRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
+  const searchTimers = useRef<number[]>([]);
+
+  const isProvider = currentUser?.role === 'provider';
+  // Guests get the salon portal as an acquisition entry; providers get their own tool.
+  const showSalonPortal = !currentUser || isProvider;
+  const toolItems = showSalonPortal ? [...TOOL_ITEMS, SALON_ITEM] : TOOL_ITEMS;
+  const personalActive =
+    activeTab === 'workspace' ||
+    activeTab === 'client' ||
+    (activeTab === 'provider' && showSalonPortal);
+
+  const modKey = useMemo(
+    () =>
+      typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.userAgent)
+        ? '⌘ K'
+        : 'Ctrl K',
+    []
+  );
+
+  const goTab = useCallback(
+    (tab: string) => {
+      setActiveTab(tab);
+      setMobileOpen(false);
+      setAccountOpen(false);
+      setMoreOpen(false);
+    },
+    [setActiveTab]
+  );
 
   const handleSignOut = () => {
     logout();
-    setDropdownOpen(false);
+    setAccountOpen(false);
+    setMobileOpen(false);
     setActiveTab('explore');
   };
 
+  /** Header search affordance: jump to Discover and focus the hero search field. */
+  const focusSearch = useCallback(() => {
+    goTab('explore');
+    setSelectedSalon(null);
+    searchTimers.current.forEach((id) => clearTimeout(id));
+    searchTimers.current = [60, 260, 480].map((ms) =>
+      window.setTimeout(() => {
+        const el = document.getElementById('hero-search');
+        if (el instanceof HTMLInputElement) el.focus();
+      }, ms)
+    );
+  }, [goTab, setSelectedSalon]);
+
+  // Condense the header once the page is scrolled.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 96);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Close menus on outside click (and collapse the mobile panel if it leaves the header).
+  useEffect(() => {
+    function handlePointerDown(event: MouseEvent) {
+      const target = event.target as Node;
+      if (accountRef.current && !accountRef.current.contains(target)) setAccountOpen(false);
+      if (moreRef.current && !moreRef.current.contains(target)) setMoreOpen(false);
+      if (mobileOpen && headerRef.current && !headerRef.current.contains(target)) {
+        setMobileOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handlePointerDown);
+    return () => document.removeEventListener('mousedown', handlePointerDown);
+  }, [mobileOpen]);
+
+  // Escape closes every open menu; Cmd/Ctrl+K focuses search.
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setAccountOpen(false);
+        setMoreOpen(false);
+        setMobileOpen(false);
+      }
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        focusSearch();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [focusSearch]);
+
+  // Collapse the mobile panel when the desktop breakpoint kicks in.
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth >= 768) setMobileOpen(false);
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  useEffect(
+    () => () => {
+      searchTimers.current.forEach((id) => clearTimeout(id));
+    },
+    []
+  );
+
+  const menuPanelClass =
+    'absolute top-full right-0 z-50 mt-2 w-60 rounded-2xl border border-line bg-elevated p-2 shadow-2xl';
+  const menuMotion = {
+    initial: { opacity: 0, y: -6, scale: 0.97 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -6, scale: 0.97 },
+    transition: { duration: reduce ? 0 : 0.15, ease: 'easeOut' as const },
+  };
+
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[#221F1D] bg-[#0D0B0A]/95 backdrop-blur-md">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div
-          className="flex cursor-pointer items-center space-x-2"
-          onClick={() => {
-            setActiveTab('explore');
-            setMobileMenuOpen(false);
-          }}
+    <header
+      ref={headerRef}
+      className={`sticky top-0 z-40 w-full border-b bg-canvas/95 backdrop-blur-md transition-colors duration-300 ${
+        scrolled ? 'border-line shadow-lg shadow-black/40' : 'border-surface'
+      }`}
+    >
+      <div
+        className={`mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 transition-[height] duration-300 sm:px-6 lg:px-8 ${
+          scrolled ? 'h-16' : 'h-20'
+        }`}
+      >
+        {/* Brand */}
+        <button
+          type="button"
+          onClick={() => goTab('explore')}
+          aria-label="Leish! home"
+          className={`flex shrink-0 items-center space-x-2 rounded-lg pr-2 transition-all duration-300 ${FOCUS_RING}`}
         >
-          <div className="flex items-baseline font-serif text-3xl font-semibold tracking-tight text-[#FAF8F5]">
+          <span
+            aria-hidden="true"
+            className={`flex items-baseline font-serif font-semibold tracking-tight text-fg transition-all duration-300 ${
+              scrolled ? 'text-2xl' : 'text-3xl'
+            }`}
+          >
             <span>Lei</span>
-            <span className="text-[#9A1A18] italic font-bold">sh</span>
-            <span className="text-[#FAF8F5] text-2xl ml-0.5">!</span>
-          </div>
-          <span className="hidden text-xs font-mono tracking-widest text-[#E9D2C4] sm:block uppercase pt-2 pl-2 border-l border-[#221F1D]">
+            <span className="font-bold italic text-accent">sh</span>
+            <span className="ml-0.5 text-2xl">!</span>
+          </span>
+          <span
+            aria-hidden="true"
+            className={`border-l border-surface pl-2 font-mono text-xs uppercase tracking-widest text-fg transition-all duration-300 ${
+              scrolled ? 'hidden' : 'hidden pt-2 sm:block'
+            }`}
+          >
             Aesthetic Market
           </span>
-        </div>
+        </button>
 
-        <nav className="hidden md:flex space-x-1 sm:space-x-2">
-          <button
-            onClick={() => setActiveTab('explore')}
-            className={`flex items-center space-x-1.5 rounded-full px-3.5 py-2 text-xs sm:text-sm font-medium tracking-wide transition-all duration-300 ${
-              activeTab === 'explore'
-                ? 'bg-[#9A1A18] text-[#FAF8F5] shadow-lg shadow-[#9A1A18]/20'
-                : 'text-[#C5BDB6] hover:bg-[#1E1A17] hover:text-[#FAF8F5]'
-            }`}
-          >
-            <Search className="h-3.5 w-3.5" />
-            <span>Discover</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('lookbook')}
-            className={`flex items-center space-x-1.5 rounded-full px-3.5 py-2 text-xs sm:text-sm font-medium tracking-wide transition-all duration-300 ${
-              activeTab === 'lookbook'
-                ? 'bg-gradient-to-r from-[#9A1A18] to-[#801412] text-[#FAF8F5] shadow-lg shadow-[#9A1A18]/20 border border-[#FAF8F5]/10'
-                : 'text-[#C5BDB6] hover:bg-[#1E1A17] hover:text-[#FAF8F5]'
-            }`}
-          >
-            <Palette className="h-3.5 w-3.5 text-[#E9D2C4]" />
-            <span>AI Lookbook</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('ai-stylist')}
-            className={`flex items-center space-x-1.5 rounded-full px-3.5 py-2 text-xs sm:text-sm font-medium tracking-wide transition-all duration-300 ${
-              activeTab === 'ai-stylist'
-                ? 'bg-[#9A1A18] text-[#FAF8F5] shadow-lg shadow-[#9A1A18]/20 border border-[#FAF8F5]/10'
-                : 'text-[#C5BDB6] hover:bg-[#1E1A17] hover:text-[#FAF8F5]'
-            }`}
-          >
-            <Sparkles className="h-3.5 w-3.5 text-[#E9D2C4]" />
-            <span>AI Advisor</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('workspace')}
-            className={`flex items-center space-x-1.5 rounded-full px-3.5 py-2 text-xs sm:text-sm font-medium tracking-wide transition-all duration-300 ${
-              activeTab === 'workspace'
-                ? 'bg-[#9A1A18] text-[#FAF8F5] shadow-lg shadow-[#9A1A18]/20'
-                : 'text-[#C5BDB6] hover:bg-[#1E1A17] hover:text-[#FAF8F5]'
-            }`}
-          >
-            <HardDrive className="h-3.5 w-3.5 text-blue-400" />
-            <span>Workspace</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('client')}
-            className={`flex items-center space-x-1.5 rounded-full px-3.5 py-2 text-xs sm:text-sm font-medium tracking-wide transition-all duration-300 ${
-              activeTab === 'client'
-                ? 'bg-[#9A1A18] text-[#FAF8F5] shadow-lg shadow-[#9A1A18]/20'
-                : 'text-[#C5BDB6] hover:bg-[#1E1A17] hover:text-[#FAF8F5]'
-            }`}
-          >
-            <Calendar className="h-3.5 w-3.5" />
-            <span>My Bookings</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('provider')}
-            className={`flex items-center space-x-1.5 rounded-full px-3.5 py-2 text-xs sm:text-sm font-medium tracking-wide transition-all duration-300 ${
-              activeTab === 'provider'
-                ? 'bg-[#FAF8F5] text-[#0D0B0A] font-semibold'
-                : 'text-[#C5BDB6] hover:bg-[#1E1A17] hover:text-[#FAF8F5]'
-            }`}
-          >
-            <LayoutDashboard className="h-3.5 w-3.5" />
-            <span>Salon Portal</span>
-          </button>
+        {/* Primary navigation */}
+        <nav aria-label="Primary" className="hidden items-center gap-0.5 md:flex sm:gap-1">
+          {PRIMARY_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => goTab(item.id)}
+                aria-label={item.label}
+                aria-current={isActive ? 'page' : undefined}
+                title={item.label}
+                className={`relative flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium tracking-wide transition-colors duration-300 sm:px-3.5 sm:text-sm ${FOCUS_RING} ${
+                  isActive
+                    ? 'text-fg'
+                    : 'text-fg-muted hover:bg-surface hover:text-fg'
+                }`}
+              >
+                {isActive && (
+                  <motion.span
+                    aria-hidden="true"
+                    layoutId="desktop-nav-active"
+                    className="absolute inset-0 rounded-full bg-accent shadow-lg shadow-accent/20"
+                    transition={springTransition(reduce)}
+                  />
+                )}
+                <Icon aria-hidden="true" className="relative h-3.5 w-3.5 shrink-0" />
+                <span className="relative hidden whitespace-nowrap lg:inline">{item.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
-        <div className="flex items-center space-x-3">
-          {currentUser ? (
-            <div className="relative" ref={dropdownRef}>
+        {/* Utilities + account */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={focusSearch}
+            aria-label={`Search salons and artists (${modKey})`}
+            className={`hidden items-center gap-2 rounded-full border border-accent-soft bg-elevated px-3 py-1.5 text-xs text-fg-muted transition-colors hover:border-accent/60 hover:text-fg md:inline-flex ${FOCUS_RING}`}
+          >
+            <Search aria-hidden="true" className="h-3.5 w-3.5" />
+            <span className="hidden xl:inline">Search</span>
+            <kbd
+              aria-hidden="true"
+              className="hidden rounded border border-line bg-surface px-1.5 py-0.5 font-mono text-[10px] leading-none text-fg-dim xl:inline-block"
+            >
+              {modKey}
+            </kbd>
+          </button>
+
+          {/* Guest-only "More" menu keeps Workspace / Bookings / Portal reachable when signed out */}
+          {!currentUser && (
+            <div className="relative hidden md:block" ref={moreRef}>
               <button
                 type="button"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center space-x-2.5 rounded-full border border-[#2E2824] bg-[#161311] py-1.5 pl-2 pr-3.5 text-xs text-[#FAF8F5] hover:border-[#9A1A18]/60 transition-all"
+                onClick={() => {
+                  setMoreOpen((v) => !v);
+                  setAccountOpen(false);
+                }}
+                aria-expanded={moreOpen}
+                aria-controls="nav-more-menu"
+                aria-label="Workspace and portals"
+                title="Workspace and portals"
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-colors ${FOCUS_RING} ${
+                  personalActive || moreOpen
+                    ? 'bg-accent/20 text-fg'
+                    : 'text-fg-muted hover:bg-surface hover:text-fg'
+                }`}
               >
-                <div className="h-7 w-7 rounded-full overflow-hidden bg-[#241F1C] border border-[#9A1A18]/50 flex items-center justify-center shrink-0">
-                  {currentUser.avatar ? (
-                    <img src={currentUser.avatar} alt={currentUser.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <UserIcon className="h-3.5 w-3.5 text-[#E9D2C4]" />
-                  )}
-                </div>
-                <div className="text-left hidden sm:block">
-                  <div className="font-medium text-xs text-[#FAF8F5] max-w-[100px] truncate leading-tight">
-                    {currentUser.name}
-                  </div>
-                  <div className="text-[10px] font-mono text-[#A89E96] capitalize">
-                    {currentUser.role === 'provider' ? 'Salon Director' : 'VIP Client'}
-                  </div>
-                </div>
-                <ChevronDown className="h-3.5 w-3.5 text-[#8C827A]" />
+                <MoreHorizontal aria-hidden="true" className="h-4 w-4" />
+                <span className="hidden lg:inline">More</span>
+                <ChevronDown
+                  aria-hidden="true"
+                  className={`hidden h-3.5 w-3.5 transition-transform lg:inline ${
+                    moreOpen ? 'rotate-180' : ''
+                  }`}
+                />
               </button>
 
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-[#2A2421] bg-[#14110F] p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="px-3 py-2 border-b border-[#221F1D] mb-1">
-                    <p className="text-xs font-semibold text-[#FAF8F5] truncate">{currentUser.name}</p>
-                    <p className="text-[11px] font-mono text-[#8C827A] truncate">{currentUser.email}</p>
-                    <span className="inline-block mt-1 text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#9A1A18]/20 text-[#E9D2C4] border border-[#9A1A18]/40">
-                      {currentUser.role === 'provider' ? 'Salon Partner' : 'Client Account'}
-                    </span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      onOpenProfile();
-                    }}
-                    className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs text-[#C5BDB6] rounded-xl hover:bg-[#1E1A17] hover:text-[#FAF8F5] transition-colors"
+              <AnimatePresence>
+                {moreOpen && (
+                  <motion.div
+                    id="nav-more-menu"
+                    {...menuMotion}
+                    className={menuPanelClass}
                   >
-                    <Settings className="h-3.5 w-3.5 text-[#8C827A]" />
-                    <span>Profile & Account</span>
-                  </button>
+                    <p className="px-3 pb-1 pt-2 font-mono text-[10px] uppercase tracking-widest text-fg-dim">
+                      Workspace &amp; portals
+                    </p>
+                    {toolItems.map((item) => (
+                      <MenuRow
+                        key={item.id}
+                        icon={item.icon}
+                        label={item.label}
+                        active={activeTab === item.id}
+                        onClick={() => goTab(item.id)}
+                      />
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      setActiveTab('client');
-                    }}
-                    className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs text-[#C5BDB6] rounded-xl hover:bg-[#1E1A17] hover:text-[#FAF8F5] transition-colors"
-                  >
-                    <Calendar className="h-3.5 w-3.5 text-[#8C827A]" />
-                    <span>My Bookings</span>
-                  </button>
-
-                  {currentUser.role === 'provider' && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDropdownOpen(false);
-                        setActiveTab('provider');
-                      }}
-                      className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs text-[#C5BDB6] rounded-xl hover:bg-[#1E1A17] hover:text-[#FAF8F5] transition-colors"
-                    >
-                      <Scissors className="h-3.5 w-3.5 text-[#9A1A18]" />
-                      <span>Salon Management</span>
-                    </button>
+          {currentUser ? (
+            <div className="relative" ref={accountRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setAccountOpen((v) => !v);
+                  setMoreOpen(false);
+                }}
+                aria-expanded={accountOpen}
+                aria-controls="nav-account-menu"
+                className={`flex items-center space-x-2.5 rounded-full border py-1.5 pl-2 pr-3.5 text-xs transition-all ${FOCUS_RING} ${
+                  accountOpen || personalActive
+                    ? 'border-accent/60 bg-accent/15'
+                    : 'border-accent-soft bg-elevated hover:border-accent/60'
+                }`}
+              >
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-accent/50 bg-chip">
+                  {currentUser.avatar ? (
+                    <img
+                      src={currentUser.avatar}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <UserIcon aria-hidden="true" className="h-3.5 w-3.5 text-fg" />
                   )}
+                </span>
+                <span className="hidden text-left sm:block">
+                  <span className="block max-w-[100px] truncate text-xs font-medium leading-tight text-fg">
+                    {currentUser.name}
+                  </span>
+                  <span className="block font-mono text-[10px] capitalize text-fg-subtle">
+                    {isProvider ? 'Salon Director' : 'VIP Client'}
+                  </span>
+                </span>
+                <ChevronDown
+                  aria-hidden="true"
+                  className={`h-3.5 w-3.5 text-fg-dim transition-transform ${accountOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
 
-                  <div className="my-1 border-t border-[#221F1D]" />
-
-                  <button
-                    type="button"
-                    onClick={handleSignOut}
-                    className="w-full flex items-center space-x-2.5 px-3 py-2 text-xs text-red-400 rounded-xl hover:bg-red-950/30 transition-colors"
+              <AnimatePresence>
+                {accountOpen && (
+                  <motion.div
+                    id="nav-account-menu"
+                    {...menuMotion}
+                    className={menuPanelClass}
                   >
-                    <LogOut className="h-3.5 w-3.5" />
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              )}
+                    <div className="mb-1 border-b border-surface px-3 py-2">
+                      <p className="truncate text-xs font-semibold text-fg">
+                        {currentUser.name}
+                      </p>
+                      <p className="truncate font-mono text-[11px] text-fg-dim">
+                        {currentUser.email}
+                      </p>
+                      <span className="mt-1 inline-block rounded-full border border-accent/40 bg-accent/20 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-fg">
+                        {isProvider ? 'Salon Partner' : 'Client Account'}
+                      </span>
+                    </div>
+
+                    <MenuRow
+                      icon={Settings}
+                      label="Profile & Account"
+                      onClick={() => {
+                        setAccountOpen(false);
+                        onOpenProfile();
+                      }}
+                    />
+                    <MenuRow
+                      icon={HardDrive}
+                      label="Workspace"
+                      active={activeTab === 'workspace'}
+                      onClick={() => goTab('workspace')}
+                    />
+                    <MenuRow
+                      icon={Calendar}
+                      label="My Bookings"
+                      active={activeTab === 'client'}
+                      onClick={() => goTab('client')}
+                    />
+                    {isProvider && (
+                      <MenuRow
+                        icon={Scissors}
+                        label="Salon Portal"
+                        active={activeTab === 'provider'}
+                        onClick={() => goTab('provider')}
+                      />
+                    )}
+
+                    <div className="my-1 border-t border-surface" />
+
+                    <MenuRow icon={LogOut} label="Sign Out" danger onClick={handleSignOut} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ) : (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => onOpenAuth('signin')}
-                className="flex items-center space-x-1.5 rounded-full border border-[#2E2824] bg-[#14110F] px-3.5 py-1.5 text-xs font-medium text-[#FAF8F5] hover:border-[#9A1A18] hover:bg-[#1B1714] transition-all"
+                className={`hidden items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium text-fg-muted transition-colors hover:text-fg lg:inline-flex ${FOCUS_RING}`}
               >
-                <LogIn className="h-3.5 w-3.5 text-[#E9D2C4]" />
-                <span>Sign In</span>
+                <LogIn aria-hidden="true" className="h-3.5 w-3.5" />
+                <span>Sign in</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => onOpenAuth('signup')}
-                className="flex items-center space-x-1.5 rounded-full bg-gradient-to-r from-[#9A1A18] to-[#801412] px-3.5 py-1.5 text-xs font-semibold text-[#FAF8F5] shadow-md shadow-[#9A1A18]/25 hover:brightness-110 active:scale-95 transition-all"
+                className={`inline-flex items-center gap-1.5 rounded-full bg-accent px-3.5 py-2 text-xs font-semibold text-fg shadow-md shadow-accent/25 transition-all hover:brightness-110 active:scale-95 ${FOCUS_RING}`}
               >
-                <UserPlus className="h-3.5 w-3.5" />
-                <span>Sign Up</span>
+                <UserPlus aria-hidden="true" className="h-3.5 w-3.5" />
+                <span>Get started</span>
               </button>
             </div>
           )}
 
           <button
             type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-[#8C827A] hover:bg-[#1A1613] hover:text-[#FAF8F5]"
-            aria-label="Toggle navigation menu"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav"
+            aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            className={`rounded-xl p-3 text-fg-dim transition-colors hover:bg-surface hover:text-fg md:hidden ${FOCUS_RING}`}
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? (
+              <X aria-hidden="true" className="h-5 w-5" />
+            ) : (
+              <Menu aria-hidden="true" className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>
 
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[#221F1D] bg-[#120F0D] px-4 py-4 space-y-2">
-          <button
-            onClick={() => {
-              setActiveTab('explore');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-sm font-medium ${
-              activeTab === 'explore' ? 'bg-[#9A1A18] text-white' : 'text-[#C5BDB6] hover:bg-[#1C1815]'
-            }`}
+      {/* Mobile navigation */}
+      <AnimatePresence initial={false}>
+        {mobileOpen && (
+          <motion.div
+            id="mobile-nav"
+            key="mobile-nav"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: reduce ? 0 : 0.25, ease: 'easeInOut' }}
+            className="overflow-hidden md:hidden"
           >
-            <Search className="h-4 w-4" />
-            <span>Discover Salons</span>
-          </button>
+            <div className="space-y-4 border-t border-surface bg-canvas px-4 py-4">
+              <MobileGroup labelId="nav-group-explore" label="Explore">
+                {PRIMARY_ITEMS.map((item) => (
+                  <MobileRow
+                    key={item.id}
+                    icon={item.icon}
+                    label={item.label}
+                    active={activeTab === item.id}
+                    onClick={() => goTab(item.id)}
+                  />
+                ))}
+              </MobileGroup>
 
-          <button
-            onClick={() => {
-              setActiveTab('lookbook');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-sm font-medium ${
-              activeTab === 'lookbook' ? 'bg-[#9A1A18] text-white' : 'text-[#C5BDB6] hover:bg-[#1C1815]'
-            }`}
-          >
-            <Palette className="h-4 w-4 text-[#E9D2C4]" />
-            <span>AI Virtual Lookbook</span>
-          </button>
+              <MobileGroup labelId="nav-group-tools" label="Workspace & portals">
+                {toolItems.map((item) => (
+                  <MobileRow
+                    key={item.id}
+                    icon={item.icon}
+                    label={item.label}
+                    active={activeTab === item.id}
+                    onClick={() => goTab(item.id)}
+                  />
+                ))}
+              </MobileGroup>
 
-          <button
-            onClick={() => {
-              setActiveTab('ai-stylist');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-sm font-medium ${
-              activeTab === 'ai-stylist' ? 'bg-[#9A1A18] text-white' : 'text-[#C5BDB6] hover:bg-[#1C1815]'
-            }`}
-          >
-            <Sparkles className="h-4 w-4 text-[#E9D2C4]" />
-            <span>AI Stylist Advisor</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveTab('workspace');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-sm font-medium ${
-              activeTab === 'workspace' ? 'bg-[#9A1A18] text-white' : 'text-[#C5BDB6] hover:bg-[#1C1815]'
-            }`}
-          >
-            <HardDrive className="h-4 w-4 text-blue-400" />
-            <span>Workspace & Google Suite</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveTab('client');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-sm font-medium ${
-              activeTab === 'client' ? 'bg-[#9A1A18] text-white' : 'text-[#C5BDB6] hover:bg-[#1C1815]'
-            }`}
-          >
-            <Calendar className="h-4 w-4" />
-            <span>My Bookings</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveTab('provider');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-sm font-medium ${
-              activeTab === 'provider' ? 'bg-[#FAF8F5] text-black font-semibold' : 'text-[#C5BDB6] hover:bg-[#1C1815]'
-            }`}
-          >
-            <LayoutDashboard className="h-4 w-4" />
-            <span>Salon Provider Portal</span>
-          </button>
-
-          {!currentUser ? (
-            <div className="pt-3 border-t border-[#221F1D] grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenAuth('signin');
-                }}
-                className="w-full py-2.5 rounded-xl border border-[#2E2824] bg-[#181412] text-xs font-medium text-center text-[#FAF8F5]"
-              >
-                Sign In
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenAuth('signup');
-                }}
-                className="w-full py-2.5 rounded-xl bg-[#9A1A18] text-xs font-semibold text-center text-white"
-              >
-                Sign Up
-              </button>
+              <MobileGroup labelId="nav-group-account" label="Account">
+                {currentUser ? (
+                  <div className="space-y-1">
+                    <MobileRow
+                      icon={Settings}
+                      label="Profile & Account"
+                      onClick={() => {
+                        setMobileOpen(false);
+                        onOpenProfile();
+                      }}
+                    />
+                    <MobileRow icon={LogOut} label="Sign Out" onClick={handleSignOut} />
+                    <p className="px-3 pt-1 font-mono text-[10px] text-fg-dim">
+                      {currentUser.email}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileOpen(false);
+                        onOpenAuth('signin');
+                      }}
+                      className={`rounded-xl border border-accent-soft bg-elevated py-3 text-center text-xs font-medium text-fg transition-colors hover:border-accent ${FOCUS_RING}`}
+                    >
+                      Sign in
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileOpen(false);
+                        onOpenAuth('signup');
+                      }}
+                      className={`rounded-xl bg-accent py-3 text-center text-xs font-semibold text-fg transition-all active:scale-95 ${FOCUS_RING}`}
+                    >
+                      Get started
+                    </button>
+                  </div>
+                )}
+              </MobileGroup>
             </div>
-          ) : (
-            <div className="pt-3 border-t border-[#221F1D] flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenProfile();
-                }}
-                className="flex items-center space-x-2 text-xs text-[#E9D2C4]"
-              >
-                <Settings className="h-3.5 w-3.5" />
-                <span>My Profile ({currentUser.name})</span>
-              </button>
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="text-xs text-red-400 hover:text-red-300"
-              >
-                Sign Out
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

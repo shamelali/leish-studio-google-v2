@@ -216,7 +216,7 @@ export default function BookingModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={step !== 3 ? onClose : undefined}
-        className="absolute inset-0 bg-[#0D0B0A]/85 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#0F0D0A]/85 backdrop-blur-sm"
       />
 
       <motion.div
@@ -224,15 +224,15 @@ export default function BookingModal({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
         transition={{ type: 'spring', duration: 0.5 }}
-        className="relative z-10 w-full max-w-lg overflow-hidden rounded-2xl border border-[#221F1D] bg-[#141211] shadow-2xl"
+        className="relative z-10 w-full max-w-lg overflow-hidden rounded-2xl border border-[#221E16] bg-[#14110C] shadow-2xl"
       >
-        <div className="flex items-center justify-between border-b border-[#221F1D] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-[#221E16] px-6 py-4">
           <div>
-            <h3 className="font-serif text-lg font-medium text-[#FAF8F5]">
+            <h3 className="font-serif text-lg font-medium text-[#E6E5E4]">
               {step === 3 ? 'Booking Confirmed' : 'Configure Appointment'}
             </h3>
             {step !== 3 && (
-              <p className="text-xs text-[#C5BDB6] mt-0.5">
+              <p className="text-xs text-[#ADA69A] mt-0.5">
                 {salon.name} &bull; {service.name}
               </p>
             )}
@@ -240,7 +240,7 @@ export default function BookingModal({
           {step !== 3 && (
             <button
               onClick={onClose}
-              className="rounded-full p-1.5 text-[#C5BDB6] transition-colors hover:bg-[#1E1A17] hover:text-[#FAF8F5]"
+              className="rounded-full p-1.5 text-[#ADA69A] transition-colors hover:bg-[#221E16] hover:text-[#E6E5E4]"
             >
               <X className="h-5 w-5" />
             </button>
@@ -258,7 +258,7 @@ export default function BookingModal({
                 className="space-y-6"
               >
                 <div>
-                  <label className="text-xs font-mono tracking-wider text-[#E9D2C4] uppercase block mb-3">
+                  <label className="text-xs font-mono tracking-wider text-[#E6E5E4] uppercase block mb-3">
                     Choose Specialist
                   </label>
                   <div className="grid grid-cols-2 gap-3">
@@ -269,8 +269,8 @@ export default function BookingModal({
                         onClick={() => setSelectedStaff(staff)}
                         className={`flex items-center space-x-3 rounded-xl border p-3 text-left transition-all duration-300 ${
                           selectedStaff?.id === staff.id
-                            ? 'border-[#9A1A18] bg-[#9A1A18]/5'
-                            : 'border-[#221F1D] bg-[#1E1A17]/30 hover:border-[#383330]'
+                            ? 'border-[#574D3C] bg-[#574D3C]/5'
+                            : 'border-[#221E16] bg-[#221E16]/30 hover:border-[#3C3427]'
                         }`}
                       >
                         <img
@@ -279,8 +279,8 @@ export default function BookingModal({
                           className="h-10 w-10 rounded-full object-cover grayscale"
                         />
                         <div className="min-w-0">
-                          <p className="truncate text-xs font-semibold text-[#FAF8F5]">{staff.name}</p>
-                          <p className="truncate text-[10px] text-[#C5BDB6]">{staff.role}</p>
+                          <p className="truncate text-xs font-semibold text-[#E6E5E4]">{staff.name}</p>
+                          <p className="truncate text-[10px] text-[#ADA69A]">{staff.role}</p>
                         </div>
                       </button>
                     ))}
@@ -289,16 +289,16 @@ export default function BookingModal({
 
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <label className="text-xs font-mono tracking-wider text-[#E9D2C4] uppercase block">
+                    <label className="text-xs font-mono tracking-wider text-[#E6E5E4] uppercase block">
                       Select Date
                     </label>
                     {selectedDate && (
-                      <span className="text-xs text-[#FAF8F5] font-serif">
+                      <span className="text-xs text-[#E6E5E4] font-serif">
                         {new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </span>
                     )}
                   </div>
-                  <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-[#221F1D]">
+                  <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-[#221E16]">
                     {getAvailableDates().map((d) => (
                       <button
                         key={d.formatted}
@@ -306,8 +306,8 @@ export default function BookingModal({
                         onClick={() => setSelectedDate(d.formatted)}
                         className={`flex flex-col items-center justify-center shrink-0 rounded-xl w-14 py-3 border transition-all duration-300 ${
                           selectedDate === d.formatted
-                            ? 'border-[#9A1A18] bg-[#9A1A18]/10 text-[#FAF8F5]'
-                            : 'border-[#221F1D] bg-[#1E1A17]/30 text-[#C5BDB6] hover:border-[#383330] hover:text-[#FAF8F5]'
+                            ? 'border-[#574D3C] bg-[#574D3C]/10 text-[#E6E5E4]'
+                            : 'border-[#221E16] bg-[#221E16]/30 text-[#ADA69A] hover:border-[#3C3427] hover:text-[#E6E5E4]'
                         }`}
                       >
                         <span className="text-[10px] font-mono uppercase tracking-tight">{d.displayDay}</span>
@@ -319,7 +319,7 @@ export default function BookingModal({
                 </div>
 
                 <div>
-                  <label className="text-xs font-mono tracking-wider text-[#E9D2C4] uppercase block mb-3">
+                  <label className="text-xs font-mono tracking-wider text-[#E6E5E4] uppercase block mb-3">
                     Available Time Slots
                   </label>
                   <div className="grid grid-cols-3 gap-2">
@@ -330,8 +330,8 @@ export default function BookingModal({
                         onClick={() => setSelectedTime(time)}
                         className={`rounded-lg py-2 text-center text-xs border transition-all duration-300 ${
                           selectedTime === time
-                            ? 'border-[#9A1A18] bg-[#9A1A18] text-[#FAF8F5]'
-                            : 'border-[#221F1D] bg-[#1E1A17]/30 text-[#C5BDB6] hover:border-[#383330] hover:text-[#FAF8F5]'
+                            ? 'border-[#574D3C] bg-[#574D3C] text-[#E6E5E4]'
+                            : 'border-[#221E16] bg-[#221E16]/30 text-[#ADA69A] hover:border-[#3C3427] hover:text-[#E6E5E4]'
                         }`}
                       >
                         {time}
@@ -343,7 +343,7 @@ export default function BookingModal({
                 <button
                   type="button"
                   onClick={handleNextStep}
-                  className="w-full flex items-center justify-center space-x-2 rounded-xl bg-[#9A1A18] py-3.5 text-sm font-semibold text-[#FAF8F5] transition-all duration-300 hover:bg-[#C82A27] shadow-lg shadow-[#9A1A18]/20"
+                  className="w-full flex items-center justify-center space-x-2 rounded-xl bg-[#574D3C] py-3.5 text-sm font-semibold text-[#E6E5E4] transition-all duration-300 hover:bg-[#796D59] shadow-lg shadow-[#574D3C]/20"
                 >
                   <span>Continue to Details</span>
                   <ChevronRight className="h-4 w-4" />
@@ -360,15 +360,15 @@ export default function BookingModal({
               >
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                   {attachedMoodboard && (
-                    <div className="rounded-xl border border-[#9A1A18]/50 bg-[#9A1A18]/10 p-3.5 space-y-2">
+                    <div className="rounded-xl border border-[#574D3C]/50 bg-[#574D3C]/10 p-3.5 space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-mono uppercase tracking-widest text-[#E9D2C4] font-semibold flex items-center gap-1.5">
-                          <Sparkles className="h-3.5 w-3.5 text-[#E9D2C4]" />
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-[#E6E5E4] font-semibold flex items-center gap-1.5">
+                          <Sparkles className="h-3.5 w-3.5 text-[#E6E5E4]" />
                           Attached Custom Lookbook
                         </span>
-                        <span className="text-[10px] text-[#A89F91] capitalize">{attachedMoodboard.category}</span>
+                        <span className="text-[10px] text-[#ADA69A] capitalize">{attachedMoodboard.category}</span>
                       </div>
-                      <p className="text-xs font-serif font-bold text-[#FAF8F5]">{attachedMoodboard.lookName}</p>
+                      <p className="text-xs font-serif font-bold text-[#E6E5E4]">{attachedMoodboard.lookName}</p>
                       <div className="flex items-center gap-1.5 pt-1">
                         {attachedMoodboard.colorPalette.map((swatch, idx) => (
                           <div
@@ -378,30 +378,30 @@ export default function BookingModal({
                             style={{ backgroundColor: swatch.hex }}
                           />
                         ))}
-                        <span className="text-[10px] text-[#C5BDB6] ml-2 truncate">
+                        <span className="text-[10px] text-[#ADA69A] ml-2 truncate">
                           Lip: {attachedMoodboard.lipFormula.shade}
                         </span>
                       </div>
                     </div>
                   )}
 
-                  <div className="rounded-xl border border-[#221F1D] bg-[#1E1A17]/40 p-4 space-y-2.5 text-xs">
-                    <div className="flex justify-between border-b border-[#221F1D]/50 pb-2">
-                      <span className="text-[#C5BDB6]">Makeup Artist:</span>
-                      <span className="font-semibold text-[#FAF8F5]">{selectedStaff?.name}</span>
+                  <div className="rounded-xl border border-[#221E16] bg-[#221E16]/40 p-4 space-y-2.5 text-xs">
+                    <div className="flex justify-between border-b border-[#221E16]/50 pb-2">
+                      <span className="text-[#ADA69A]">Makeup Artist:</span>
+                      <span className="font-semibold text-[#E6E5E4]">{selectedStaff?.name}</span>
                     </div>
-                    <div className="flex justify-between border-b border-[#221F1D]/50 pb-2">
-                      <span className="text-[#C5BDB6]">Appointment:</span>
-                      <span className="font-semibold text-[#FAF8F5]">
+                    <div className="flex justify-between border-b border-[#221E16]/50 pb-2">
+                      <span className="text-[#ADA69A]">Appointment:</span>
+                      <span className="font-semibold text-[#E6E5E4]">
                         {formattedDateString(selectedDate)} at {selectedTime}
                       </span>
                     </div>
-                    <div className="flex justify-between border-b border-[#221F1D]/50 pb-2">
-                      <span className="text-[#C5BDB6]">Base Service Fee:</span>
-                      <span className="text-[#FAF8F5] font-medium">RM{service.price}</span>
+                    <div className="flex justify-between border-b border-[#221E16]/50 pb-2">
+                      <span className="text-[#ADA69A]">Base Service Fee:</span>
+                      <span className="text-[#E6E5E4] font-medium">RM{service.price}</span>
                     </div>
                     {isLocationEvent && (
-                      <div className="flex justify-between border-b border-[#221F1D]/50 pb-2 text-amber-200/90">
+                      <div className="flex justify-between border-b border-[#221E16]/50 pb-2 text-amber-200/90">
                         <span className="flex items-center gap-1">
                           <Car className="h-3 w-3" />
                           On-Location Travel & Kit Fee:
@@ -410,15 +410,15 @@ export default function BookingModal({
                       </div>
                     )}
                     <div className="flex justify-between pt-1">
-                      <span className="text-[#C5BDB6]">Total Estimated:</span>
-                      <span className="font-serif font-bold text-base text-[#E9D2C4]">
+                      <span className="text-[#ADA69A]">Total Estimated:</span>
+                      <span className="font-serif font-bold text-base text-[#E6E5E4]">
                         RM{service.price + (isLocationEvent && travelQuote ? travelQuote.totalTravelFee : (isLocationEvent ? 50 : 0))}
                       </span>
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-[#221F1D] bg-[#120F0E] p-3 space-y-3">
-                    <label className="text-[10px] font-mono tracking-wider text-[#E9D2C4] uppercase block">
+                  <div className="rounded-xl border border-[#221E16] bg-[#110E0A] p-3 space-y-3">
+                    <label className="text-[10px] font-mono tracking-wider text-[#E6E5E4] uppercase block">
                       Appointment Location
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -427,8 +427,8 @@ export default function BookingModal({
                         onClick={() => setIsLocationEvent(false)}
                         className={`py-2 px-3 rounded-lg text-xs font-medium border text-center transition-all ${
                           !isLocationEvent
-                            ? 'border-[#9A1A18] bg-[#9A1A18]/20 text-[#FAF8F5]'
-                            : 'border-[#221F1D] text-[#8E867E] hover:border-[#383330]'
+                            ? 'border-[#574D3C] bg-[#574D3C]/20 text-[#E6E5E4]'
+                            : 'border-[#221E16] text-[#948873] hover:border-[#3C3427]'
                         }`}
                       >
                         In Studio Atelier
@@ -438,8 +438,8 @@ export default function BookingModal({
                         onClick={() => setIsLocationEvent(true)}
                         className={`py-2 px-3 rounded-lg text-xs font-medium border text-center transition-all ${
                           isLocationEvent
-                            ? 'border-[#9A1A18] bg-[#9A1A18]/20 text-[#FAF8F5]'
-                            : 'border-[#221F1D] text-[#8E867E] hover:border-[#383330]'
+                            ? 'border-[#574D3C] bg-[#574D3C]/20 text-[#E6E5E4]'
+                            : 'border-[#221E16] text-[#948873] hover:border-[#3C3427]'
                         }`}
                       >
                         On-Location / Venue
@@ -447,8 +447,8 @@ export default function BookingModal({
                     </div>
 
                     {isLocationEvent && (
-                      <div className="pt-2 space-y-2 border-t border-[#221F1D]">
-                        <label className="text-[10px] font-mono tracking-wider text-[#A89F91] uppercase block">
+                      <div className="pt-2 space-y-2 border-t border-[#221E16]">
+                        <label className="text-[10px] font-mono tracking-wider text-[#ADA69A] uppercase block">
                           Event Venue / Hotel Suite Address
                         </label>
                         <div className="flex gap-2">
@@ -457,28 +457,28 @@ export default function BookingModal({
                             value={eventVenue}
                             onChange={(e) => setEventVenue(e.target.value)}
                             placeholder="e.g. The Majestic Hotel, Grand Ballroom / Suite 902"
-                            className="flex-1 rounded-lg border border-[#2B231F] bg-[#0A0807] px-3 py-2 text-xs text-[#FAF8F5] placeholder-[#5C534D] focus:border-[#9A1A18] focus:outline-none"
+                            className="flex-1 rounded-lg border border-accent-soft bg-[#070605] px-3 py-2 text-xs text-[#E6E5E4] placeholder-[#615643] focus:border-accent-strong focus:outline-none"
                           />
                           <button
                             type="button"
                             onClick={handleEstimateTravel}
                             disabled={calculatingTravel || !eventVenue.trim()}
-                            className="px-3 py-2 rounded-lg bg-[#221B18] hover:bg-[#322722] text-[#FAF8F5] text-xs font-mono disabled:opacity-50 shrink-0 border border-[#3E2F29] flex items-center gap-1.5"
+                            className="px-3 py-2 rounded-lg bg-[#201C15] hover:bg-[#302A1F] text-[#E6E5E4] text-xs font-mono disabled:opacity-50 shrink-0 border border-[#3B3427] flex items-center gap-1.5"
                           >
-                            {calculatingTravel ? <Loader2 className="h-3 w-3 animate-spin" /> : <Calculator className="h-3 w-3 text-[#E9D2C4]" />}
+                            {calculatingTravel ? <Loader2 className="h-3 w-3 animate-spin" /> : <Calculator className="h-3 w-3 text-[#E6E5E4]" />}
                             <span>Calculate</span>
                           </button>
                         </div>
 
                         {travelQuote && (
-                          <div className="p-2.5 rounded-lg bg-black/40 border border-[#2C221D] text-[11px] text-[#C5BDB6] space-y-1">
-                            <div className="flex justify-between text-[#FAF8F5]">
+                          <div className="p-2.5 rounded-lg bg-black/40 border border-[#2A241A] text-[11px] text-[#ADA69A] space-y-1">
+                            <div className="flex justify-between text-[#E6E5E4]">
                               <span>Estimated Distance: <strong>{travelQuote.distanceMiles} km</strong></span>
                               <span>Drive Time: ~{travelQuote.estimatedDriveMinutes} mins</span>
                             </div>
-                            <div className="flex justify-between text-[#8E867E]">
+                            <div className="flex justify-between text-[#948873]">
                               <span>Base mobile kit (RM50) + mileage (RM{travelQuote.mileageFee})</span>
-                              <span className="text-[#E9D2C4] font-semibold">RM{travelQuote.totalTravelFee} total</span>
+                              <span className="text-[#E6E5E4] font-semibold">RM{travelQuote.totalTravelFee} total</span>
                             </div>
                           </div>
                         )}
@@ -488,14 +488,14 @@ export default function BookingModal({
 
                   <div className="space-y-4">
                     <div>
-                      <label className="text-xs font-mono tracking-wider text-[#E9D2C4] uppercase block mb-1.5">
+                      <label className="text-xs font-mono tracking-wider text-[#E6E5E4] uppercase block mb-1.5">
                         Client Full Name
                       </label>
                       <input
                         type="text"
                         {...register('clientName')}
                         placeholder="e.g. Amanda Seyfried"
-                        className="w-full rounded-xl border border-[#221F1D] bg-[#1E1A17]/40 px-4 py-3 text-sm text-[#FAF8F5] placeholder-[#6E645E] focus:border-[#9A1A18] focus:outline-none focus:ring-1 focus:ring-[#9A1A18]"
+                        className="w-full rounded-xl border border-accent-soft bg-[#221E16]/40 px-4 py-3 text-sm text-[#E6E5E4] placeholder-[#746853] focus:border-accent-strong focus:outline-none focus:ring-1 focus:ring-accent-strong"
                       />
                       {errors.clientName && (
                         <p className="text-[10px] text-red-400 mt-1">{errors.clientName.message}</p>
@@ -504,14 +504,14 @@ export default function BookingModal({
 
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <label className="text-xs font-mono tracking-wider text-[#E9D2C4] uppercase block">
+                        <label className="text-xs font-mono tracking-wider text-[#E6E5E4] uppercase block">
                           Email Address
                         </label>
                         {!currentUser && (
                           <button
                             type="button"
                             onClick={() => onOpenAuth('signin')}
-                            className="text-[11px] text-[#E9D2C4] hover:underline"
+                            className="text-[11px] text-[#E6E5E4] hover:underline"
                           >
                             Sign in to auto-fill
                           </button>
@@ -522,29 +522,29 @@ export default function BookingModal({
                         {...register('clientEmail')}
                         disabled={!!currentUser}
                         placeholder="client@example.com"
-                        className={`w-full rounded-xl border border-[#221F1D] px-4 py-3 text-sm focus:outline-none transition-colors ${
+                        className={`w-full rounded-xl border border-accent-soft px-4 py-3 text-sm focus:outline-none transition-colors ${
                           currentUser
-                            ? 'bg-[#1E1A17]/20 text-[#C5BDB6]/70 cursor-not-allowed'
-                            : 'bg-[#1E1A17]/40 text-[#FAF8F5] placeholder-[#6E645E] focus:border-[#9A1A18] focus:ring-1 focus:ring-[#9A1A18]'
+                            ? 'bg-[#221E16]/20 text-[#ADA69A]/70 cursor-not-allowed'
+                            : 'bg-[#221E16]/40 text-[#E6E5E4] placeholder-[#746853] focus:border-accent-strong focus:ring-1 focus:ring-accent-strong'
                         }`}
                       />
                       {errors.clientEmail && (
                         <p className="text-[10px] text-red-400 mt-1">{errors.clientEmail.message}</p>
                       )}
-                      <p className="text-[10px] text-[#6E645E] mt-1 font-mono">
+                      <p className="text-[10px] text-[#746853] mt-1 font-mono">
                         {currentUser ? 'Booked on this verified account.' : 'Your appointment ticket will be emailed here.'}
                       </p>
                     </div>
 
                     <div>
-                      <label className="text-xs font-mono tracking-wider text-[#E9D2C4] uppercase block mb-1.5">
+                      <label className="text-xs font-mono tracking-wider text-[#E6E5E4] uppercase block mb-1.5">
                         Telephone Number
                       </label>
                       <input
                         type="tel"
                         {...register('clientPhone')}
                         placeholder="e.g. (555) 019-2834"
-                        className="w-full rounded-xl border border-[#221F1D] bg-[#1E1A17]/40 px-4 py-3 text-sm text-[#FAF8F5] placeholder-[#6E645E] focus:border-[#9A1A18] focus:outline-none focus:ring-1 focus:ring-[#9A1A18]"
+                        className="w-full rounded-xl border border-accent-soft bg-[#221E16]/40 px-4 py-3 text-sm text-[#E6E5E4] placeholder-[#746853] focus:border-accent-strong focus:outline-none focus:ring-1 focus:ring-accent-strong"
                       />
                       {errors.clientPhone && (
                         <p className="text-[10px] text-red-400 mt-1">{errors.clientPhone.message}</p>
@@ -552,14 +552,14 @@ export default function BookingModal({
                     </div>
 
                     <div>
-                      <label className="text-xs font-mono tracking-wider text-[#E9D2C4] uppercase block mb-1.5">
+                      <label className="text-xs font-mono tracking-wider text-[#E6E5E4] uppercase block mb-1.5">
                         Add Special Instructions (Optional)
                       </label>
                       <textarea
                         {...register('notes')}
                         placeholder="e.g. Skin sensitivity, dress color, ceremony lighting, preferred lipstick finish..."
                         rows={2}
-                        className="w-full rounded-xl border border-[#221F1D] bg-[#1E1A17]/40 px-4 py-3 text-sm text-[#FAF8F5] placeholder-[#6E645E] focus:border-[#9A1A18] focus:outline-none focus:ring-1 focus:ring-[#9A1A18] resize-none"
+                        className="w-full rounded-xl border border-accent-soft bg-[#221E16]/40 px-4 py-3 text-sm text-[#E6E5E4] placeholder-[#746853] focus:border-accent-strong focus:outline-none focus:ring-1 focus:ring-accent-strong resize-none"
                       />
                     </div>
                   </div>
@@ -568,14 +568,14 @@ export default function BookingModal({
                     <button
                       type="button"
                       onClick={handleBackStep}
-                      className="w-1/3 rounded-xl border border-[#221F1D] py-3.5 text-xs font-semibold text-[#C5BDB6] transition-all duration-300 hover:bg-[#1E1A17] hover:text-[#FAF8F5]"
+                      className="w-1/3 rounded-xl border border-[#221E16] py-3.5 text-xs font-semibold text-[#ADA69A] transition-all duration-300 hover:bg-[#221E16] hover:text-[#E6E5E4]"
                     >
                       Back
                     </button>
                     <button
                       type="submit"
                       disabled={createBooking.isPending}
-                      className="flex-1 flex items-center justify-center space-x-2 rounded-xl bg-[#9A1A18] py-3.5 text-xs font-semibold text-[#FAF8F5] transition-all duration-300 hover:bg-[#C82A27] disabled:opacity-50"
+                      className="flex-1 flex items-center justify-center space-x-2 rounded-xl bg-[#574D3C] py-3.5 text-xs font-semibold text-[#E6E5E4] transition-all duration-300 hover:bg-[#796D59] disabled:opacity-50"
                     >
                       {createBooking.isPending ? (
                         <>
@@ -603,65 +603,65 @@ export default function BookingModal({
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-serif text-2xl font-semibold text-[#FAF8F5]">Your ritual is scheduled!</h4>
-                  <p className="text-sm text-[#C5BDB6] max-w-sm mx-auto">
-                    We have successfully registered your beauty reservation at <span className="text-[#FAF8F5] font-semibold">{salon.name}</span>.
+                  <h4 className="font-serif text-2xl font-semibold text-[#E6E5E4]">Your ritual is scheduled!</h4>
+                  <p className="text-sm text-[#ADA69A] max-w-sm mx-auto">
+                    We have successfully registered your beauty reservation at <span className="text-[#E6E5E4] font-semibold">{salon.name}</span>.
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-dashed border-[#383330] bg-[#1E1A17]/60 p-5 text-left max-w-sm mx-auto space-y-3 relative font-mono text-xs">
-                  <div className="flex justify-between text-[#C5BDB6] uppercase text-[10px]">
+                <div className="rounded-xl border border-dashed border-[#3C3427] bg-[#221E16]/60 p-5 text-left max-w-sm mx-auto space-y-3 relative font-mono text-xs">
+                  <div className="flex justify-between text-[#ADA69A] uppercase text-[10px]">
                     <span>Receipt/Pass No.</span>
-                    <span className="text-[#FAF8F5]">{confirmedBooking.id}</span>
+                    <span className="text-[#E6E5E4]">{confirmedBooking.id}</span>
                   </div>
 
-                  <div className="border-t border-[#383330] pt-3">
-                    <p className="text-[#C5BDB6] text-[10px] uppercase">Service</p>
-                    <p className="text-[#FAF8F5] font-bold text-sm font-sans">{confirmedBooking.serviceName}</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <p className="text-[#C5BDB6] text-[10px] uppercase">Date</p>
-                      <p className="text-[#FAF8F5] font-semibold">{confirmedBooking.date}</p>
-                    </div>
-                    <div>
-                      <p className="text-[#C5BDB6] text-[10px] uppercase">Time</p>
-                      <p className="text-[#FAF8F5] font-semibold">{confirmedBooking.time}</p>
-                    </div>
+                  <div className="border-t border-[#3C3427] pt-3">
+                    <p className="text-[#ADA69A] text-[10px] uppercase">Service</p>
+                    <p className="text-[#E6E5E4] font-bold text-sm font-sans">{confirmedBooking.serviceName}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <p className="text-[#C5BDB6] text-[10px] uppercase">Stylist</p>
-                      <p className="text-[#FAF8F5] font-semibold">{confirmedBooking.staffName}</p>
+                      <p className="text-[#ADA69A] text-[10px] uppercase">Date</p>
+                      <p className="text-[#E6E5E4] font-semibold">{confirmedBooking.date}</p>
                     </div>
                     <div>
-                      <p className="text-[#C5BDB6] text-[10px] uppercase">Total Fee</p>
-                      <p className="text-[#E9D2C4] font-bold font-serif text-sm">
+                      <p className="text-[#ADA69A] text-[10px] uppercase">Time</p>
+                      <p className="text-[#E6E5E4] font-semibold">{confirmedBooking.time}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <p className="text-[#ADA69A] text-[10px] uppercase">Stylist</p>
+                      <p className="text-[#E6E5E4] font-semibold">{confirmedBooking.staffName}</p>
+                    </div>
+                    <div>
+                      <p className="text-[#ADA69A] text-[10px] uppercase">Total Fee</p>
+                      <p className="text-[#E6E5E4] font-bold font-serif text-sm">
                         RM{confirmedBooking.servicePrice + (confirmedBooking.travelSurcharge || 0)}
                       </p>
                     </div>
                   </div>
 
                   {confirmedBooking.isLocationEvent && (
-                    <div className="border-t border-[#383330] pt-2 text-[11px] text-amber-200/90">
-                      <p className="text-[10px] uppercase text-[#8E867E]">On-Location Destination</p>
+                    <div className="border-t border-[#3C3427] pt-2 text-[11px] text-amber-200/90">
+                      <p className="text-[10px] uppercase text-[#948873]">On-Location Destination</p>
                       <p className="truncate font-sans font-medium">{confirmedBooking.eventVenue}</p>
                     </div>
                   )}
 
                   {confirmedBooking.attachedMoodboard && (
-                    <div className="border-t border-[#383330] pt-2 text-[11px]">
-                      <p className="text-[10px] uppercase text-[#E9D2C4] flex items-center gap-1 font-semibold">
-                        <Sparkles className="h-2.5 w-2.5 text-[#E9D2C4]" />
+                    <div className="border-t border-[#3C3427] pt-2 text-[11px]">
+                      <p className="text-[10px] uppercase text-[#E6E5E4] flex items-center gap-1 font-semibold">
+                        <Sparkles className="h-2.5 w-2.5 text-[#E6E5E4]" />
                         Attached Lookbook
                       </p>
-                      <p className="text-[#FAF8F5] font-sans truncate">{confirmedBooking.attachedMoodboard.lookName}</p>
+                      <p className="text-[#E6E5E4] font-sans truncate">{confirmedBooking.attachedMoodboard.lookName}</p>
                     </div>
                   )}
 
-                  <div className="border-t border-[#383330] pt-2 text-center text-[10px] text-[#6E645E]">
+                  <div className="border-t border-[#3C3427] pt-2 text-center text-[10px] text-[#746853]">
                     Confirmation sent to {confirmedBooking.clientEmail}
                   </div>
                 </div>
@@ -669,7 +669,7 @@ export default function BookingModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-full rounded-xl bg-[#FAF8F5] py-3.5 text-xs font-semibold text-[#0D0B0A] transition-all duration-300 hover:bg-[#FAF8F5]/90"
+                  className="w-full rounded-xl bg-[#E6E5E4] py-3.5 text-xs font-semibold text-[#0F0D0A] transition-all duration-300 hover:bg-[#E6E5E4]/90"
                 >
                   Return to Discovery
                 </button>

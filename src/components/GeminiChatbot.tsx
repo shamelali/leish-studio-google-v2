@@ -138,7 +138,7 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
     return (
       <button
         onClick={() => setIsMinimized(false)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-[#9A1A18] hover:bg-[#C82A27] text-white shadow-2xl transition-all font-mono text-xs font-bold cursor-pointer"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-[#574D3C] hover:bg-[#796D59] text-white shadow-2xl transition-all font-mono text-xs font-bold cursor-pointer"
       >
         <Sparkles className="h-4 w-4 animate-spin-slow" />
         <span>Open Beauty AI Concierge</span>
@@ -147,23 +147,23 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
   }
 
   return (
-    <div className={`flex flex-col rounded-3xl border border-[#2B231F] bg-[#14100E] shadow-2xl overflow-hidden ${
+    <div className={`flex flex-col rounded-3xl border border-[#221E16] bg-[#0F0D0A] shadow-2xl overflow-hidden ${
       isFloating ? 'fixed bottom-6 right-6 z-50 w-[95vw] sm:w-[460px] h-[600px]' : 'w-full h-[650px]'
     }`}>
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#2B231F] bg-[#1C1613]">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-[#221E16] bg-[#221E16]">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-full bg-[#9A1A18]/20 border border-[#9A1A18]/50 flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-[#E9D2C4]" />
+          <div className="h-8 w-8 rounded-full bg-[#574D3C]/20 border border-[#574D3C]/50 flex items-center justify-center">
+            <Sparkles className="h-4 w-4 text-[#E6E5E4]" />
           </div>
           <div>
-            <h3 className="font-serif font-bold text-sm text-[#FAF8F5] flex items-center gap-1.5">
+            <h3 className="font-serif font-bold text-sm text-[#E6E5E4] flex items-center gap-1.5">
               <span>Leish! AI Artistry Concierge</span>
-              <span className="text-[9px] font-mono uppercase bg-[#9A1A18] text-white px-1.5 py-0.2 rounded">
+              <span className="text-[9px] font-mono uppercase bg-[#574D3C] text-white px-1.5 py-0.2 rounded">
                 Gemini
               </span>
             </h3>
-            <p className="text-[10px] text-[#A89F91]">
+            <p className="text-[10px] text-[#ADA69A]">
               Multi-turn beauty advisor with Google Search & Maps Grounding
             </p>
           </div>
@@ -173,7 +173,7 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
           {isFloating && (
             <button
               onClick={() => setIsMinimized(true)}
-              className="p-1.5 rounded-lg text-[#A89F91] hover:text-[#FAF8F5] hover:bg-[#2B231F]"
+              className="p-1.5 rounded-lg text-[#ADA69A] hover:text-[#E6E5E4] hover:bg-[#221E16]"
               title="Minimize"
             >
               <Minimize2 className="h-3.5 w-3.5" />
@@ -182,7 +182,7 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
           {onClose && (
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-[#A89F91] hover:text-[#FAF8F5] hover:bg-[#2B231F]"
+              className="p-1.5 rounded-lg text-[#ADA69A] hover:text-[#E6E5E4] hover:bg-[#221E16]"
               title="Close"
             >
               <X className="h-4 w-4" />
@@ -192,16 +192,16 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
       </div>
 
       {/* Model & Grounding Controls Toolbar */}
-      <div className="px-4 py-2 border-b border-[#261E1A] bg-[#100D0B] flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
+      <div className="px-4 py-2 border-b border-[#241F17] bg-[#0E0C08] flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
         {/* Model Selector */}
         <div className="flex items-center gap-1">
-          <span className="text-[#736A63]">Model:</span>
-          <div className="flex rounded-lg bg-[#181310] border border-[#2B231F] p-0.5">
+          <span className="text-[#968B78]">Model:</span>
+          <div className="flex rounded-lg bg-[#15130E] border border-[#221E16] p-0.5">
             <button
               type="button"
               onClick={() => setModelChoice('fast')}
               className={`px-2 py-0.5 rounded text-[10px] transition-all cursor-pointer ${
-                modelChoice === 'fast' ? 'bg-[#9A1A18] text-white font-bold' : 'text-[#8E867E] hover:text-[#FAF8F5]'
+                modelChoice === 'fast' ? 'bg-[#574D3C] text-white font-bold' : 'text-[#948873] hover:text-[#E6E5E4]'
               }`}
               title="gemini-3.1-flash-lite (Ultra fast)"
             >
@@ -211,7 +211,7 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
               type="button"
               onClick={() => setModelChoice('general')}
               className={`px-2 py-0.5 rounded text-[10px] transition-all cursor-pointer ${
-                modelChoice === 'general' ? 'bg-[#9A1A18] text-white font-bold' : 'text-[#8E867E] hover:text-[#FAF8F5]'
+                modelChoice === 'general' ? 'bg-[#574D3C] text-white font-bold' : 'text-[#948873] hover:text-[#E6E5E4]'
               }`}
               title="gemini-3.5-flash (Balanced)"
             >
@@ -221,7 +221,7 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
               type="button"
               onClick={() => setModelChoice('complex')}
               className={`px-2 py-0.5 rounded text-[10px] transition-all cursor-pointer ${
-                modelChoice === 'complex' ? 'bg-[#9A1A18] text-white font-bold' : 'text-[#8E867E] hover:text-[#FAF8F5]'
+                modelChoice === 'complex' ? 'bg-[#574D3C] text-white font-bold' : 'text-[#948873] hover:text-[#E6E5E4]'
               }`}
               title="gemini-3.1-pro-preview (Deep reasoning)"
             >
@@ -232,13 +232,13 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
 
         {/* Grounding Selector */}
         <div className="flex items-center gap-1">
-          <span className="text-[#736A63]">Grounding:</span>
-          <div className="flex rounded-lg bg-[#181310] border border-[#2B231F] p-0.5">
+          <span className="text-[#968B78]">Grounding:</span>
+          <div className="flex rounded-lg bg-[#15130E] border border-[#221E16] p-0.5">
             <button
               type="button"
               onClick={() => setGrounding('none')}
               className={`px-2 py-0.5 rounded text-[10px] transition-all cursor-pointer ${
-                grounding === 'none' ? 'bg-[#382F2A] text-white' : 'text-[#8E867E] hover:text-[#FAF8F5]'
+                grounding === 'none' ? 'bg-[#3E3628] text-white' : 'text-[#948873] hover:text-[#E6E5E4]'
               }`}
             >
               None
@@ -247,7 +247,7 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
               type="button"
               onClick={() => setGrounding('search')}
               className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] transition-all cursor-pointer ${
-                grounding === 'search' ? 'bg-blue-900/60 text-blue-200 border border-blue-700/50' : 'text-[#8E867E] hover:text-[#FAF8F5]'
+                grounding === 'search' ? 'bg-blue-900/60 text-blue-200 border border-blue-700/50' : 'text-[#948873] hover:text-[#E6E5E4]'
               }`}
               title="Ground responses with Google Search real-time web data"
             >
@@ -258,7 +258,7 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
               type="button"
               onClick={() => setGrounding('maps')}
               className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] transition-all cursor-pointer ${
-                grounding === 'maps' ? 'bg-emerald-900/60 text-emerald-200 border border-emerald-700/50' : 'text-[#8E867E] hover:text-[#FAF8F5]'
+                grounding === 'maps' ? 'bg-emerald-900/60 text-emerald-200 border border-emerald-700/50' : 'text-[#948873] hover:text-[#E6E5E4]'
               }`}
               title="Ground responses with Google Maps location data"
             >
@@ -277,24 +277,24 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
             className={`flex gap-3 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             {m.role === 'model' && (
-              <div className="h-7 w-7 rounded-full bg-[#1C1613] border border-[#9A1A18]/50 flex items-center justify-center shrink-0 mt-0.5">
-                <Bot className="h-3.5 w-3.5 text-[#E9D2C4]" />
+              <div className="h-7 w-7 rounded-full bg-[#221E16] border border-[#574D3C]/50 flex items-center justify-center shrink-0 mt-0.5">
+                <Bot className="h-3.5 w-3.5 text-[#E6E5E4]" />
               </div>
             )}
 
             <div className={`max-w-[82%] space-y-2 ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
               <div className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
                 m.role === 'user'
-                  ? 'bg-[#9A1A18] text-white rounded-br-none shadow-md'
-                  : 'bg-[#1C1613] text-[#E5DFD9] border border-[#2B231F] rounded-bl-none'
+                  ? 'bg-[#574D3C] text-white rounded-br-none shadow-md'
+                  : 'bg-[#221E16] text-[#DEDDDB] border border-[#221E16] rounded-bl-none'
               }`}>
                 <p className="whitespace-pre-line">{m.text}</p>
               </div>
 
               {/* Citations & Metadata */}
               {m.groundingCitations && m.groundingCitations.length > 0 && (
-                <div className="p-2.5 rounded-xl bg-[#14100E] border border-[#2B231F] space-y-1.5">
-                  <span className="text-[10px] font-mono uppercase text-[#736A63] flex items-center gap-1">
+                <div className="p-2.5 rounded-xl bg-[#0F0D0A] border border-[#221E16] space-y-1.5">
+                  <span className="text-[10px] font-mono uppercase text-[#968B78] flex items-center gap-1">
                     <Search className="h-2.5 w-2.5 text-blue-400" />
                     <span>Google Search Grounding Sources</span>
                   </span>
@@ -305,40 +305,40 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
                         href={cit.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[10px] font-mono text-[#E9D2C4] hover:underline bg-[#1E1714] px-2 py-0.5 rounded border border-[#382F2A]"
+                        className="inline-flex items-center gap-1 text-[10px] font-mono text-[#E6E5E4] hover:underline bg-[#1C1811] px-2 py-0.5 rounded border border-[#3E3628]"
                       >
                         <span className="truncate max-w-[140px]">{cit.title}</span>
-                        <ExternalLink className="h-2.5 w-2.5 text-[#736A63]" />
+                        <ExternalLink className="h-2.5 w-2.5 text-[#968B78]" />
                       </a>
                     ))}
                   </div>
                 </div>
               )}
 
-              <div className="flex items-center gap-2 text-[9px] font-mono text-[#736A63] px-1">
+              <div className="flex items-center gap-2 text-[9px] font-mono text-[#968B78] px-1">
                 <span>{m.timestamp}</span>
                 {m.modelUsed && <span>· {m.modelUsed}</span>}
               </div>
             </div>
 
             {m.role === 'user' && (
-              <div className="h-7 w-7 rounded-full bg-[#382F2A] flex items-center justify-center shrink-0 mt-0.5">
-                <UserIcon className="h-3.5 w-3.5 text-[#FAF8F5]" />
+              <div className="h-7 w-7 rounded-full bg-[#3E3628] flex items-center justify-center shrink-0 mt-0.5">
+                <UserIcon className="h-3.5 w-3.5 text-[#E6E5E4]" />
               </div>
             )}
           </div>
         ))}
 
         {loading && (
-          <div className="flex gap-3 justify-start items-center text-xs text-[#A89F91] font-mono">
-            <div className="h-7 w-7 rounded-full bg-[#1C1613] border border-[#9A1A18]/50 flex items-center justify-center shrink-0 animate-pulse">
-              <Sparkles className="h-3.5 w-3.5 text-[#E9D2C4]" />
+          <div className="flex gap-3 justify-start items-center text-xs text-[#ADA69A] font-mono">
+            <div className="h-7 w-7 rounded-full bg-[#221E16] border border-[#574D3C]/50 flex items-center justify-center shrink-0 animate-pulse">
+              <Sparkles className="h-3.5 w-3.5 text-[#E6E5E4]" />
             </div>
-            <div className="p-3 rounded-2xl bg-[#1C1613] border border-[#2B231F] flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#9A1A18] animate-bounce" />
-              <span className="h-1.5 w-1.5 rounded-full bg-[#9A1A18] animate-bounce [animation-delay:0.2s]" />
-              <span className="h-1.5 w-1.5 rounded-full bg-[#9A1A18] animate-bounce [animation-delay:0.4s]" />
-              <span className="text-[11px] text-[#A89F91]">
+            <div className="p-3 rounded-2xl bg-[#221E16] border border-[#221E16] flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#574D3C] animate-bounce" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#574D3C] animate-bounce [animation-delay:0.2s]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#574D3C] animate-bounce [animation-delay:0.4s]" />
+              <span className="text-[11px] text-[#ADA69A]">
                 {grounding === 'search' ? 'Searching Google & consulting trends...' : 'Analyzing makeup artistry options...'}
               </span>
             </div>
@@ -349,43 +349,43 @@ export default function GeminiChatbot({ onClose, isFloating = false }: GeminiCha
       </div>
 
       {/* Suggested Quick Prompts */}
-      <div className="px-4 py-1.5 bg-[#100D0B] border-t border-[#261E1A] flex gap-1.5 overflow-x-auto scrollbar-none">
+      <div className="px-4 py-1.5 bg-[#0E0C08] border-t border-[#241F17] flex gap-1.5 overflow-x-auto scrollbar-none">
         <button
           type="button"
           onClick={() => handleQuickPrompt("What are the top 2026 bridal makeup trends right now?")}
-          className="text-[10px] font-mono text-[#A89F91] hover:text-[#FAF8F5] bg-[#181310] px-2.5 py-1 rounded-full border border-[#2B231F] shrink-0"
+          className="text-[10px] font-mono text-[#ADA69A] hover:text-[#E6E5E4] bg-[#15130E] px-2.5 py-1 rounded-full border border-[#221E16] shrink-0"
         >
           2026 Bridal Trends
         </button>
         <button
           type="button"
           onClick={() => handleQuickPrompt("Which MUA specializes in South Asian cut-crease bridal?")}
-          className="text-[10px] font-mono text-[#A89F91] hover:text-[#FAF8F5] bg-[#181310] px-2.5 py-1 rounded-full border border-[#2B231F] shrink-0"
+          className="text-[10px] font-mono text-[#ADA69A] hover:text-[#E6E5E4] bg-[#15130E] px-2.5 py-1 rounded-full border border-[#221E16] shrink-0"
         >
           South Asian Bridal MUA
         </button>
         <button
           type="button"
           onClick={() => handleQuickPrompt("Where can I learn airbrush makeup in a masterclass?")}
-          className="text-[10px] font-mono text-[#A89F91] hover:text-[#FAF8F5] bg-[#181310] px-2.5 py-1 rounded-full border border-[#2B231F] shrink-0"
+          className="text-[10px] font-mono text-[#ADA69A] hover:text-[#E6E5E4] bg-[#15130E] px-2.5 py-1 rounded-full border border-[#221E16] shrink-0"
         >
           Airbrush Masterclass
         </button>
       </div>
 
       {/* Input Box */}
-      <form onSubmit={handleSend} className="p-3 border-t border-[#2B231F] bg-[#14100E] flex gap-2">
+      <form onSubmit={handleSend} className="p-3 border-t border-[#221E16] bg-[#0F0D0A] flex gap-2">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask about MUAs, skin matching, wedding trials, masterclasses..."
-          className="flex-1 px-3.5 py-2.5 rounded-xl border border-[#2B231F] bg-[#1C1613] text-xs text-[#FAF8F5] placeholder-[#736A63] focus:border-[#9A1A18] focus:outline-none"
+          className="flex-1 px-3.5 py-2.5 rounded-xl border border-accent-soft bg-[#221E16] text-xs text-[#E6E5E4] placeholder-[#968B78] focus:border-accent-strong focus:outline-none"
         />
         <button
           type="submit"
           disabled={!input.trim() || loading}
-          className="px-4 py-2.5 rounded-xl bg-[#9A1A18] hover:bg-[#B52220] disabled:opacity-40 text-white font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+          className="px-4 py-2.5 rounded-xl bg-[#574D3C] hover:bg-[#B52220] disabled:opacity-40 text-white font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
         >
           <Send className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">Ask</span>

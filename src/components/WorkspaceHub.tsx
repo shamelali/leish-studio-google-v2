@@ -305,18 +305,18 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
   };
 
   return (
-    <div className="space-y-6 text-[#FAF8F5]">
+    <div className="space-y-6 text-[#E6E5E4]">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border border-[#2B231F] bg-[#14100E]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A]">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#9A1A18]/20 border border-[#9A1A18]/40 text-[#E9D2C4] text-[10px] font-mono">
-            <Sparkles className="h-3 w-3 text-[#9A1A18]" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#574D3C]/20 border border-[#574D3C]/40 text-[#E6E5E4] text-[10px] font-mono">
+            <Sparkles className="h-3 w-3 text-accent-text" />
             <span>Google Workspace Enterprise Suite & Firebase Integrated</span>
           </div>
-          <h2 className="font-serif text-xl font-bold text-[#FAF8F5]">
+          <h2 className="font-serif text-xl font-bold text-[#E6E5E4]">
             MUA & Studio Workspace Operations
           </h2>
-          <p className="text-xs text-[#A89F91]">
+          <p className="text-xs text-[#ADA69A]">
             Directly connect Google Drive, Gmail, Docs, Forms, Tasks, Contacts, Chat, and Classroom to empower high-end bridal agreements, shade formulas, and mobile dispatch.
           </p>
         </div>
@@ -325,7 +325,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
           {currentUser ? (
             <div className="flex items-center gap-3">
               <div className="text-right">
-                <span className="block text-xs font-mono font-bold text-[#FAF8F5]">
+                <span className="block text-xs font-mono font-bold text-[#E6E5E4]">
                   {currentUser.displayName || currentUser.email}
                 </span>
                 <span className="text-[10px] text-emerald-400 font-mono flex items-center justify-end gap-1">
@@ -336,7 +336,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="p-2 rounded-xl border border-[#382F2A] hover:bg-[#1E1714] text-[#A89F91] hover:text-[#FAF8F5] transition-colors"
+                className="p-2 rounded-xl border border-[#3E3628] hover:bg-[#1C1811] text-[#ADA69A] hover:text-[#E6E5E4] transition-colors"
                 title="Sign out"
               >
                 <LogOut className="h-4 w-4" />
@@ -373,12 +373,12 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
       )}
 
       {/* Cloud SQL & Firebase Architecture Status Notice */}
-      <div className="p-3.5 rounded-xl border border-[#382F2A] bg-[#1A1412] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div className="p-3.5 rounded-xl border border-[#3E3628] bg-[#18150F] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2.5">
-          <Database className="h-4 w-4 text-[#9A1A18] shrink-0" />
+          <Database className="h-4 w-4 text-accent-text shrink-0" />
           <div>
-            <span className="font-bold text-[#FAF8F5]">Database Infrastructure:</span>{' '}
-            <span className="text-[#C5BDB6]">Firebase Firestore provisioned (Project: <code className="text-[#E9D2C4] font-mono">leish-498007</code>, Region: <code className="text-[#E9D2C4] font-mono">asia-southeast1</code>). Cloud SQL eligibility verified.</span>
+            <span className="font-bold text-[#E6E5E4]">Database Infrastructure:</span>{' '}
+            <span className="text-[#ADA69A]">Firebase Firestore provisioned (Project: <code className="text-[#E6E5E4] font-mono">leish-498007</code>, Region: <code className="text-[#E6E5E4] font-mono">asia-southeast1</code>). Cloud SQL eligibility verified.</span>
           </div>
         </div>
         <span className="px-2.5 py-1 rounded-md bg-emerald-900/40 border border-emerald-700/50 text-emerald-300 font-mono text-[11px] shrink-0">
@@ -387,12 +387,12 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
       </div>
 
       {/* Horizontal Tabs */}
-      <div className="flex border-b border-[#2B231F] space-x-2 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex border-b border-[#221E16] space-x-2 overflow-x-auto pb-2 scrollbar-none">
         <button
           type="button"
           onClick={() => setActiveTab('overview')}
           className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === 'overview' ? 'bg-[#9A1A18] text-white' : 'text-[#A89F91] hover:text-[#FAF8F5]'
+            activeTab === 'overview' ? 'bg-[#574D3C] text-white' : 'text-[#ADA69A] hover:text-[#E6E5E4]'
           }`}
         >
           Overview Hub
@@ -404,7 +404,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
             if (currentUser && !recipient) setRecipient(currentUser.email || '');
           }}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === 'gmail' ? 'bg-[#9A1A18] text-white' : 'text-[#A89F91] hover:text-[#FAF8F5]'
+            activeTab === 'gmail' ? 'bg-[#574D3C] text-white' : 'text-[#ADA69A] hover:text-[#E6E5E4]'
           }`}
         >
           <Mail className="h-3.5 w-3.5" />
@@ -417,7 +417,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
             if (currentUser) loadDriveFiles();
           }}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === 'drive' ? 'bg-[#9A1A18] text-white' : 'text-[#A89F91] hover:text-[#FAF8F5]'
+            activeTab === 'drive' ? 'bg-[#574D3C] text-white' : 'text-[#ADA69A] hover:text-[#E6E5E4]'
           }`}
         >
           <HardDrive className="h-3.5 w-3.5" />
@@ -430,7 +430,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
             if (currentUser) loadDocs();
           }}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === 'docs' ? 'bg-[#9A1A18] text-white' : 'text-[#A89F91] hover:text-[#FAF8F5]'
+            activeTab === 'docs' ? 'bg-[#574D3C] text-white' : 'text-[#ADA69A] hover:text-[#E6E5E4]'
           }`}
         >
           <FileText className="h-3.5 w-3.5" />
@@ -443,7 +443,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
             if (currentUser) loadForms();
           }}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === 'forms' ? 'bg-[#9A1A18] text-white' : 'text-[#A89F91] hover:text-[#FAF8F5]'
+            activeTab === 'forms' ? 'bg-[#574D3C] text-white' : 'text-[#ADA69A] hover:text-[#E6E5E4]'
           }`}
         >
           <FileCheck className="h-3.5 w-3.5" />
@@ -456,7 +456,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
             if (currentUser) loadTasks();
           }}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === 'tasks' ? 'bg-[#9A1A18] text-white' : 'text-[#A89F91] hover:text-[#FAF8F5]'
+            activeTab === 'tasks' ? 'bg-[#574D3C] text-white' : 'text-[#ADA69A] hover:text-[#E6E5E4]'
           }`}
         >
           <CheckSquare className="h-3.5 w-3.5" />
@@ -469,7 +469,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
             if (currentUser) loadContacts();
           }}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === 'contacts' ? 'bg-[#9A1A18] text-white' : 'text-[#A89F91] hover:text-[#FAF8F5]'
+            activeTab === 'contacts' ? 'bg-[#574D3C] text-white' : 'text-[#ADA69A] hover:text-[#E6E5E4]'
           }`}
         >
           <Users className="h-3.5 w-3.5" />
@@ -482,7 +482,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
             if (currentUser) loadChatSpaces();
           }}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === 'chat' ? 'bg-[#9A1A18] text-white' : 'text-[#A89F91] hover:text-[#FAF8F5]'
+            activeTab === 'chat' ? 'bg-[#574D3C] text-white' : 'text-[#ADA69A] hover:text-[#E6E5E4]'
           }`}
         >
           <MessageSquare className="h-3.5 w-3.5" />
@@ -495,7 +495,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
             if (currentUser) loadClassroom();
           }}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === 'classroom' ? 'bg-[#9A1A18] text-white' : 'text-[#A89F91] hover:text-[#FAF8F5]'
+            activeTab === 'classroom' ? 'bg-[#574D3C] text-white' : 'text-[#ADA69A] hover:text-[#E6E5E4]'
           }`}
         >
           <GraduationCap className="h-3.5 w-3.5" />
@@ -506,30 +506,30 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
       {/* TAB: Overview */}
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-3">
+          <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-3">
             <div className="flex items-center gap-2 text-rose-400 font-mono text-xs font-bold uppercase tracking-wider">
               <Mail className="h-4 w-4" />
               <span>Gmail Artistry Dispatch</span>
             </div>
-            <p className="text-xs text-[#A89F91]">
+            <p className="text-xs text-[#ADA69A]">
               Generate and send official Leish! Couture Booking confirmations, shade-matching guidelines, and wedding day morning schedules.
             </p>
             <button
               type="button"
               onClick={() => setActiveTab('gmail')}
-              className="text-xs font-mono font-bold text-[#E9D2C4] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-mono font-bold text-[#E6E5E4] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>Compose Email</span>
               <ExternalLink className="h-3 w-3" />
             </button>
           </div>
 
-          <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-3">
+          <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-3">
             <div className="flex items-center gap-2 text-blue-400 font-mono text-xs font-bold uppercase tracking-wider">
               <HardDrive className="h-4 w-4" />
               <span>Google Drive & Picker</span>
             </div>
-            <p className="text-xs text-[#A89F91]">
+            <p className="text-xs text-[#ADA69A]">
               Access moodboard exports, bridal contracts, and camera lighting reference files stored in Google Drive.
             </p>
             <button
@@ -538,19 +538,19 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                 setActiveTab('drive');
                 if (currentUser) loadDriveFiles();
               }}
-              className="text-xs font-mono font-bold text-[#E9D2C4] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-mono font-bold text-[#E6E5E4] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>Browse Drive Assets</span>
               <ExternalLink className="h-3 w-3" />
             </button>
           </div>
 
-          <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-3">
+          <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-3">
             <div className="flex items-center gap-2 text-sky-400 font-mono text-xs font-bold uppercase tracking-wider">
               <FileText className="h-4 w-4" />
               <span>Google Docs Artistry</span>
             </div>
-            <p className="text-xs text-[#A89F91]">
+            <p className="text-xs text-[#ADA69A]">
               Draft bridal contract agreements, on-location timelines, and face chart shade blueprints directly into Google Docs.
             </p>
             <button
@@ -559,19 +559,19 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                 setActiveTab('docs');
                 if (currentUser) loadDocs();
               }}
-              className="text-xs font-mono font-bold text-[#E9D2C4] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-mono font-bold text-[#E6E5E4] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>Create / View Docs</span>
               <ExternalLink className="h-3 w-3" />
             </button>
           </div>
 
-          <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-3">
+          <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-3">
             <div className="flex items-center gap-2 text-purple-400 font-mono text-xs font-bold uppercase tracking-wider">
               <FileCheck className="h-4 w-4" />
               <span>Google Forms Intake</span>
             </div>
-            <p className="text-xs text-[#A89F91]">
+            <p className="text-xs text-[#ADA69A]">
               Generate client skin type, allergy declaration, and bridal party headcounts into Google Forms.
             </p>
             <button
@@ -580,19 +580,19 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                 setActiveTab('forms');
                 if (currentUser) loadForms();
               }}
-              className="text-xs font-mono font-bold text-[#E9D2C4] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-mono font-bold text-[#E6E5E4] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>Generate Form</span>
               <ExternalLink className="h-3 w-3" />
             </button>
           </div>
 
-          <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-3">
+          <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-3">
             <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold uppercase tracking-wider">
               <CheckSquare className="h-4 w-4" />
               <span>Google Tasks (Prep)</span>
             </div>
-            <p className="text-xs text-[#A89F91]">
+            <p className="text-xs text-[#ADA69A]">
               Schedule mobile kit sanitization, Temptu airbrush battery charges, and bridal party countdown milestones in Google Tasks.
             </p>
             <button
@@ -601,19 +601,19 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                 setActiveTab('tasks');
                 if (currentUser) loadTasks();
               }}
-              className="text-xs font-mono font-bold text-[#E9D2C4] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-mono font-bold text-[#E6E5E4] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>View & Add Tasks</span>
               <ExternalLink className="h-3 w-3" />
             </button>
           </div>
 
-          <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-3">
+          <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-3">
             <div className="flex items-center gap-2 text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider">
               <Users className="h-4 w-4" />
               <span>Google Contacts</span>
             </div>
-            <p className="text-xs text-[#A89F91]">
+            <p className="text-xs text-[#ADA69A]">
               Sync your client directory, bridal party contacts, and emergency wedding coordinators straight from Google Contacts.
             </p>
             <button
@@ -622,19 +622,19 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                 setActiveTab('contacts');
                 if (currentUser) loadContacts();
               }}
-              className="text-xs font-mono font-bold text-[#E9D2C4] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-mono font-bold text-[#E6E5E4] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>View Contacts</span>
               <ExternalLink className="h-3 w-3" />
             </button>
           </div>
 
-          <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-3">
+          <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-3">
             <div className="flex items-center gap-2 text-teal-400 font-mono text-xs font-bold uppercase tracking-wider">
               <MessageSquare className="h-4 w-4" />
               <span>Google Chat Dispatch</span>
             </div>
-            <p className="text-xs text-[#A89F91]">
+            <p className="text-xs text-[#ADA69A]">
               Post instant dispatch pings and arrival notifications to your atelier's Google Chat team spaces.
             </p>
             <button
@@ -643,19 +643,19 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                 setActiveTab('chat');
                 if (currentUser) loadChatSpaces();
               }}
-              className="text-xs font-mono font-bold text-[#E9D2C4] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-mono font-bold text-[#E6E5E4] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>Open Chat Dispatch</span>
               <ExternalLink className="h-3 w-3" />
             </button>
           </div>
 
-          <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-3">
+          <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-3">
             <div className="flex items-center gap-2 text-orange-400 font-mono text-xs font-bold uppercase tracking-wider">
               <GraduationCap className="h-4 w-4" />
               <span>Google Classroom Academy</span>
             </div>
-            <p className="text-xs text-[#A89F91]">
+            <p className="text-xs text-[#ADA69A]">
               Manage hands-on masterclass student cohorts, technique curricula, and certificate milestones.
             </p>
             <button
@@ -664,7 +664,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                 setActiveTab('classroom');
                 if (currentUser) loadClassroom();
               }}
-              className="text-xs font-mono font-bold text-[#E9D2C4] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-mono font-bold text-[#E6E5E4] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>Academy Classes</span>
               <ExternalLink className="h-3 w-3" />
@@ -675,19 +675,19 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
 
       {/* TAB: Gmail */}
       {activeTab === 'gmail' && (
-        <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-4">
+        <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#FAF8F5]">
+            <h3 className="font-serif text-lg font-bold text-[#E6E5E4]">
               Send Booking Confirmation via Gmail
             </h3>
-            <span className="text-[10px] font-mono text-[#A89F91]">
+            <span className="text-[10px] font-mono text-[#ADA69A]">
               Workspace API · Gmail
             </span>
           </div>
 
           {!currentUser ? (
             <div className="text-center py-8 space-y-3">
-              <p className="text-xs text-[#A89F91]">Please sign in with Google to send emails.</p>
+              <p className="text-xs text-[#ADA69A]">Please sign in with Google to send emails.</p>
               <button
                 type="button"
                 onClick={handleSignIn}
@@ -699,33 +699,33 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
           ) : (
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-mono text-[#A89F91] mb-1">Recipient Client Email</label>
+                <label className="block text-xs font-mono text-[#ADA69A] mb-1">Recipient Client Email</label>
                 <input
                   type="email"
                   value={recipient}
                   onChange={(e) => setRecipient(e.target.value)}
                   placeholder="client@example.com"
-                  className="w-full rounded-xl border border-[#2B231F] bg-[#1A1412] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                  className="w-full rounded-xl border border-accent-soft bg-[#18150F] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-[#A89F91] mb-1">Subject</label>
+                <label className="block text-xs font-mono text-[#ADA69A] mb-1">Subject</label>
                 <input
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full rounded-xl border border-[#2B231F] bg-[#1A1412] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                  className="w-full rounded-xl border border-accent-soft bg-[#18150F] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-[#A89F91] mb-1">Message Body</label>
+                <label className="block text-xs font-mono text-[#ADA69A] mb-1">Message Body</label>
                 <textarea
                   rows={6}
                   value={emailBody}
                   onChange={(e) => setEmailBody(e.target.value)}
-                  className="w-full rounded-xl border border-[#2B231F] bg-[#1A1412] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none font-mono"
+                  className="w-full rounded-xl border border-accent-soft bg-[#18150F] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none font-mono"
                 />
               </div>
 
@@ -735,7 +735,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                     <AlertCircle className="h-4 w-4" />
                     <span>Confirm sending email from {currentUser.email}?</span>
                   </div>
-                  <p className="text-xs text-[#C5BDB6]">
+                  <p className="text-xs text-[#ADA69A]">
                     This will transmit this message to <strong>{recipient || currentUser.email}</strong> via Gmail API.
                   </p>
                   <div className="flex gap-2">
@@ -743,7 +743,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                       type="button"
                       onClick={handleSendEmailWithConfirmation}
                       disabled={loading}
-                      className="px-4 py-1.5 rounded-lg bg-[#9A1A18] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-1.5 rounded-lg bg-[#574D3C] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-1.5 cursor-pointer"
                     >
                       {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
                       <span>Yes, Send Email</span>
@@ -751,7 +751,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                     <button
                       type="button"
                       onClick={() => setShowEmailConfirm(false)}
-                      className="px-4 py-1.5 rounded-lg border border-[#382F2A] text-xs text-[#A89F91] hover:text-[#FAF8F5] cursor-pointer"
+                      className="px-4 py-1.5 rounded-lg border border-[#3E3628] text-xs text-[#ADA69A] hover:text-[#E6E5E4] cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -762,7 +762,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                   type="button"
                   onClick={() => setShowEmailConfirm(true)}
                   disabled={loading}
-                  className="px-4 py-2 rounded-xl bg-[#9A1A18] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#574D3C] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
                 >
                   <Send className="h-3.5 w-3.5" />
                   <span>Review & Dispatch Confirmation</span>
@@ -775,50 +775,50 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
 
       {/* TAB: Google Drive */}
       {activeTab === 'drive' && (
-        <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-4">
+        <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#FAF8F5]">
+            <h3 className="font-serif text-lg font-bold text-[#E6E5E4]">
               Google Drive Files & Lookbooks
             </h3>
             <button
               type="button"
               onClick={loadDriveFiles}
-              className="text-[11px] font-mono text-[#E9D2C4] hover:underline cursor-pointer"
+              className="text-[11px] font-mono text-[#E6E5E4] hover:underline cursor-pointer"
             >
               Refresh Drive
             </button>
           </div>
 
           {!currentUser ? (
-            <p className="text-xs text-[#A89F91]">Please sign in with Google to browse Drive assets.</p>
+            <p className="text-xs text-[#ADA69A]">Please sign in with Google to browse Drive assets.</p>
           ) : (
             <div className="space-y-3">
               {driveFiles.length === 0 ? (
-                <div className="text-center py-8 border border-dashed border-[#2B231F] rounded-xl text-xs text-[#A89F91] space-y-2">
-                  <FolderOpen className="h-6 w-6 text-[#736A63] mx-auto" />
+                <div className="text-center py-8 border border-dashed border-[#221E16] rounded-xl text-xs text-[#ADA69A] space-y-2">
+                  <FolderOpen className="h-6 w-6 text-[#968B78] mx-auto" />
                   <p>No drive files listed yet. Click Refresh to synchronize recent Drive files.</p>
                   <button
                     type="button"
                     onClick={loadDriveFiles}
-                    className="px-3 py-1 rounded-lg bg-[#9A1A18] text-white text-xs font-bold"
+                    className="px-3 py-1 rounded-lg bg-[#574D3C] text-white text-xs font-bold"
                   >
                     Sync Drive Files
                   </button>
                 </div>
               ) : (
-                <div className="divide-y divide-[#2B231F] border border-[#2B231F] rounded-xl overflow-hidden">
+                <div className="divide-y divide-[#221E16] border border-[#221E16] rounded-xl overflow-hidden">
                   {driveFiles.map((file) => (
-                    <div key={file.id} className="p-3 flex items-center justify-between bg-[#14100E] text-xs">
+                    <div key={file.id} className="p-3 flex items-center justify-between bg-[#0F0D0A] text-xs">
                       <div className="flex items-center gap-2">
                         <HardDrive className="h-4 w-4 text-blue-400" />
-                        <span className="text-[#FAF8F5] font-medium">{file.name}</span>
+                        <span className="text-[#E6E5E4] font-medium">{file.name}</span>
                       </div>
                       {file.webViewLink && (
                         <a
                           href={file.webViewLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[11px] font-mono text-[#E9D2C4] hover:underline flex items-center gap-1"
+                          className="text-[11px] font-mono text-[#E6E5E4] hover:underline flex items-center gap-1"
                         >
                           <span>Open in Drive</span>
                           <ExternalLink className="h-3 w-3" />
@@ -835,49 +835,49 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
 
       {/* TAB: Google Docs */}
       {activeTab === 'docs' && (
-        <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-4">
+        <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#FAF8F5]">
+            <h3 className="font-serif text-lg font-bold text-[#E6E5E4]">
               Google Docs Artistry Contracts & Face Charts
             </h3>
             <button
               type="button"
               onClick={loadDocs}
-              className="text-[11px] font-mono text-[#E9D2C4] hover:underline cursor-pointer"
+              className="text-[11px] font-mono text-[#E6E5E4] hover:underline cursor-pointer"
             >
               Refresh Docs
             </button>
           </div>
 
           {!currentUser ? (
-            <p className="text-xs text-[#A89F91]">Please sign in with Google to create or browse Google Docs.</p>
+            <p className="text-xs text-[#ADA69A]">Please sign in with Google to create or browse Google Docs.</p>
           ) : (
             <div className="space-y-6">
-              <div className="p-4 rounded-xl border border-[#2B231F] bg-[#1A1412] space-y-3">
-                <span className="text-xs font-mono font-bold text-[#E9D2C4] uppercase">Create New Google Document</span>
+              <div className="p-4 rounded-xl border border-[#221E16] bg-[#18150F] space-y-3">
+                <span className="text-xs font-mono font-bold text-[#E6E5E4] uppercase">Create New Google Document</span>
                 <div>
-                  <label className="block text-xs font-mono text-[#A89F91] mb-1">Document Title</label>
+                  <label className="block text-xs font-mono text-[#ADA69A] mb-1">Document Title</label>
                   <input
                     type="text"
                     value={docTitle}
                     onChange={(e) => setDocTitle(e.target.value)}
-                    className="w-full rounded-xl border border-[#2B231F] bg-[#14100E] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                    className="w-full rounded-xl border border-accent-soft bg-[#0F0D0A] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-[#A89F91] mb-1">Initial Text / Agreement Terms</label>
+                  <label className="block text-xs font-mono text-[#ADA69A] mb-1">Initial Text / Agreement Terms</label>
                   <textarea
                     rows={4}
                     value={docContent}
                     onChange={(e) => setDocContent(e.target.value)}
-                    className="w-full rounded-xl border border-[#2B231F] bg-[#14100E] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none font-mono"
+                    className="w-full rounded-xl border border-accent-soft bg-[#0F0D0A] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none font-mono"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={handleCreateDoc}
                   disabled={loading}
-                  className="px-4 py-2 rounded-xl bg-[#9A1A18] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#574D3C] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   <span>Generate Document in Google Docs</span>
@@ -885,23 +885,23 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
               </div>
 
               <div className="space-y-2">
-                <span className="text-xs font-mono text-[#A89F91] block">Recent Google Docs</span>
+                <span className="text-xs font-mono text-[#ADA69A] block">Recent Google Docs</span>
                 {docs.length === 0 ? (
-                  <p className="text-xs text-[#736A63] italic">No documents loaded yet. Click Refresh Docs.</p>
+                  <p className="text-xs text-[#968B78] italic">No documents loaded yet. Click Refresh Docs.</p>
                 ) : (
-                  <div className="divide-y divide-[#2B231F] border border-[#2B231F] rounded-xl overflow-hidden">
+                  <div className="divide-y divide-[#221E16] border border-[#221E16] rounded-xl overflow-hidden">
                     {docs.map((d) => (
-                      <div key={d.id} className="p-3 flex items-center justify-between bg-[#14100E] text-xs">
+                      <div key={d.id} className="p-3 flex items-center justify-between bg-[#0F0D0A] text-xs">
                         <div className="flex items-center gap-2">
                           <FileText className="h-4 w-4 text-sky-400" />
-                          <span className="text-[#FAF8F5] font-medium">{d.name}</span>
+                          <span className="text-[#E6E5E4] font-medium">{d.name}</span>
                         </div>
                         {d.webViewLink && (
                           <a
                             href={d.webViewLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[11px] font-mono text-[#E9D2C4] hover:underline flex items-center gap-1"
+                            className="text-[11px] font-mono text-[#E6E5E4] hover:underline flex items-center gap-1"
                           >
                             <span>Open Doc</span>
                             <ExternalLink className="h-3 w-3" />
@@ -919,40 +919,40 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
 
       {/* TAB: Google Forms */}
       {activeTab === 'forms' && (
-        <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-4">
+        <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#FAF8F5]">
+            <h3 className="font-serif text-lg font-bold text-[#E6E5E4]">
               Google Forms Bridal & Skin Consultation
             </h3>
             <button
               type="button"
               onClick={loadForms}
-              className="text-[11px] font-mono text-[#E9D2C4] hover:underline cursor-pointer"
+              className="text-[11px] font-mono text-[#E6E5E4] hover:underline cursor-pointer"
             >
               Refresh Forms
             </button>
           </div>
 
           {!currentUser ? (
-            <p className="text-xs text-[#A89F91]">Please sign in with Google to create or view Google Forms.</p>
+            <p className="text-xs text-[#ADA69A]">Please sign in with Google to create or view Google Forms.</p>
           ) : (
             <div className="space-y-6">
-              <div className="p-4 rounded-xl border border-[#2B231F] bg-[#1A1412] space-y-3">
-                <span className="text-xs font-mono font-bold text-[#E9D2C4] uppercase">Create New Google Form</span>
+              <div className="p-4 rounded-xl border border-[#221E16] bg-[#18150F] space-y-3">
+                <span className="text-xs font-mono font-bold text-[#E6E5E4] uppercase">Create New Google Form</span>
                 <div>
-                  <label className="block text-xs font-mono text-[#A89F91] mb-1">Form Title</label>
+                  <label className="block text-xs font-mono text-[#ADA69A] mb-1">Form Title</label>
                   <input
                     type="text"
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
-                    className="w-full rounded-xl border border-[#2B231F] bg-[#14100E] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                    className="w-full rounded-xl border border-accent-soft bg-[#0F0D0A] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={handleCreateForm}
                   disabled={loading}
-                  className="px-4 py-2 rounded-xl bg-[#9A1A18] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#574D3C] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   <span>Generate Form via Forms API</span>
@@ -960,23 +960,23 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
               </div>
 
               <div className="space-y-2">
-                <span className="text-xs font-mono text-[#A89F91] block">Existing Forms in Drive</span>
+                <span className="text-xs font-mono text-[#ADA69A] block">Existing Forms in Drive</span>
                 {forms.length === 0 ? (
-                  <p className="text-xs text-[#736A63] italic">No forms loaded yet. Click Refresh Forms.</p>
+                  <p className="text-xs text-[#968B78] italic">No forms loaded yet. Click Refresh Forms.</p>
                 ) : (
-                  <div className="divide-y divide-[#2B231F] border border-[#2B231F] rounded-xl overflow-hidden">
+                  <div className="divide-y divide-[#221E16] border border-[#221E16] rounded-xl overflow-hidden">
                     {forms.map((f) => (
-                      <div key={f.id} className="p-3 flex items-center justify-between bg-[#14100E] text-xs">
+                      <div key={f.id} className="p-3 flex items-center justify-between bg-[#0F0D0A] text-xs">
                         <div className="flex items-center gap-2">
                           <FileCheck className="h-4 w-4 text-purple-400" />
-                          <span className="text-[#FAF8F5] font-medium">{f.name}</span>
+                          <span className="text-[#E6E5E4] font-medium">{f.name}</span>
                         </div>
                         {f.webViewLink && (
                           <a
                             href={f.webViewLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[11px] font-mono text-[#E9D2C4] hover:underline flex items-center gap-1"
+                            className="text-[11px] font-mono text-[#E6E5E4] hover:underline flex items-center gap-1"
                           >
                             <span>Open Form</span>
                             <ExternalLink className="h-3 w-3" />
@@ -994,45 +994,45 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
 
       {/* TAB: Google Tasks */}
       {activeTab === 'tasks' && (
-        <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-4">
+        <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#FAF8F5]">
+            <h3 className="font-serif text-lg font-bold text-[#E6E5E4]">
               Google Tasks (Glam Squad & Kit Prep)
             </h3>
             <button
               type="button"
               onClick={loadTasks}
-              className="text-[11px] font-mono text-[#E9D2C4] hover:underline cursor-pointer"
+              className="text-[11px] font-mono text-[#E6E5E4] hover:underline cursor-pointer"
             >
               Refresh Tasks
             </button>
           </div>
 
           {!currentUser ? (
-            <p className="text-xs text-[#A89F91]">Please sign in with Google to manage tasks.</p>
+            <p className="text-xs text-[#ADA69A]">Please sign in with Google to manage tasks.</p>
           ) : (
             <div className="space-y-6">
-              <div className="p-4 rounded-xl border border-[#2B231F] bg-[#1A1412] space-y-3">
-                <span className="text-xs font-mono font-bold text-[#E9D2C4] uppercase">Schedule New Task</span>
+              <div className="p-4 rounded-xl border border-[#221E16] bg-[#18150F] space-y-3">
+                <span className="text-xs font-mono font-bold text-[#E6E5E4] uppercase">Schedule New Task</span>
                 <input
                   type="text"
                   value={taskTitle}
                   onChange={(e) => setTaskTitle(e.target.value)}
                   placeholder="Task title..."
-                  className="w-full rounded-xl border border-[#2B231F] bg-[#14100E] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                  className="w-full rounded-xl border border-accent-soft bg-[#0F0D0A] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                 />
                 <input
                   type="text"
                   value={taskNotes}
                   onChange={(e) => setTaskNotes(e.target.value)}
                   placeholder="Notes or shade requirements..."
-                  className="w-full rounded-xl border border-[#2B231F] bg-[#14100E] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                  className="w-full rounded-xl border border-accent-soft bg-[#0F0D0A] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={handleAddTask}
                   disabled={loading}
-                  className="px-4 py-2 rounded-xl bg-[#9A1A18] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#574D3C] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   <span>Add to Google Tasks</span>
@@ -1040,18 +1040,18 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
               </div>
 
               <div className="space-y-2">
-                <span className="text-xs font-mono text-[#A89F91] block">Current Tasks in Default List</span>
+                <span className="text-xs font-mono text-[#ADA69A] block">Current Tasks in Default List</span>
                 {tasks.length === 0 ? (
-                  <p className="text-xs text-[#736A63] italic">No tasks returned. Click Refresh Tasks.</p>
+                  <p className="text-xs text-[#968B78] italic">No tasks returned. Click Refresh Tasks.</p>
                 ) : (
-                  <div className="divide-y divide-[#2B231F] border border-[#2B231F] rounded-xl overflow-hidden">
+                  <div className="divide-y divide-[#221E16] border border-[#221E16] rounded-xl overflow-hidden">
                     {tasks.map((t) => (
-                      <div key={t.id} className="p-3 flex items-center justify-between bg-[#14100E] text-xs">
+                      <div key={t.id} className="p-3 flex items-center justify-between bg-[#0F0D0A] text-xs">
                         <div className="flex items-center gap-2">
                           <CheckSquare className="h-4 w-4 text-amber-400" />
-                          <span className="text-[#FAF8F5] font-medium">{t.title}</span>
+                          <span className="text-[#E6E5E4] font-medium">{t.title}</span>
                         </div>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2B231F] text-[#A89F91]">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#221E16] text-[#ADA69A]">
                           {t.status}
                         </span>
                       </div>
@@ -1066,33 +1066,33 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
 
       {/* TAB: Google Contacts */}
       {activeTab === 'contacts' && (
-        <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-4">
+        <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#FAF8F5]">
+            <h3 className="font-serif text-lg font-bold text-[#E6E5E4]">
               Google Contacts Directory
             </h3>
             <button
               type="button"
               onClick={loadContacts}
-              className="text-[11px] font-mono text-[#E9D2C4] hover:underline cursor-pointer"
+              className="text-[11px] font-mono text-[#E6E5E4] hover:underline cursor-pointer"
             >
               Refresh Contacts
             </button>
           </div>
 
           {!currentUser ? (
-            <p className="text-xs text-[#A89F91]">Please sign in with Google to view contacts.</p>
+            <p className="text-xs text-[#ADA69A]">Please sign in with Google to view contacts.</p>
           ) : (
             <div className="space-y-2">
               {contacts.length === 0 ? (
-                <p className="text-xs text-[#A89F91] italic py-4">No contacts loaded yet or none returned. Click Refresh.</p>
+                <p className="text-xs text-[#ADA69A] italic py-4">No contacts loaded yet or none returned. Click Refresh.</p>
               ) : (
-                <div className="divide-y divide-[#2B231F] border border-[#2B231F] rounded-xl overflow-hidden">
+                <div className="divide-y divide-[#221E16] border border-[#221E16] rounded-xl overflow-hidden">
                   {contacts.map((c, i) => (
-                    <div key={i} className="p-3 flex items-center justify-between bg-[#14100E] text-xs">
+                    <div key={i} className="p-3 flex items-center justify-between bg-[#0F0D0A] text-xs">
                       <div>
-                        <span className="font-bold text-[#FAF8F5] block">{c.displayName}</span>
-                        <span className="text-[11px] font-mono text-[#736A63]">{c.email || c.phone || 'No email/phone'}</span>
+                        <span className="font-bold text-[#E6E5E4] block">{c.displayName}</span>
+                        <span className="text-[11px] font-mono text-[#968B78]">{c.email || c.phone || 'No email/phone'}</span>
                       </div>
                       {c.email && (
                         <button
@@ -1101,7 +1101,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                             setRecipient(c.email);
                             setActiveTab('gmail');
                           }}
-                          className="text-[11px] font-mono text-[#E9D2C4] hover:underline cursor-pointer"
+                          className="text-[11px] font-mono text-[#E6E5E4] hover:underline cursor-pointer"
                         >
                           Send Email
                         </button>
@@ -1117,33 +1117,33 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
 
       {/* TAB: Google Chat */}
       {activeTab === 'chat' && (
-        <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-4">
+        <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#FAF8F5]">
+            <h3 className="font-serif text-lg font-bold text-[#E6E5E4]">
               Google Chat Glam Squad Spaces
             </h3>
             <button
               type="button"
               onClick={loadChatSpaces}
-              className="text-[11px] font-mono text-[#E9D2C4] hover:underline cursor-pointer"
+              className="text-[11px] font-mono text-[#E6E5E4] hover:underline cursor-pointer"
             >
               Refresh Spaces
             </button>
           </div>
 
           {!currentUser ? (
-            <p className="text-xs text-[#A89F91]">Please sign in with Google to connect to Google Chat.</p>
+            <p className="text-xs text-[#ADA69A]">Please sign in with Google to connect to Google Chat.</p>
           ) : (
             <div className="space-y-4">
-              <div className="p-4 rounded-xl border border-[#2B231F] bg-[#1A1412] space-y-3">
-                <span className="text-xs font-mono font-bold text-[#E9D2C4] uppercase">Post to Chat Space</span>
+              <div className="p-4 rounded-xl border border-[#221E16] bg-[#18150F] space-y-3">
+                <span className="text-xs font-mono font-bold text-[#E6E5E4] uppercase">Post to Chat Space</span>
                 <div>
-                  <label className="block text-xs font-mono text-[#A89F91] mb-1">Space Identifier</label>
+                  <label className="block text-xs font-mono text-[#ADA69A] mb-1">Space Identifier</label>
                   {chatSpaces.length > 0 ? (
                     <select
                       value={chatSpaceName}
                       onChange={(e) => setChatSpaceName(e.target.value)}
-                      className="w-full rounded-xl border border-[#2B231F] bg-[#14100E] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                      className="w-full rounded-xl border border-accent-soft bg-[#0F0D0A] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                     >
                       {chatSpaces.map(s => (
                         <option key={s.name} value={s.name}>{s.displayName || s.name}</option>
@@ -1155,24 +1155,24 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                       value={chatSpaceName}
                       onChange={(e) => setChatSpaceName(e.target.value)}
                       placeholder="spaces/XXXXXX"
-                      className="w-full rounded-xl border border-[#2B231F] bg-[#14100E] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                      className="w-full rounded-xl border border-accent-soft bg-[#0F0D0A] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                     />
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-[#A89F91] mb-1">Dispatch Message</label>
+                  <label className="block text-xs font-mono text-[#ADA69A] mb-1">Dispatch Message</label>
                   <input
                     type="text"
                     value={chatMessageText}
                     onChange={(e) => setChatMessageText(e.target.value)}
-                    className="w-full rounded-xl border border-[#2B231F] bg-[#14100E] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                    className="w-full rounded-xl border border-accent-soft bg-[#0F0D0A] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={handleSendChatMessage}
                   disabled={loading}
-                  className="px-4 py-2 rounded-xl bg-[#9A1A18] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#574D3C] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
                 >
                   <Send className="h-3.5 w-3.5" />
                   <span>Send to Google Chat</span>
@@ -1185,49 +1185,49 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
 
       {/* TAB: Google Classroom */}
       {activeTab === 'classroom' && (
-        <div className="p-5 rounded-2xl border border-[#2B231F] bg-[#14100E] space-y-4">
+        <div className="p-5 rounded-2xl border border-[#221E16] bg-[#0F0D0A] space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#FAF8F5]">
+            <h3 className="font-serif text-lg font-bold text-[#E6E5E4]">
               Google Classroom (Masterclass Academy)
             </h3>
             <button
               type="button"
               onClick={loadClassroom}
-              className="text-[11px] font-mono text-[#E9D2C4] hover:underline cursor-pointer"
+              className="text-[11px] font-mono text-[#E6E5E4] hover:underline cursor-pointer"
             >
               Refresh Courses
             </button>
           </div>
 
           {!currentUser ? (
-            <p className="text-xs text-[#A89F91]">Please sign in with Google to manage Classroom courses.</p>
+            <p className="text-xs text-[#ADA69A]">Please sign in with Google to manage Classroom courses.</p>
           ) : (
             <div className="space-y-6">
-              <div className="p-4 rounded-xl border border-[#2B231F] bg-[#1A1412] space-y-3">
-                <span className="text-xs font-mono font-bold text-[#E9D2C4] uppercase">Create New Masterclass Course</span>
+              <div className="p-4 rounded-xl border border-[#221E16] bg-[#18150F] space-y-3">
+                <span className="text-xs font-mono font-bold text-[#E6E5E4] uppercase">Create New Masterclass Course</span>
                 <div>
-                  <label className="block text-xs font-mono text-[#A89F91] mb-1">Masterclass Title</label>
+                  <label className="block text-xs font-mono text-[#ADA69A] mb-1">Masterclass Title</label>
                   <input
                     type="text"
                     value={courseName}
                     onChange={(e) => setCourseName(e.target.value)}
-                    className="w-full rounded-xl border border-[#2B231F] bg-[#14100E] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                    className="w-full rounded-xl border border-accent-soft bg-[#0F0D0A] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-[#A89F91] mb-1">Cohort Section</label>
+                  <label className="block text-xs font-mono text-[#ADA69A] mb-1">Cohort Section</label>
                   <input
                     type="text"
                     value={courseSection}
                     onChange={(e) => setCourseSection(e.target.value)}
-                    className="w-full rounded-xl border border-[#2B231F] bg-[#14100E] px-3 py-2 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                    className="w-full rounded-xl border border-accent-soft bg-[#0F0D0A] px-3 py-2 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={handleCreateCourse}
                   disabled={loading}
-                  className="px-4 py-2 rounded-xl bg-[#9A1A18] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#574D3C] text-white text-xs font-bold hover:bg-[#831614] flex items-center gap-2 cursor-pointer"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   <span>Create Course in Google Classroom</span>
@@ -1235,18 +1235,18 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
               </div>
 
               <div className="space-y-2">
-                <span className="text-xs font-mono text-[#A89F91] block">Enrolled / Active Courses</span>
+                <span className="text-xs font-mono text-[#ADA69A] block">Enrolled / Active Courses</span>
                 {classroomCourses.length === 0 ? (
-                  <p className="text-xs text-[#736A63] italic">No courses found. Click Refresh Courses.</p>
+                  <p className="text-xs text-[#968B78] italic">No courses found. Click Refresh Courses.</p>
                 ) : (
-                  <div className="divide-y divide-[#2B231F] border border-[#2B231F] rounded-xl overflow-hidden">
+                  <div className="divide-y divide-[#221E16] border border-[#221E16] rounded-xl overflow-hidden">
                     {classroomCourses.map((c) => (
-                      <div key={c.id} className="p-3 flex items-center justify-between bg-[#14100E] text-xs">
+                      <div key={c.id} className="p-3 flex items-center justify-between bg-[#0F0D0A] text-xs">
                         <div className="flex items-center gap-2">
                           <GraduationCap className="h-4 w-4 text-orange-400" />
                           <div>
-                            <span className="text-[#FAF8F5] font-medium block">{c.name}</span>
-                            <span className="text-[10px] text-[#A89F91] font-mono">{c.section}</span>
+                            <span className="text-[#E6E5E4] font-medium block">{c.name}</span>
+                            <span className="text-[10px] text-[#ADA69A] font-mono">{c.section}</span>
                           </div>
                         </div>
                         {c.alternateLink && (
@@ -1254,7 +1254,7 @@ export default function WorkspaceHub({ onClose }: WorkspaceHubProps) {
                             href={c.alternateLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[11px] font-mono text-[#E9D2C4] hover:underline flex items-center gap-1"
+                            className="text-[11px] font-mono text-[#E6E5E4] hover:underline flex items-center gap-1"
                           >
                             <span>Open Classroom</span>
                             <ExternalLink className="h-3 w-3" />

@@ -25,19 +25,19 @@ export default function SalonCard({ salon, onClick }: SalonCardProps) {
   return (
     <div 
       onClick={onClick}
-      className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#221F1D] bg-[#141211] hover:border-[#383330] hover:shadow-lg hover:shadow-[#0D0B0A]/50 transition-all duration-300 cursor-pointer"
+      className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#221E16] bg-[#14110C] hover:border-[#3C3427] hover:shadow-lg hover:shadow-[#0F0D0A]/50 transition-all duration-300 cursor-pointer"
     >
       {/* Cover Image */}
-      <div className="relative h-48 w-full overflow-hidden bg-[#1E1A17]">
+      <div className="relative h-48 w-full overflow-hidden bg-[#221E16]">
         <img
           src={salon.image}
           alt={salon.name}
           className="h-full w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0D0B0A]/85 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0F0D0A]/85 to-transparent" />
         
         {/* Absolute category tag */}
-        <span className="absolute left-4 top-4 rounded-full bg-[#9A1A18] px-3 py-0.5 text-[9px] font-mono tracking-widest text-white uppercase shadow-md">
+        <span className="absolute left-4 top-4 rounded-full bg-[#574D3C] px-3 py-0.5 text-[9px] font-mono tracking-widest text-white uppercase shadow-md">
           {categoryLabels[salon.category] || salon.category}
         </span>
 
@@ -54,34 +54,34 @@ export default function SalonCard({ salon, onClick }: SalonCardProps) {
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <h3 className="font-sans font-bold text-base text-[#FAF8F5] group-hover:text-[#E9D2C4] transition-colors truncate max-w-[70%]">
+            <h3 className="font-sans font-bold text-base text-[#E6E5E4] group-hover:text-[#E6E5E4] transition-colors truncate max-w-[70%]">
               {salon.name}
             </h3>
             
             {/* Star Rating summary */}
             <div className="flex items-center space-x-1 text-xs font-mono">
               <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-              <span className="font-bold text-[#FAF8F5]">{salon.rating}</span>
+              <span className="font-bold text-[#E6E5E4]">{salon.rating}</span>
             </div>
           </div>
 
-          <p className="font-serif text-xs italic text-[#C5BDB6] line-clamp-1">
+          <p className="font-serif text-xs italic text-[#ADA69A] line-clamp-1">
             "{salon.tagline}"
           </p>
 
-          <p className="text-[11px] text-[#807670] line-clamp-2 leading-relaxed">
+          <p className="text-[11px] text-[#867A65] line-clamp-2 leading-relaxed">
             {salon.description}
           </p>
         </div>
 
         {/* Location & CTA footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-[#221F1D] text-[11px] font-mono text-[#807670]">
+        <div className="flex items-center justify-between pt-3 border-t border-[#221E16] text-[11px] font-mono text-[#867A65]">
           <div className="flex items-center space-x-1">
-            <MapPin className="h-3.5 w-3.5 text-[#9A1A18]" />
+            <MapPin className="h-3.5 w-3.5 text-accent-text" />
             <span>{salon.location}</span>
           </div>
 
-          <span className="flex items-center space-x-1 text-[#E9D2C4] font-semibold group-hover:text-[#FAF8F5] transition-colors">
+          <span className="flex items-center space-x-1 text-[#E6E5E4] font-semibold group-hover:text-[#E6E5E4] transition-colors">
             <span>Discover Menu</span>
             <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
           </span>

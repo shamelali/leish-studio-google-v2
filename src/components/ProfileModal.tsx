@@ -100,12 +100,12 @@ export default function ProfileModal({
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="relative w-full max-w-md rounded-3xl border border-[#2A2421] bg-[#120F0D] p-6 sm:p-8 shadow-2xl text-[#FAF8F5]"
+        className="relative w-full max-w-md rounded-3xl border border-[#2B251B] bg-[#100E0A] p-6 sm:p-8 shadow-2xl text-[#E6E5E4]"
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-5 top-5 rounded-full p-2 text-[#8C827A] hover:bg-[#1E1A17] hover:text-[#FAF8F5] transition-colors"
+          className="absolute right-5 top-5 rounded-full p-2 text-[#918570] hover:bg-[#221E16] hover:text-[#E6E5E4] transition-colors"
         >
           <X className="h-5 w-5" />
         </button>
@@ -113,7 +113,7 @@ export default function ProfileModal({
         {/* User Avatar & Headline */}
         <div className="flex flex-col items-center text-center mb-6">
           <div className="relative mb-3">
-            <div className="h-20 w-20 rounded-full overflow-hidden border-2 border-[#9A1A18] shadow-lg shadow-[#9A1A18]/20 bg-[#1F1B18] flex items-center justify-center">
+            <div className="h-20 w-20 rounded-full overflow-hidden border-2 border-[#574D3C] shadow-lg shadow-[#574D3C]/20 bg-[#1F1A13] flex items-center justify-center">
               {currentUser.avatar ? (
                 <img
                   src={currentUser.avatar}
@@ -121,28 +121,28 @@ export default function ProfileModal({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <UserIcon className="h-10 w-10 text-[#C5BDB6]" />
+                <UserIcon className="h-10 w-10 text-[#ADA69A]" />
               )}
             </div>
-            <span className={`absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-[#120F0D] ${
-              currentUser.role === 'provider' ? 'bg-[#9A1A18]' : 'bg-[#E9D2C4]'
+            <span className={`absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-[#100E0A] ${
+              currentUser.role === 'provider' ? 'bg-[#574D3C]' : 'bg-[#E6E5E4]'
             }`} />
           </div>
 
-          <h3 className="font-serif text-2xl font-medium tracking-tight text-[#FAF8F5]">
+          <h3 className="font-serif text-2xl font-medium tracking-tight text-[#E6E5E4]">
             {currentUser.name}
           </h3>
-          <p className="text-xs font-mono text-[#A89E96] mt-0.5">{currentUser.email}</p>
+          <p className="text-xs font-mono text-[#A79F92] mt-0.5">{currentUser.email}</p>
 
-          <div className="mt-2.5 inline-flex items-center space-x-1.5 rounded-full border border-[#9A1A18]/30 bg-[#9A1A18]/15 px-3 py-1 text-xs text-[#E9D2C4]">
+          <div className="mt-2.5 inline-flex items-center space-x-1.5 rounded-full border border-[#574D3C]/30 bg-[#574D3C]/15 px-3 py-1 text-xs text-[#E6E5E4]">
             {currentUser.role === 'provider' ? (
               <>
-                <Building2 className="h-3 w-3 text-[#FAF8F5]" />
+                <Building2 className="h-3 w-3 text-[#E6E5E4]" />
                 <span className="font-medium">Makeup Studio Director & MUA</span>
               </>
             ) : (
               <>
-                <Sparkles className="h-3 w-3 text-[#FAF8F5]" />
+                <Sparkles className="h-3 w-3 text-[#E6E5E4]" />
                 <span className="font-medium">VIP Makeup Client</span>
               </>
             )}
@@ -152,29 +152,29 @@ export default function ProfileModal({
         {/* Profile Content / Editing */}
         {!isEditing ? (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-[#221F1D] bg-[#181412] p-4 space-y-3 text-xs">
-              <div className="flex items-center justify-between text-[#8C827A]">
+            <div className="rounded-2xl border border-[#221E16] bg-[#17140F] p-4 space-y-3 text-xs">
+              <div className="flex items-center justify-between text-[#918570]">
                 <span className="flex items-center space-x-2">
-                  <Phone className="h-3.5 w-3.5 text-[#9A1A18]" />
+                  <Phone className="h-3.5 w-3.5 text-accent-text" />
                   <span>Phone Number</span>
                 </span>
-                <span className="text-[#FAF8F5] font-mono">{currentUser.phone || 'Not provided'}</span>
+                <span className="text-[#E6E5E4] font-mono">{currentUser.phone || 'Not provided'}</span>
               </div>
 
               {currentUser.role === 'provider' && linkedSalon && (
-                <div className="flex items-center justify-between text-[#8C827A] pt-2 border-t border-[#2A2421]">
+                <div className="flex items-center justify-between text-[#918570] pt-2 border-t border-[#2B251B]">
                   <span className="flex items-center space-x-2">
-                    <Building2 className="h-3.5 w-3.5 text-[#9A1A18]" />
+                    <Building2 className="h-3.5 w-3.5 text-accent-text" />
                     <span>Associated Studio</span>
                   </span>
-                  <span className="text-[#FAF8F5] font-medium">{linkedSalon.name}</span>
+                  <span className="text-[#E6E5E4] font-medium">{linkedSalon.name}</span>
                 </div>
               )}
 
               {currentUser.bio && (
-                <div className="pt-2 border-t border-[#2A2421]">
-                  <p className="text-[#8C827A] mb-1 font-mono uppercase tracking-wider text-[10px]">Aesthetic Bio</p>
-                  <p className="text-[#C5BDB6] italic leading-relaxed">"{currentUser.bio}"</p>
+                <div className="pt-2 border-t border-[#2B251B]">
+                  <p className="text-[#918570] mb-1 font-mono uppercase tracking-wider text-[10px]">Aesthetic Bio</p>
+                  <p className="text-[#ADA69A] italic leading-relaxed">"{currentUser.bio}"</p>
                 </div>
               )}
             </div>
@@ -188,9 +188,9 @@ export default function ProfileModal({
                     onClose();
                     onOpenSalonPortal?.();
                   }}
-                  className="flex items-center justify-center space-x-1.5 p-2.5 rounded-xl border border-[#9A1A18]/40 bg-[#9A1A18]/10 text-xs text-[#FAF8F5] hover:bg-[#9A1A18]/20 transition-colors"
+                  className="flex items-center justify-center space-x-1.5 p-2.5 rounded-xl border border-[#574D3C]/40 bg-[#574D3C]/10 text-xs text-[#E6E5E4] hover:bg-[#574D3C]/20 transition-colors"
                 >
-                  <Building2 className="h-3.5 w-3.5 text-[#E9D2C4]" />
+                  <Building2 className="h-3.5 w-3.5 text-[#E6E5E4]" />
                   <span>Manage Atelier</span>
                 </button>
               ) : (
@@ -200,9 +200,9 @@ export default function ProfileModal({
                     onClose();
                     onOpenBookings?.();
                   }}
-                  className="flex items-center justify-center space-x-1.5 p-2.5 rounded-xl border border-[#9A1A18]/40 bg-[#9A1A18]/10 text-xs text-[#FAF8F5] hover:bg-[#9A1A18]/20 transition-colors"
+                  className="flex items-center justify-center space-x-1.5 p-2.5 rounded-xl border border-[#574D3C]/40 bg-[#574D3C]/10 text-xs text-[#E6E5E4] hover:bg-[#574D3C]/20 transition-colors"
                 >
-                  <Calendar className="h-3.5 w-3.5 text-[#E9D2C4]" />
+                  <Calendar className="h-3.5 w-3.5 text-[#E6E5E4]" />
                   <span>View Bookings</span>
                 </button>
               )}
@@ -210,9 +210,9 @@ export default function ProfileModal({
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
-                className="flex items-center justify-center space-x-1.5 p-2.5 rounded-xl border border-[#2A2421] bg-[#1C1815] text-xs text-[#FAF8F5] hover:border-[#3D3530] transition-colors"
+                className="flex items-center justify-center space-x-1.5 p-2.5 rounded-xl border border-[#2B251B] bg-[#1B1711] text-xs text-[#E6E5E4] hover:border-[#3F3729] transition-colors"
               >
-                <Edit2 className="h-3.5 w-3.5 text-[#8C827A]" />
+                <Edit2 className="h-3.5 w-3.5 text-[#918570]" />
                 <span>Edit Profile</span>
               </button>
             </div>
@@ -233,7 +233,7 @@ export default function ProfileModal({
         ) : (
           <form onSubmit={handleSave} className="space-y-3.5 text-xs">
             <div>
-              <label className="block font-mono uppercase tracking-wider text-[#A89E96] mb-1">
+              <label className="block font-mono uppercase tracking-wider text-[#A79F92] mb-1">
                 Display Name
               </label>
               <input
@@ -241,31 +241,31 @@ export default function ProfileModal({
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-xl border border-[#2A2421] bg-[#161311] py-2 px-3 text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                className="w-full rounded-xl border border-accent-soft bg-[#15120D] py-2 px-3 text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block font-mono uppercase tracking-wider text-[#A89E96] mb-1">
+              <label className="block font-mono uppercase tracking-wider text-[#A79F92] mb-1">
                 Phone Number
               </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full rounded-xl border border-[#2A2421] bg-[#161311] py-2 px-3 text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                className="w-full rounded-xl border border-accent-soft bg-[#15120D] py-2 px-3 text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block font-mono uppercase tracking-wider text-[#A89E96] mb-1">
+              <label className="block font-mono uppercase tracking-wider text-[#A79F92] mb-1">
                 Bio / Style Preferences
               </label>
               <textarea
                 rows={2}
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                className="w-full rounded-xl border border-[#2A2421] bg-[#161311] py-2 px-3 text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none resize-none"
+                className="w-full rounded-xl border border-accent-soft bg-[#15120D] py-2 px-3 text-[#E6E5E4] focus:border-accent-strong focus:outline-none resize-none"
               />
             </div>
 
@@ -273,14 +273,14 @@ export default function ProfileModal({
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="flex-1 py-2.5 rounded-xl border border-[#2A2421] bg-[#181412] text-[#8C827A] hover:text-[#FAF8F5]"
+                className="flex-1 py-2.5 rounded-xl border border-[#2B251B] bg-[#17140F] text-[#918570] hover:text-[#E6E5E4]"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSaving}
-                className="flex-1 py-2.5 rounded-xl bg-[#9A1A18] font-medium text-[#FAF8F5] shadow-lg shadow-[#9A1A18]/20 flex items-center justify-center space-x-1.5"
+                className="flex-1 py-2.5 rounded-xl bg-[#574D3C] font-medium text-[#E6E5E4] shadow-lg shadow-[#574D3C]/20 flex items-center justify-center space-x-1.5"
               >
                 {isSaving ? (
                   <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

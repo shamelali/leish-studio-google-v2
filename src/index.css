@@ -1,40 +1,62 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: "Playfair Display", Georgia, serif;
-  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-serif: "Lora", "Playfair Display", Georgia, serif;
+  --font-sans: "Raleway", "Inter", system-ui, -apple-system, sans-serif;
   --font-display: "Space Grotesk", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --color-brand-red: #9A1A18;
-  --color-brand-red-light: #C82A27;
-  --color-brand-dark: #0D0B0A;
-  --color-brand-cream: #FAF8F5;
-  --color-brand-accent: #E9D2C4;
+  /* Champagne Elegance DARK Palette */
+  --color-brand-gold: #C9A961;
+  --color-brand-gold-light: #DFCC84;
+  --color-brand-gold-dark: #B08F45;
+  --color-brand-champagne: #F3E9CC;
+  --color-brand-espresso: #1A150F;
+  --color-brand-dark: #261F17;
 
-  /* Design tokens */
-  --color-neutral-50: #FAF8F5;
-  --color-neutral-100: #F5F0EB;
-  --color-neutral-200: #E9D2C4;
-  --color-neutral-300: #D4CDC7;
-  --color-neutral-400: #A89F91;
-  --color-neutral-500: #736A63;
-  --color-neutral-600: #554E48;
-  --color-neutral-700: #382F2A;
-  --color-neutral-800: #2B231F;
-  --color-neutral-900: #1C1613;
-  --color-neutral-950: #0D0B0A;
+  --color-brand-blush: #F5E6DE;
+  --color-brand-cream: #F3E9CC;
 
-  --color-accent-gold: #D4A373;
-  --color-accent-champagne: #EAC7C0;
-  --color-accent-emerald: #10B981;
+  /* Neutrals — Warm dark espresso */
+  --color-neutral-50: #FDFCF9;
+  --color-neutral-100: #EFE9DE;
+  --color-neutral-200: #DFD5C5;
+  --color-neutral-300: #C4B8A4;
+  --color-neutral-400: #A3947D;
+  --color-neutral-500: #7D6F5A;
+  --color-neutral-600: #5A4F3E;
+  --color-neutral-700: #3B3226;
+  --color-neutral-800: #332B20;
+  --color-neutral-900: #261F17;
+  --color-neutral-950: #1A150F;
+
+  /* ── Semantic app palette — the values components actually render ──
+     Contrast vs --color-canvas (#0F0D0A):
+     fg 15.4:1 · fg-muted 8.0:1 · fg-dim 5.8:1 · fg-subtle 5.6:1
+     accent-text 4.5:1 · accent-strong 6.2:1 · accent-soft 3.6:1 (control
+     borders / focus, WCAG 1.4.11 needs 3:1). --color-accent is fills only. */
+  --color-canvas: #0F0D0A;
+  --color-surface: #221E16;
+  --color-elevated: #14110C;
+  --color-chip: #2B251B;
+  --color-line: #3E3628;
+
+  --color-accent: #574D3C;
+  --color-accent-soft: #746853;
+  --color-accent-text: #8F7749;
+  --color-accent-strong: #A88F5A;
+
+  --color-fg: #E6E5E4;
+  --color-fg-muted: #ADA69A;
+  --color-fg-dim: #968B78;
+  --color-fg-subtle: #948873;
 }
 
 @layer base {
   body {
     font-family: var(--font-sans);
-    background-color: var(--color-neutral-950);
-    color: var(--color-neutral-50);
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
   }
 }
 

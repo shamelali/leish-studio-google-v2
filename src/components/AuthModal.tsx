@@ -150,40 +150,40 @@ export default function AuthModal({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
         transition={{ duration: 0.25 }}
-        className="relative w-full max-w-md my-8 rounded-3xl border border-[#2A2421] bg-[#120F0D] p-6 sm:p-8 shadow-2xl shadow-black/90 text-[#FAF8F5]"
+        className="relative w-full max-w-md my-8 rounded-3xl border border-[#2B251B] bg-[#100E0A] p-6 sm:p-8 shadow-2xl shadow-black/90 text-[#E6E5E4]"
       >
         <button
           onClick={onClose}
-          className="absolute right-5 top-5 rounded-full p-2 text-[#8C827A] hover:bg-[#1E1A17] hover:text-[#FAF8F5] transition-colors"
+          className="absolute right-5 top-5 rounded-full p-2 text-[#918570] hover:bg-[#221E16] hover:text-[#E6E5E4] transition-colors"
           aria-label="Close authentication modal"
         >
           <X className="h-5 w-5" />
         </button>
 
         <div className="text-center mb-6">
-          <div className="inline-flex items-baseline font-serif text-3xl font-semibold tracking-tight text-[#FAF8F5] mb-1">
+          <div className="inline-flex items-baseline font-serif text-3xl font-semibold tracking-tight text-[#E6E5E4] mb-1">
             <span>Lei</span>
-            <span className="text-[#9A1A18] italic font-bold">sh</span>
-            <span className="text-[#FAF8F5] text-2xl ml-0.5">!</span>
+            <span className="text-accent-text italic font-bold">sh</span>
+            <span className="text-[#E6E5E4] text-2xl ml-0.5">!</span>
           </div>
-          <p className="text-xs font-mono uppercase tracking-widest text-[#E9D2C4]">
+          <p className="text-xs font-mono uppercase tracking-widest text-[#E6E5E4]">
             Aesthetic Marketplace
           </p>
           {promptMessage && (
-            <div className="mt-3 inline-block rounded-xl border border-[#9A1A18]/40 bg-[#9A1A18]/10 px-3.5 py-1.5 text-xs text-[#E9D2C4]">
+            <div className="mt-3 inline-block rounded-xl border border-[#574D3C]/40 bg-[#574D3C]/10 px-3.5 py-1.5 text-xs text-[#E6E5E4]">
               {promptMessage}
             </div>
           )}
         </div>
 
-        <div className="flex rounded-xl bg-[#1C1815] p-1 mb-6 border border-[#2A2421]">
+        <div className="flex rounded-xl bg-[#1B1711] p-1 mb-6 border border-[#2B251B]">
           <button
             type="button"
             onClick={() => { setMode('signin'); setErrorMessage(null); }}
             className={`flex-1 py-2 text-xs font-medium tracking-wide rounded-lg transition-all duration-200 ${
               mode === 'signin'
-                ? 'bg-[#9A1A18] text-[#FAF8F5] shadow-md font-semibold'
-                : 'text-[#8C827A] hover:text-[#FAF8F5]'
+                ? 'bg-[#574D3C] text-[#E6E5E4] shadow-md font-semibold'
+                : 'text-[#918570] hover:text-[#E6E5E4]'
             }`}
           >
             Sign In
@@ -193,8 +193,8 @@ export default function AuthModal({
             onClick={() => { setMode('signup'); setErrorMessage(null); }}
             className={`flex-1 py-2 text-xs font-medium tracking-wide rounded-lg transition-all duration-200 ${
               mode === 'signup'
-                ? 'bg-[#9A1A18] text-[#FAF8F5] shadow-md font-semibold'
-                : 'text-[#8C827A] hover:text-[#FAF8F5]'
+                ? 'bg-[#574D3C] text-[#E6E5E4] shadow-md font-semibold'
+                : 'text-[#918570] hover:text-[#E6E5E4]'
             }`}
           >
             Create Account
@@ -230,16 +230,16 @@ export default function AuthModal({
         {mode === 'signin' ? (
           <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#A89E96] mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#A79F92] mb-1.5">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8C827A]" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#918570]" />
                 <input
                   type="email"
                   {...loginForm.register('email')}
                   placeholder="name@example.com"
-                  className="w-full rounded-xl border border-[#2A2421] bg-[#161311] py-2.5 pl-10 pr-3 text-sm text-[#FAF8F5] placeholder-[#5A524D] focus:border-[#9A1A18] focus:outline-none transition-colors"
+                  className="w-full rounded-xl border border-accent-soft bg-[#15120D] py-2.5 pl-10 pr-3 text-sm text-[#E6E5E4] placeholder-[#605542] focus:border-accent-strong focus:outline-none transition-colors"
                 />
               </div>
               {loginForm.formState.errors.email && (
@@ -249,23 +249,23 @@ export default function AuthModal({
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#A89E96]">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[#A79F92]">
                   Password
                 </label>
-                <span className="text-[11px] text-[#A89E96]">Demo Pass: password123</span>
+                <span className="text-[11px] text-[#A79F92]">Demo Pass: password123</span>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8C827A]" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#918570]" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   {...loginForm.register('password')}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-[#2A2421] bg-[#161311] py-2.5 pl-10 pr-10 text-sm text-[#FAF8F5] placeholder-[#5A524D] focus:border-[#9A1A18] focus:outline-none transition-colors"
+                  className="w-full rounded-xl border border-accent-soft bg-[#15120D] py-2.5 pl-10 pr-10 text-sm text-[#E6E5E4] placeholder-[#605542] focus:border-accent-strong focus:outline-none transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8C827A] hover:text-[#FAF8F5]"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#918570] hover:text-[#E6E5E4]"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -278,7 +278,7 @@ export default function AuthModal({
             <button
               type="submit"
               disabled={loginForm.formState.isSubmitting}
-              className="w-full mt-2 flex items-center justify-center space-x-2 rounded-xl bg-gradient-to-r from-[#9A1A18] to-[#801412] py-3 px-4 text-sm font-semibold text-[#FAF8F5] shadow-lg shadow-[#9A1A18]/25 hover:brightness-110 active:scale-[0.99] transition-all disabled:opacity-50"
+              className="w-full mt-2 flex items-center justify-center space-x-2 rounded-xl bg-gradient-to-r from-[#574D3C] to-[#463D2E] py-3 px-4 text-sm font-semibold text-[#E6E5E4] shadow-lg shadow-[#574D3C]/25 hover:brightness-110 active:scale-[0.99] transition-all disabled:opacity-50"
             >
               {loginForm.formState.isSubmitting ? (
                 <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -293,7 +293,7 @@ export default function AuthModal({
         ) : (
           <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-4">
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#A89E96] mb-2">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#A79F92] mb-2">
                 I want to join as:
               </label>
               <div className="grid grid-cols-2 gap-2.5">
@@ -302,13 +302,13 @@ export default function AuthModal({
                   onClick={() => registerForm.setValue('role', 'client')}
                   className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all ${
                     registerForm.watch('role') === 'client'
-                      ? 'border-[#9A1A18] bg-[#9A1A18]/15 text-[#FAF8F5]'
-                      : 'border-[#2A2421] bg-[#161311] text-[#8C827A] hover:border-[#3D3530]'
+                      ? 'border-[#574D3C] bg-[#574D3C]/15 text-[#E6E5E4]'
+                      : 'border-[#2B251B] bg-[#15120D] text-[#918570] hover:border-[#3F3729]'
                   }`}
                 >
-                  <Sparkles className={`h-4 w-4 mb-1.5 ${registerForm.watch('role') === 'client' ? 'text-[#E9D2C4]' : 'text-[#8C827A]'}`} />
+                  <Sparkles className={`h-4 w-4 mb-1.5 ${registerForm.watch('role') === 'client' ? 'text-[#E6E5E4]' : 'text-[#918570]'}`} />
                   <span className="text-xs font-medium">Makeup Client</span>
-                  <span className="text-[10px] text-[#A89E96] mt-0.5">Book glam & trials</span>
+                  <span className="text-[10px] text-[#A79F92] mt-0.5">Book glam & trials</span>
                 </button>
 
                 <button
@@ -316,28 +316,28 @@ export default function AuthModal({
                   onClick={() => registerForm.setValue('role', 'provider')}
                   className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all ${
                     registerForm.watch('role') === 'provider'
-                      ? 'border-[#9A1A18] bg-[#9A1A18]/15 text-[#FAF8F5]'
-                      : 'border-[#2A2421] bg-[#161311] text-[#8C827A] hover:border-[#3D3530]'
+                      ? 'border-[#574D3C] bg-[#574D3C]/15 text-[#E6E5E4]'
+                      : 'border-[#2B251B] bg-[#15120D] text-[#918570] hover:border-[#3F3729]'
                   }`}
                 >
-                  <Building2 className={`h-4 w-4 mb-1.5 ${registerForm.watch('role') === 'provider' ? 'text-[#E9D2C4]' : 'text-[#8C827A]'}`} />
+                  <Building2 className={`h-4 w-4 mb-1.5 ${registerForm.watch('role') === 'provider' ? 'text-[#E6E5E4]' : 'text-[#918570]'}`} />
                   <span className="text-xs font-medium">Studio / MUA</span>
-                  <span className="text-[10px] text-[#A89E96] mt-0.5">Makeup Artist Director</span>
+                  <span className="text-[10px] text-[#A79F92] mt-0.5">Makeup Artist Director</span>
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#A89E96] mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#A79F92] mb-1.5">
                 Full Name
               </label>
               <div className="relative">
-                <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8C827A]" />
+                <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#918570]" />
                 <input
                   type="text"
                   {...registerForm.register('name')}
                   placeholder="e.g. Camille Laurent"
-                  className="w-full rounded-xl border border-[#2A2421] bg-[#161311] py-2.5 pl-10 pr-3 text-sm text-[#FAF8F5] placeholder-[#5A524D] focus:border-[#9A1A18] focus:outline-none transition-colors"
+                  className="w-full rounded-xl border border-accent-soft bg-[#15120D] py-2.5 pl-10 pr-3 text-sm text-[#E6E5E4] placeholder-[#605542] focus:border-accent-strong focus:outline-none transition-colors"
                 />
               </div>
               {registerForm.formState.errors.name && (
@@ -346,29 +346,29 @@ export default function AuthModal({
             </div>
 
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#A89E96] mb-1.5">
-                Phone Number <span className="text-[10px] text-[#716862] normal-case">(For booking SMS alerts)</span>
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#A79F92] mb-1.5">
+                Phone Number <span className="text-[10px] text-[#776B57] normal-case">(For booking SMS alerts)</span>
               </label>
               <div className="relative">
-                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8C827A]" />
+                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#918570]" />
                 <input
                   type="tel"
                   {...registerForm.register('phone')}
                   placeholder="+60 12-345 6789"
-                  className="w-full rounded-xl border border-[#2A2421] bg-[#161311] py-2.5 pl-10 pr-3 text-sm text-[#FAF8F5] placeholder-[#5A524D] focus:border-[#9A1A18] focus:outline-none transition-colors"
+                  className="w-full rounded-xl border border-accent-soft bg-[#15120D] py-2.5 pl-10 pr-3 text-sm text-[#E6E5E4] placeholder-[#605542] focus:border-accent-strong focus:outline-none transition-colors"
                 />
               </div>
             </div>
 
             {registerForm.watch('role') === 'provider' && (
-              <div className="p-3 rounded-xl border border-[#2A2421] bg-[#161311] space-y-2.5">
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#E9D2C4] flex items-center space-x-1">
-                  <Building2 className="h-3.5 w-3.5 text-[#9A1A18]" />
+              <div className="p-3 rounded-xl border border-[#2B251B] bg-[#15120D] space-y-2.5">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[#E6E5E4] flex items-center space-x-1">
+                  <Building2 className="h-3.5 w-3.5 text-accent-text" />
                   <span>Associate with Makeup Studio</span>
                 </label>
                 <select
                   {...registerForm.register('salonId')}
-                  className="w-full rounded-lg border border-[#3D3530] bg-[#1F1B18] py-2 px-3 text-xs text-[#FAF8F5] focus:border-[#9A1A18] focus:outline-none"
+                  className="w-full rounded-lg border border-accent-soft bg-[#1F1A13] py-2 px-3 text-xs text-[#E6E5E4] focus:border-accent-strong focus:outline-none"
                 >
                   {salons.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -380,16 +380,16 @@ export default function AuthModal({
             )}
 
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#A89E96] mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#A79F92] mb-1.5">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8C827A]" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#918570]" />
                 <input
                   type="email"
                   {...registerForm.register('email')}
                   placeholder="name@example.com"
-                  className="w-full rounded-xl border border-[#2A2421] bg-[#161311] py-2.5 pl-10 pr-3 text-sm text-[#FAF8F5] placeholder-[#5A524D] focus:border-[#9A1A18] focus:outline-none transition-colors"
+                  className="w-full rounded-xl border border-accent-soft bg-[#15120D] py-2.5 pl-10 pr-3 text-sm text-[#E6E5E4] placeholder-[#605542] focus:border-accent-strong focus:outline-none transition-colors"
                 />
               </div>
               {registerForm.formState.errors.email && (
@@ -398,21 +398,21 @@ export default function AuthModal({
             </div>
 
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#A89E96] mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#A79F92] mb-1.5">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8C827A]" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#918570]" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   {...registerForm.register('password')}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-[#2A2421] bg-[#161311] py-2.5 pl-10 pr-10 text-sm text-[#FAF8F5] placeholder-[#5A524D] focus:border-[#9A1A18] focus:outline-none transition-colors"
+                  className="w-full rounded-xl border border-accent-soft bg-[#15120D] py-2.5 pl-10 pr-10 text-sm text-[#E6E5E4] placeholder-[#605542] focus:border-accent-strong focus:outline-none transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8C827A] hover:text-[#FAF8F5]"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#918570] hover:text-[#E6E5E4]"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -425,7 +425,7 @@ export default function AuthModal({
             <button
               type="submit"
               disabled={registerForm.formState.isSubmitting}
-              className="w-full mt-2 flex items-center justify-center space-x-2 rounded-xl bg-gradient-to-r from-[#9A1A18] to-[#801412] py-3 px-4 text-sm font-semibold text-[#FAF8F5] shadow-lg shadow-[#9A1A18]/25 hover:brightness-110 active:scale-[0.99] transition-all disabled:opacity-50"
+              className="w-full mt-2 flex items-center justify-center space-x-2 rounded-xl bg-gradient-to-r from-[#574D3C] to-[#463D2E] py-3 px-4 text-sm font-semibold text-[#E6E5E4] shadow-lg shadow-[#574D3C]/25 hover:brightness-110 active:scale-[0.99] transition-all disabled:opacity-50"
             >
               {registerForm.formState.isSubmitting ? (
                 <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -439,32 +439,32 @@ export default function AuthModal({
           </form>
         )}
 
-        <div className="mt-6 pt-5 border-t border-[#221F1D]">
-          <p className="text-[11px] font-mono uppercase tracking-wider text-center text-[#7E746E] mb-3">
+        <div className="mt-6 pt-5 border-t border-[#221E16]">
+          <p className="text-[11px] font-mono uppercase tracking-wider text-center text-[#847863] mb-3">
             Instant Demo Access
           </p>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
               onClick={() => handleQuickDemo('shamelali@gmail.com', 'password123')}
-              className="flex items-center justify-center space-x-1.5 p-2 rounded-lg border border-[#2A2421] bg-[#181412] text-xs text-[#C5BDB6] hover:bg-[#201B17] hover:border-[#9A1A18]/50 hover:text-white transition-all"
+              className="flex items-center justify-center space-x-1.5 p-2 rounded-lg border border-[#2B251B] bg-[#17140F] text-xs text-[#ADA69A] hover:bg-[#1F1A13] hover:border-[#574D3C]/50 hover:text-white transition-all"
             >
-              <Sparkles className="h-3 w-3 text-[#E9D2C4]" />
+              <Sparkles className="h-3 w-3 text-[#E6E5E4]" />
               <span className="truncate">Client: Shamel</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickDemo('director@atelierleish.com', 'password123')}
-              className="flex items-center justify-center space-x-1.5 p-2 rounded-lg border border-[#2A2421] bg-[#181412] text-xs text-[#C5BDB6] hover:bg-[#201B17] hover:border-[#9A1A18]/50 hover:text-white transition-all"
+              className="flex items-center justify-center space-x-1.5 p-2 rounded-lg border border-[#2B251B] bg-[#17140F] text-xs text-[#ADA69A] hover:bg-[#1F1A13] hover:border-[#574D3C]/50 hover:text-white transition-all"
             >
-              <Scissors className="h-3 w-3 text-[#9A1A18]" />
+              <Scissors className="h-3 w-3 text-accent-text" />
               <span className="truncate">Salon: Atelier</span>
             </button>
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-center space-x-1.5 text-[11px] text-[#69615B]">
-          <ShieldCheck className="h-3.5 w-3.5 text-[#9A1A18]" />
+        <div className="mt-4 flex items-center justify-center space-x-1.5 text-[11px] text-[#6F6450]">
+          <ShieldCheck className="h-3.5 w-3.5 text-accent-text" />
           <span>Encrypted Beauty Profile • Leish! Aesthetic Security</span>
         </div>
       </motion.div>

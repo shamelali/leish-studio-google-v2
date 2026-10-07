@@ -43,7 +43,7 @@ export default function InteractiveMap({ locations, selectedId, onSelect, filter
   });
 
   return (
-    <div className="relative h-[420px] w-full rounded-2xl overflow-hidden border border-[#2B231F] shadow-2xl bg-[#14100E]">
+    <div className="relative h-[420px] w-full rounded-2xl overflow-hidden border border-[#221E16] shadow-2xl bg-[#0F0D0A]">
       <APIProvider apiKey={apiKey}>
         <Map
           defaultCenter={DEFAULT_CENTER}
@@ -68,15 +68,15 @@ export default function InteractiveMap({ locations, selectedId, onSelect, filter
               >
                 <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border shadow-lg cursor-pointer transition-all duration-300 ${
                   isSelected
-                    ? 'bg-[#9A1A18] border-[#FAF8F5] text-white scale-110 z-30'
+                    ? 'bg-[#574D3C] border-[#E6E5E4] text-white scale-110 z-30'
                     : isMUA
-                      ? 'bg-[#1C1613] border-[#9A1A18] text-[#E9D2C4] hover:scale-105'
-                      : 'bg-[#141211] border-[#383330] text-[#FAF8F5] hover:scale-105'
+                      ? 'bg-[#221E16] border-[#574D3C] text-[#E6E5E4] hover:scale-105'
+                      : 'bg-[#14110C] border-[#3C3427] text-[#E6E5E4] hover:scale-105'
                 }`}>
                   {isMUA ? (
-                    <User className="h-3 w-3 text-[#FAF8F5]" />
+                    <User className="h-3 w-3 text-[#E6E5E4]" />
                   ) : (
-                    <Building2 className="h-3 w-3 text-[#FAF8F5]" />
+                    <Building2 className="h-3 w-3 text-[#E6E5E4]" />
                   )}
                   <span className="text-[11px] font-mono font-bold tracking-tight">
                     {item.name.split(' ')[0]}
@@ -94,9 +94,9 @@ export default function InteractiveMap({ locations, selectedId, onSelect, filter
               position={COORDINATE_MAP[activeSalon.id] || DEFAULT_CENTER}
               onCloseClick={() => setActiveSalon(null)}
             >
-              <div className="p-2 max-w-[220px] text-[#14100E]">
+              <div className="p-2 max-w-[220px] text-[#0F0D0A]">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#9A1A18] text-white">
+                  <span className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#574D3C] text-white">
                     {activeSalon.type === 'mua' ? 'Pro MUA' : 'Atelier'}
                   </span>
                   <div className="flex items-center text-xs font-mono font-bold text-amber-600">
@@ -104,16 +104,16 @@ export default function InteractiveMap({ locations, selectedId, onSelect, filter
                   </div>
                 </div>
 
-                <h4 className="font-serif font-bold text-sm leading-tight text-[#14100E]">
+                <h4 className="font-serif font-bold text-sm leading-tight text-[#0F0D0A]">
                   {activeSalon.name}
                 </h4>
 
-                <p className="text-[11px] text-[#554E48] mt-1 line-clamp-2">
+                <p className="text-[11px] text-[#5A503E] mt-1 line-clamp-2">
                   {activeSalon.artistTitle || activeSalon.tagline}
                 </p>
 
                 <div className="mt-2 pt-2 border-t border-stone-200 flex items-center justify-between">
-                  <span className="text-[11px] font-mono font-bold text-[#9A1A18]">
+                  <span className="text-[11px] font-mono font-bold text-accent-text">
                     From ${activeSalon.startingPrice || (activeSalon.services[0]?.price ?? 150)}
                   </span>
                   <button
@@ -122,7 +122,7 @@ export default function InteractiveMap({ locations, selectedId, onSelect, filter
                       onSelect(activeSalon);
                       setActiveSalon(null);
                     }}
-                    className="flex items-center gap-1 text-[11px] font-mono text-stone-900 font-bold hover:text-[#9A1A18]"
+                    className="flex items-center gap-1 text-[11px] font-mono text-stone-900 font-bold hover:text-accent-text"
                   >
                     <span>View Profile</span>
                     <ArrowRight className="h-3 w-3" />
@@ -135,14 +135,14 @@ export default function InteractiveMap({ locations, selectedId, onSelect, filter
       </APIProvider>
 
       {/* Floating Map Legend */}
-      <div className="absolute top-3 right-3 z-10 flex items-center space-x-2 rounded-full bg-black/80 backdrop-blur-md px-3 py-1.5 border border-[#2B231F] text-[10px] font-mono text-[#FAF8F5]">
+      <div className="absolute top-3 right-3 z-10 flex items-center space-x-2 rounded-full bg-black/80 backdrop-blur-md px-3 py-1.5 border border-[#221E16] text-[10px] font-mono text-[#E6E5E4]">
         <div className="flex items-center space-x-1">
-          <span className="h-2 w-2 rounded-full bg-[#9A1A18]" />
+          <span className="h-2 w-2 rounded-full bg-[#574D3C]" />
           <span>Independent MUAs</span>
         </div>
-        <span className="text-[#554E48]">|</span>
+        <span className="text-[#5A503E]">|</span>
         <div className="flex items-center space-x-1">
-          <span className="h-2 w-2 rounded-full bg-[#E9D2C4]" />
+          <span className="h-2 w-2 rounded-full bg-[#E6E5E4]" />
           <span>Luxury Studios</span>
         </div>
       </div>

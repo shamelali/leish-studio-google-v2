@@ -115,19 +115,19 @@ export default function VeoVideoStudio() {
   };
 
   return (
-    <div className="space-y-6 text-[#FAF8F5]">
+    <div className="space-y-6 text-[#E6E5E4]">
       {/* Top Header */}
-      <div className="p-6 rounded-3xl border border-[#2B231F] bg-[#14100E] space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#9A1A18]/20 border border-[#9A1A18]/40 text-[#E9D2C4] text-[10px] font-mono">
-          <Film className="h-3 w-3 text-[#9A1A18]" />
+      <div className="p-6 rounded-3xl border border-[#221E16] bg-[#0F0D0A] space-y-3">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#574D3C]/20 border border-[#574D3C]/40 text-[#E6E5E4] text-[10px] font-mono">
+          <Film className="h-3 w-3 text-accent-text" />
           <span>Veo 3 · Generative Video Engine (veo-3.1-fast-generate-preview)</span>
         </div>
 
-        <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#FAF8F5]">
+        <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#E6E5E4]">
           AI Beauty Runway & Motion Studio
         </h2>
 
-        <p className="text-xs sm:text-sm text-[#A89F91] max-w-2xl leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#ADA69A] max-w-2xl leading-relaxed">
           Transform your bridal concepts and editorial makeup blueprints into cinematic 4K runway motion clips using Google’s Veo 3 video model.
         </p>
       </div>
@@ -136,9 +136,9 @@ export default function VeoVideoStudio() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Controls Column */}
         <div className="lg:col-span-5 space-y-4">
-          <form onSubmit={handleGenerate} className="p-6 rounded-3xl border border-[#2B231F] bg-[#14100E] space-y-4 shadow-xl">
+          <form onSubmit={handleGenerate} className="p-6 rounded-3xl border border-[#221E16] bg-[#0F0D0A] space-y-4 shadow-xl">
             <div>
-              <label className="text-xs font-mono text-[#A89F91] block mb-1.5">
+              <label className="text-xs font-mono text-[#ADA69A] block mb-1.5">
                 Runway & Motion Scene Prompt
               </label>
               <textarea
@@ -146,13 +146,13 @@ export default function VeoVideoStudio() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Describe model appearance, lighting, eye makeup colors, camera motion..."
-                className="w-full p-3.5 rounded-2xl border border-[#382F2A] bg-[#1C1613] text-xs text-[#FAF8F5] placeholder-[#736A63] focus:border-[#9A1A18] focus:outline-none"
+                className="w-full p-3.5 rounded-2xl border border-accent-soft bg-[#221E16] text-xs text-[#E6E5E4] placeholder-[#968B78] focus:border-accent-strong focus:outline-none"
               />
             </div>
 
             {/* Aspect Ratio Switcher */}
             <div>
-              <label className="text-xs font-mono text-[#A89F91] block mb-1.5">
+              <label className="text-xs font-mono text-[#ADA69A] block mb-1.5">
                 Aspect Ratio
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -161,8 +161,8 @@ export default function VeoVideoStudio() {
                   onClick={() => setAspectRatio('16:9')}
                   className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-mono font-medium transition-all cursor-pointer ${
                     aspectRatio === '16:9'
-                      ? 'bg-[#9A1A18] border-[#9A1A18] text-white font-bold'
-                      : 'bg-[#1C1613] border-[#2B231F] text-[#A89F91] hover:text-[#FAF8F5]'
+                      ? 'bg-[#574D3C] border-[#574D3C] text-white font-bold'
+                      : 'bg-[#221E16] border-[#221E16] text-[#ADA69A] hover:text-[#E6E5E4]'
                   }`}
                 >
                   <Tv className="h-4 w-4" />
@@ -174,8 +174,8 @@ export default function VeoVideoStudio() {
                   onClick={() => setAspectRatio('9:16')}
                   className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-mono font-medium transition-all cursor-pointer ${
                     aspectRatio === '9:16'
-                      ? 'bg-[#9A1A18] border-[#9A1A18] text-white font-bold'
-                      : 'bg-[#1C1613] border-[#2B231F] text-[#A89F91] hover:text-[#FAF8F5]'
+                      ? 'bg-[#574D3C] border-[#574D3C] text-white font-bold'
+                      : 'bg-[#221E16] border-[#221E16] text-[#ADA69A] hover:text-[#E6E5E4]'
                   }`}
                 >
                   <Smartphone className="h-4 w-4" />
@@ -186,28 +186,28 @@ export default function VeoVideoStudio() {
 
             {/* Quick Presets */}
             <div className="pt-2">
-              <span className="text-[10px] font-mono uppercase text-[#736A63] block mb-1.5">
+              <span className="text-[10px] font-mono uppercase text-[#968B78] block mb-1.5">
                 Curated Motion Presets
               </span>
               <div className="flex flex-wrap gap-1.5">
                 <button
                   type="button"
                   onClick={() => setPrompt('Bridal veil reveal in soft golden hour light, luminous velvet skin, and subtle wind movement')}
-                  className="text-[10px] font-mono bg-[#1C1613] hover:bg-[#2B231F] text-[#C5BDB6] px-2.5 py-1 rounded-full border border-[#2B231F]"
+                  className="text-[10px] font-mono bg-[#221E16] hover:bg-[#221E16] text-[#ADA69A] px-2.5 py-1 rounded-full border border-[#221E16]"
                 >
                   Golden Veil Reveal
                 </button>
                 <button
                   type="button"
                   onClick={() => setPrompt('Editorial high-fashion runway model with graphic black winged liner turning towards flash cameras')}
-                  className="text-[10px] font-mono bg-[#1C1613] hover:bg-[#2B231F] text-[#C5BDB6] px-2.5 py-1 rounded-full border border-[#2B231F]"
+                  className="text-[10px] font-mono bg-[#221E16] hover:bg-[#221E16] text-[#ADA69A] px-2.5 py-1 rounded-full border border-[#221E16]"
                 >
                   Runway Flash Wing
                 </button>
                 <button
                   type="button"
                   onClick={() => setPrompt('Extreme close up of iridescent duo-chrome eye shimmer catching prism reflections in slow motion')}
-                  className="text-[10px] font-mono bg-[#1C1613] hover:bg-[#2B231F] text-[#C5BDB6] px-2.5 py-1 rounded-full border border-[#2B231F]"
+                  className="text-[10px] font-mono bg-[#221E16] hover:bg-[#221E16] text-[#ADA69A] px-2.5 py-1 rounded-full border border-[#221E16]"
                 >
                   Prism Shimmer Macro
                 </button>
@@ -217,7 +217,7 @@ export default function VeoVideoStudio() {
             <button
               type="submit"
               disabled={isGenerating || !prompt.trim()}
-              className="w-full py-3.5 rounded-2xl bg-[#9A1A18] hover:bg-[#C82A27] disabled:opacity-50 text-white font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
+              className="w-full py-3.5 rounded-2xl bg-[#574D3C] hover:bg-[#796D59] disabled:opacity-50 text-white font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
             >
               {isGenerating ? (
                 <>
@@ -243,32 +243,32 @@ export default function VeoVideoStudio() {
 
         {/* Video Player Display Column */}
         <div className="lg:col-span-7 flex flex-col justify-center">
-          <div className="p-6 rounded-3xl border border-[#2B231F] bg-[#14100E] min-h-[460px] flex flex-col items-center justify-center shadow-xl">
+          <div className="p-6 rounded-3xl border border-[#221E16] bg-[#0F0D0A] min-h-[460px] flex flex-col items-center justify-center shadow-xl">
             {isGenerating ? (
               <div className="text-center space-y-4 p-8 max-w-sm">
                 <div className="relative mx-auto w-16 h-16">
-                  <div className="absolute inset-0 rounded-full border-4 border-[#9A1A18]/20 animate-ping" />
-                  <div className="relative rounded-full h-full w-full bg-[#1C1613] border-2 border-[#9A1A18] flex items-center justify-center">
-                    <Film className="h-7 w-7 text-[#E9D2C4] animate-pulse" />
+                  <div className="absolute inset-0 rounded-full border-4 border-[#574D3C]/20 animate-ping" />
+                  <div className="relative rounded-full h-full w-full bg-[#221E16] border-2 border-[#574D3C] flex items-center justify-center">
+                    <Film className="h-7 w-7 text-[#E6E5E4] animate-pulse" />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-serif font-bold text-base text-[#FAF8F5]">
+                  <h4 className="font-serif font-bold text-base text-[#E6E5E4]">
                     Veo 3 Synthesizing Motion
                   </h4>
-                  <p className="text-xs text-[#A89F91] font-mono">
+                  <p className="text-xs text-[#ADA69A] font-mono">
                     {progressStatus || 'Building runway keyframes...'}
                   </p>
                 </div>
 
-                <div className="w-full bg-[#1C1613] h-1.5 rounded-full overflow-hidden border border-[#2B231F]">
-                  <div className="bg-[#9A1A18] h-full rounded-full animate-pulse w-3/4" />
+                <div className="w-full bg-[#221E16] h-1.5 rounded-full overflow-hidden border border-[#221E16]">
+                  <div className="bg-[#574D3C] h-full rounded-full animate-pulse w-3/4" />
                 </div>
               </div>
             ) : videoUrl ? (
               <div className="w-full space-y-4">
-                <div className={`relative overflow-hidden rounded-2xl border border-[#382F2A] bg-black mx-auto shadow-2xl ${
+                <div className={`relative overflow-hidden rounded-2xl border border-[#3E3628] bg-black mx-auto shadow-2xl ${
                   aspectRatio === '9:16' ? 'max-w-[280px] aspect-[9/16]' : 'w-full aspect-[16/9]'
                 }`}>
                   <video
@@ -281,7 +281,7 @@ export default function VeoVideoStudio() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-[#A89F91] px-2 font-mono">
+                <div className="flex items-center justify-between text-xs text-[#ADA69A] px-2 font-mono">
                   <span className="flex items-center gap-1.5 text-emerald-400">
                     <CheckCircle2 className="h-4 w-4" />
                     <span>Veo 3 Render Complete ({aspectRatio})</span>
@@ -292,7 +292,7 @@ export default function VeoVideoStudio() {
                     download="leish-couture-runway.mp4"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1C1613] hover:bg-[#2B231F] text-[#FAF8F5] border border-[#382F2A]"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#221E16] hover:bg-[#221E16] text-[#E6E5E4] border border-[#3E3628]"
                   >
                     <Download className="h-3.5 w-3.5" />
                     <span>Save Video</span>
@@ -300,12 +300,12 @@ export default function VeoVideoStudio() {
                 </div>
               </div>
             ) : (
-              <div className="text-center space-y-3 p-8 text-[#736A63]">
+              <div className="text-center space-y-3 p-8 text-[#968B78]">
                 <Film className="h-12 w-12 mx-auto stroke-1" />
-                <h4 className="font-serif text-base text-[#FAF8F5]">
+                <h4 className="font-serif text-base text-[#E6E5E4]">
                   No Video Rendered Yet
                 </h4>
-                <p className="text-xs text-[#A89F91] max-w-xs mx-auto">
+                <p className="text-xs text-[#ADA69A] max-w-xs mx-auto">
                   Enter your desired beauty scene or pick a preset on the left to synthesize high-fashion video clips.
                 </p>
               </div>
